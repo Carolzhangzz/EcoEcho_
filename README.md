@@ -4,7 +4,7 @@ Welcome to the AI Game! This project is a simple HTML/CSS/JS-based game.
 
 ## How to Run the Game
 
-The simplest way is right-click the file ```Main.html``` and choose ```open in the default browse```
+The simplest way is right-click the file ```Main.html``` and choose ```open in the default browser```
 
 ## OR you can run in the terminal 
 
