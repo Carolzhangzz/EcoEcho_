@@ -6,9 +6,7 @@ Welcome to the AI Game! This project is a simple HTML/CSS/JS-based game.
 
 ### Step 1: Navigate to the Project Path
 
-```java
 Open your terminal and use the following command
-```
 
 ### Step 2: Open the Game
 
