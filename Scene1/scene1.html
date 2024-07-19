@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Memory Recollection - The First Scene</title>
+    <link rel="stylesheet" href="scene1.css">
+</head>
+<body>
+    <div id="game-container">
+        <div id="dialogue-box">
+            <div id="dialogue-text"></div>
+            <div id="dialogue-controls">
+                <button id="prev-dialogue">←</button>
+                <button id="next-dialogue">→</button>
+            </div>
+        </div>
+        <button id="inventory-icon" class="icon-button">
+            <img src="./icons/backpack.svg" alt="Inventory">
+        </button>
+        <div id="inventory-popup" class="hidden">
+            <h3>Inventory</h3>
+            <ul id="inventory-items"></ul>
+        </div>
+        <button id="back-to-main">Back to Main Scene</button>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.3/howler.min.js"></script>
+    <script src="scene1.js"></script>
+</body>
+</html>

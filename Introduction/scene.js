@@ -1,0 +1,68 @@
+export const scenes = [
+    {
+      text: ["Welcome to the future."],
+      background: "./IntroImages/scene1.1-1.png",
+      textStyle: "futuristic",
+      music: "./Music/Immediate Music - From The Light.mp3",
+    },
+    {
+      text: [
+        "A close-up view of a bustling central square in a futuristic city in the year 2056.",
+        "Towering skyscrapers with shiny metal and glass exteriors are prominently visible.",
+        "The streets and buildings are adorned with clean energy K power devices, such as transparent solar panels and wind turbines, seen up close.",
+        "Sleek flying cars and self-driving vehicles are in the foreground.",
+        "Large holographic billboards display the latest technology products and city news.",
+        "The square is lined with lush green plants, creating a modern urban garden, seen from a closer perspective.",
+        "The overall atmosphere is bright and busy, with a clear blue sky and futuristic elements in the scene. Sci-Fi Style.",
+      ],
+      background: "./IntroImages/scene1.1-2.png",
+      textStyle: "futuristic",
+      music: "./Music/Immediate Music - From The Light.mp3",
+      character: "./npc/character1.png",
+    },
+    {
+      text: [
+        "A private high-tech office belonging to KI, with a single desk filled with advanced scientific instruments and equipment.",
+        "A holographic screen on the desk displays various data and research progress.",
+        "On the desk, there is a photo of KI’s father, and in one corner of the office, there are some mementos, indicating KI's fond memories of his father.",
+        "The desk also features a small model or device representing the clean energy source K, symbolizing KI’s field of research.",
+        "The office is tidy and modern, with a serene and focused atmosphere.",
+        "The overall setting is bright, with ample lighting during the day, reflecting KI's dedication to his work while subtly conveying his longing for his father.",
+        "No characters are present in the scene. Sci-Fi Style.",
+      ],
+      background: "./IntroImages/scene1.2-1.png",
+      textStyle: "futuristic",
+      music: "./Music/circle.mp3",
+    },
+    {
+      text: ["None."],
+      background: "./IntroImages/scene1.2-2.png",
+      textStyle: "futuristic",
+      music: "./Music/circle.mp3",
+    },
+    {
+      text: [
+        "A futuristic research facility or exploration base, showcasing the discovery of clean energy source K.",
+        "The scene features advanced research equipment and a high-tech lab setup.",
+        "The discovery site includes sampling devices and instruments, set against the backdrop of a Martian surface base.",
+        "Prominently displayed is a sample or device representing clean energy source K, highlighting its significance.",
+        "Holographic screens on the walls illustrate the impact of clean energy K on Earth's development, such as reducing pollution and improving energy efficiency.",
+        "No characters are present in the scene. Sci-Fi Style.",
+      ],
+      background: "./IntroImages/scene2-1.png",
+      textStyle: "futuristic",
+      music: "./Music/space.mp3",
+    },
+    {
+      text: [
+        "A close-up view of the research equipment and the clean energy source K, with intricate details visible.",
+        "Holographic displays on the equipment show the scientific data and analysis results.",
+        "The research facility or exploration base is bustling with activity, with scientists working and robots assisting in the tasks.",
+        "The environment is bright and well-lit, reflecting the advanced technology and the significance of the discovery.",
+        "Sci-Fi Style.",
+      ],
+      background: "./IntroImages/scene2-2.png",
+      textStyle: "futuristic",
+      music: "./Music/space.mp3",
+    },
+  ];
