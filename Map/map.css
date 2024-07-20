@@ -167,33 +167,44 @@ body {
     box-shadow: 0 0 15px #5af7ff;
 }
 
-#music-toggle {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    background: none;
-    border: none;
-    font-size: 24px;
-    cursor: pointer;
-    color: #5af7ff;
-    text-shadow: 0 0 10px #5af7ff;
-}
+#music-toggle,
 #language-toggle {
-    position: fixed;
-    top: 25px;
-    background:linear-gradient(135deg, rgba(0, 128, 255, 0.8), rgba(0, 255, 128, 0.8)); /* 蓝绿渐变 */
-    width: 40px;
-    height: 27px;
-    right: 60px; /* 放在音乐切换按钮的左边 */
-    border: none;
-    font-size: 18px;
-    cursor: pointer;
-    color: #ffffff;
-    text-shadow: 0 0 10px #5af7ff;
+  position: fixed;
+  top: 20px;
+  background: linear-gradient(
+    135deg,
+    rgba(0, 128, 255, 0.8),
+    rgba(0, 255, 128, 0.8)
+  );
+  width: 40px;
+  height: 27px;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+  color: #ffffff;
+  text-shadow: 0 0 10px #5af7ff;
+  border-radius: 50px;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 10px #5af7ff;
 }
-#language-toggle:hover{
-    border: 2px solid #00FFFF;
-    background:linear-gradient(135deg, rgba(0, 255, 128, 0.8), rgba(0, 128, 255, 0.8)); /* 绿蓝渐变 */
+
+#music-toggle {
+  right: 20px;
+}
+
+#language-toggle {
+  right: 70px;
+}
+
+#music-toggle:hover,
+#language-toggle:hover {
+  border: 2px solid #00ffff;
+  background: linear-gradient(
+    135deg,
+    rgba(0, 255, 128, 0.8),
+    rgba(0, 128, 255, 0.8)
+  );
+  box-shadow: 0 0 15px #5af7ff;
 }
 @keyframes fadeIn {
     to { opacity: 1; }
@@ -223,12 +234,15 @@ body {
 }
 
 #inventory-icon {
+    background-image: url("./icons/backpack.svg");
+    width: 40px;
+    height: 40px;
     position: fixed;
     bottom: 20px;
     left: 280px;
     font-size: 30px;
     cursor: pointer;
-}
+  }
 
 #inventory-popup {
     position: fixed;

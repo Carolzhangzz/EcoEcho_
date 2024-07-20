@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,8 +8,10 @@
     <link rel="stylesheet" href="scene1.css">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron&display=swap" rel="stylesheet">
 </head>
+
 <body>
     <div id="game-container">
+        <img id="character-image" src="" alt="Character">
         <button id="back-to-main">Back to Main Scene</button>
         <button id="music-toggle">🔇</button>
         <button id="language-toggle">EN</button>
@@ -17,17 +20,21 @@
             <div id="dialogue-controls">
                 <button id="prev-dialogue">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M15 19L8 12L15 5" stroke="#5af7ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M15 19L8 12L15 5" stroke="#5af7ff" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round" />
                     </svg>
                 </button>
                 <button id="next-dialogue">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M9 5L16 12L9 19" stroke="#5af7ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M9 5L16 12L9 19" stroke="#5af7ff" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round" />
                     </svg>
                 </button>
             </div>
         </div>
-        <div id="inventory-icon">🎒</div>
+        <div id="inventory-icon">
+
+        </div>
         <button id="clear-inventory">Clear Bag</button>
         <div id="inventory-popup" class="hidden">
             <h3>Bag Content</h3>
@@ -39,4 +46,5 @@
     <script src="scene1.js"></script>
     <script src="../global.js"></script>
 </body>
+
 </html>
