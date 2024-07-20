@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const scene1 = document.getElementById('scene1');
     
     scene1.addEventListener('click', () => {
-        window.location.href = 'scene1.html';
+        window.location.href = './Scene1/scene1.html';
     });
 
     // 其他现有的代码...

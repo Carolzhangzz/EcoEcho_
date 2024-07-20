@@ -1,0 +1,32 @@
+#inventory-icon {
+    position: fixed;
+    bottom: 20px;
+    left: 200px;
+    font-size: 30px;
+    cursor: pointer;
+}
+
+#inventory-popup {
+    position: fixed;
+    bottom: 60px;
+    left: 200px;
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    transition: opacity 0.5s ease;
+}
+
+#inventory-popup.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.flash {
+    animation: flash 0.5s;
+}
+
+@keyframes flash {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
