@@ -193,7 +193,7 @@ function startGame() {
     displayText();
 
     if (scene.isBlackScreen) {
-      window.location.href = "./black_screen.html"; // 移除了 './'
+      window.location.href = "../BlackScene/black.html"; // 移除了 './'
     }
     // Update character image
     const characterImage = document.getElementById("character-image");
