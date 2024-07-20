@@ -3,6 +3,13 @@ const inventoryIcon = document.getElementById('inventory-icon');
 const inventoryPopup = document.getElementById('inventory-popup');
 const inventoryItems = document.getElementById('inventory-items');
 
+document.getElementById('clear-inventory').addEventListener('click', () => {
+    if (confirm('确定要清空背包吗？这将重置您的游戏进度。')) {
+        clearInventory();
+        alert('背包已清空，您可以重新开始游戏了。');
+    }
+});
+
 // 从 localStorage 加载背包内容
 function loadInventory() {
     const inventory = JSON.parse(localStorage.getItem('gameInventory')) || [];
@@ -23,6 +30,12 @@ function addToInventory(item, itemImage) {
         loadInventory();
         flashInventoryIcon();
     }
+}
+
+// 清空背包
+function clearInventory() {
+    localStorage.removeItem('gameInventory');
+    loadInventory();
 }
 
 // 背包图标闪烁效果
@@ -90,6 +103,7 @@ loadInventory();
 window.addToInventory = addToInventory;
 window.showPopup = showPopup;
 window.addHighlightListeners = addHighlightListeners;
+window.clearInventory = clearInventory;
 
 // 在 DOMContentLoaded 事件中添加高亮监听器
 document.addEventListener('DOMContentLoaded', () => {
