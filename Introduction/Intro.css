@@ -75,7 +75,8 @@ body {
 #prev-text-button, #next-text-button {
     padding: 5px 10px;
     font-size: 16px;
-    background-color: rgb(255, 255, 255); /* 提高背景颜色的不透明度 */
+    background: linear-gradient(135deg, rgba(0, 255, 128, 0.8), rgba(0, 128, 255, 0.8));
+    box-shadow: 0 0 15px #5af7ff;
     color: #000; /* 改为黑色 */
     border: 2px solid #5af7ff;
     border-radius: 50px;
@@ -86,7 +87,7 @@ body {
 }
 
 #prev-text-button:hover, #next-text-button:hover {
-    background-color: #5af7ff;
+    background:linear-gradient(135deg, rgba(0, 128, 255, 0.8), rgba(0, 255, 128, 0.8)); /* 蓝绿渐变 */
     color: #000;
     box-shadow: 0 0 15px #5af7ff;
 }
@@ -106,6 +107,30 @@ body {
     font-family: 'Courier New', monospace;
     color: #FFD700;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+#back-main {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    padding: 5px 10px;
+    font-size: 16px;
+    background: linear-gradient(135deg, rgba(0, 128, 255, 0.8), rgba(0, 255, 128, 0.8));
+    color: #ffffff;
+    border: 2px solid #5af7ff;
+    border-radius: 50px;
+    cursor: pointer;
+    outline: none;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 10px #5af7ff;
+    font-family: 'Orbitron', sans-serif;
+    text-shadow: 0 0 5px #00FFFF;
+    z-index: 1000; /* 确保按钮在其他元素之上 */
+}
+
+#back-main:hover {
+    background: linear-gradient(135deg, rgba(0, 255, 128, 0.8), rgba(0, 128, 255, 0.8));
+    box-shadow: 0 0 15px #5af7ff;
 }
 
 #music-toggle {
@@ -138,4 +163,60 @@ body {
 }
 @keyframes fadeIn {
     to { opacity: 1; }
+}
+
+#clear-inventory {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    padding: 5px 10px;
+    font-size: 16px;
+    background: linear-gradient(135deg, rgba(0, 128, 255, 0.8), rgba(0, 255, 128, 0.8));
+    color: #ffffff;
+    border: 2px solid #5af7ff;
+    border-radius: 50px;
+    cursor: pointer;
+    outline: none;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 10px #5af7ff;
+    font-family: 'Orbitron', sans-serif;
+    text-shadow: 0 0 5px #00FFFF;
+}
+
+#clear-inventory:hover {
+    background: linear-gradient(135deg, rgba(0, 255, 128, 0.8), rgba(0, 128, 255, 0.8));
+    box-shadow: 0 0 15px #5af7ff;
+}
+
+#inventory-icon {
+    position: fixed;
+    bottom: 20px;
+    left: 280px;
+    font-size: 30px;
+    cursor: pointer;
+}
+
+#inventory-popup {
+    position: fixed;
+    bottom: 60px;
+    left: 280px;
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    transition: opacity 0.5s ease;
+}
+
+#inventory-popup.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.flash {
+    animation: flash 0.5s;
+}
+
+@keyframes flash {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
 }

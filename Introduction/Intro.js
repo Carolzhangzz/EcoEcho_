@@ -19,7 +19,6 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 function startGame() {
-  
   console.log("Starting game");
 
   const textContainer = document.getElementById("text-container");
@@ -27,17 +26,23 @@ function startGame() {
   const prevButton = document.getElementById("prev-text-button");
   const languageToggle = document.getElementById("language-toggle");
 
-  languageToggle.textContent = currentLanguage === "en" ? "EN" : "CH";
   languageToggle.addEventListener("click", () => {
     if (currentLanguage === "en") {
-      currentLanguage = "zh";
-      languageToggle.textContent = "CH";
+        currentLanguage = "zh";
+        setLanguage("zh");
+        languageToggle.textContent = "CH";
     } else {
-      currentLanguage = "en";
-      languageToggle.textContent = "EN";
+        currentLanguage = "en";
+        setLanguage("en");
+        languageToggle.textContent = "EN";
     }
     updateScene();
-  });
+});
+
+  // 在初始化时，从 localStorage 获取语言设置
+  currentLanguage = getLanguage();
+  languageToggle.textContent = currentLanguage === "en" ? "EN" : "CH";
+
   const scenes = [
     {
       text: {
@@ -147,6 +152,15 @@ function startGame() {
       background: "./IntroImages/scene2-2.png",
       textStyle: "futuristic",
     },
+    {
+      text: {
+        en: ["You have obtained:","A mysterious key","An old photograph","A cryptic note"],
+        zh: ["你获得了：","一把神秘的钥匙","一张旧照片","一张神秘的便条"],
+      },
+      background: "./IntroImages/black_screen.png", // 确保你有一个黑色背景图片
+      textStyle: "futuristic",
+      isBlackScreen: true // 新添加的属性来标识黑屏场景
+    },
   ];
 
   const displayText = () => {
@@ -172,11 +186,15 @@ function startGame() {
   };
 
   const updateScene = () => {
+
     const scene = scenes[currentScene];
     console.log("Updating scene to index:", currentScene);
     document.body.style.backgroundImage = `url('${scene.background}')`;
     displayText();
 
+    if (scene.isBlackScreen) {
+      window.location.href = "./black_screen.html"; // 移除了 './'
+    }
     // Update character image
     const characterImage = document.getElementById("character-image");
     if (scene.character) {
@@ -191,20 +209,21 @@ function startGame() {
     // 移除音乐相关的代码，因为我们现在使用统一的背景音乐
   };
 
-
   nextButton.addEventListener("click", () => {
     currentTextIndex++;
     if (currentTextIndex >= scenes[currentScene].text[currentLanguage].length) {
       currentScene++;
       if (currentScene >= scenes.length) {
-        currentScene = scenes.length - 1; // Prevent overflow
-        currentTextIndex = scenes[currentScene].text[currentLanguage].length - 1;
+        window.location.href = "./black_screen.html"; // 移除了 './'
       } else {
         currentTextIndex = 0;
+        updateScene();
       }
+    } else {
+      updateScene();
     }
-    updateScene();
   });
+
 
   prevButton.addEventListener("click", () => {
     currentTextIndex--;
@@ -214,7 +233,8 @@ function startGame() {
         currentScene = 0; // Prevent underflow
         currentTextIndex = 0;
       } else {
-        currentTextIndex = scenes[currentScene].text[currentLanguage].length - 1;
+        currentTextIndex =
+          scenes[currentScene].text[currentLanguage].length - 1;
       }
     }
     updateScene();

@@ -13,3 +13,12 @@ musicToggle.addEventListener("click", () => {
     isMuted = true;
   }
 });
+
+document.addEventListener('DOMContentLoaded', () => {
+
+  const backMainButton = document.getElementById('back-main');
+  backMainButton.addEventListener('click', () => {
+      window.location.href = '../Main.html'; // 确保这是正确的主页面路径
+  });
+
+});

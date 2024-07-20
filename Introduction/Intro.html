@@ -5,11 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Memory Recollection - Game</title>
     <link rel="stylesheet" href="./Intro.css">
-    <link rel="stylesheet" href="../globalInventory.css">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="game-container">
+        <button id="back-main">Back to Main Scene</button>
         <img id="character-image" src="" alt="">
         <div id="text-container"></div>
         <div id="button-container">
@@ -24,10 +24,10 @@
                 </svg>
             </button>
         </div>
-        <button id="clear-inventory">清空背包</button>
+        <button id="clear-inventory">Clear the bag</button>
         <div id="inventory-icon">🎒</div>
         <div id="inventory-popup" class="hidden">
-            <h3>背包内容</h3>
+            <h3>Bag Content</h3>
             <ul id="inventory-items"></ul>
         </div>
     </div>
@@ -36,6 +36,6 @@
     <button id="language-toggle">EN/CH</button>
     <script src="./Intro.js"></script>
     <script src="./IntroFunction.js"></script>
-    <script src ="../globalInventory.js"></script>
+    <script src ="../global.js"></script>
 </body>
 </html>

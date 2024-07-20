@@ -5,28 +5,38 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Memory Recollection - The First Scene</title>
     <link rel="stylesheet" href="scene1.css">
-    <link rel="stylesheet" href="../globalInventory.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron&display=swap" rel="stylesheet">
 </head>
 <body>
     <div id="game-container">
+        <button id="back-to-main">Back to Main Scene</button>
+        <button id="music-toggle">🔇</button>
+        <button id="language-toggle">EN</button>
         <div id="dialogue-box">
             <div id="dialogue-text"></div>
             <div id="dialogue-controls">
-                <button id="prev-dialogue">←</button>
-                <button id="next-dialogue">→</button>
+                <button id="prev-dialogue">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M15 19L8 12L15 5" stroke="#5af7ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </button>
+                <button id="next-dialogue">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M9 5L16 12L9 19" stroke="#5af7ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </button>
             </div>
         </div>
-       
         <div id="inventory-icon">🎒</div>
-        <button id="clear-inventory">清空背包</button>
+        <button id="clear-inventory">Clear Bag</button>
         <div id="inventory-popup" class="hidden">
-            <h3>背包内容</h3>
+            <h3>Bag Content</h3>
             <ul id="inventory-items"></ul>
         </div>
-        <button id="back-to-main">Back to Main Scene</button>
     </div>
+    <audio id="bgm" loop></audio>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.3/howler.min.js"></script>
     <script src="scene1.js"></script>
-    <script src="../globalInventory.js"></script>
+    <script src="../global.js"></script>
 </body>
 </html>
