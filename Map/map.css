@@ -1,6 +1,6 @@
 body {
     font-family: Arial, sans-serif;
-    background-color: #000;
+    background-image: url("./map.png");
     background-size: cover;
     background-position: center;
     color: #fff;
@@ -60,18 +60,22 @@ body {
     top: 30%;
     left: 55%;
 }
-.game-container {
+.game-container{
+    position: relative;
+}
+/* .game-container {
     position: relative;
     width: 100%;
     max-width: 800px;
-    background: linear-gradient(135deg, rgba(0, 128, 255, 0.8), rgba(0, 255, 128, 0.8)); /* 蓝绿渐变 */
+    background: linear-gradient(135deg, rgba(0, 128, 255, 0.8), rgba(0, 255, 128, 0.8)); 
     padding: 20px;
     border-radius: 10px 10px 0 0;
     display: flex;
     justify-content: flex-start;
     align-items: flex-start;
     margin-bottom: 0;
-}
+} 
+*/
 
 #text-container {
     margin-left: 100px;

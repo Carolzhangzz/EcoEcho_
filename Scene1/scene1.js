@@ -112,34 +112,44 @@ document.addEventListener("DOMContentLoaded", () => {
   bgm.src = "../Introduction/Music/Immediate Music - From The Light.mp3"; // 设置背景音乐路径
   bgm.volume = 0.5; // 设置音量
 
-  // 尝试自动播放
-  bgm
-    .play()
-    .then(() => {
-      musicToggle.textContent = "🔊";
-    })
-    .catch(() => {
-      // 如果自动播放失败，显示提示
-      const playPrompt = document.createElement("div");
-      playPrompt.textContent = "Click here to start the music";
-      playPrompt.style.position = "fixed";
-      playPrompt.style.top = "50%";
-      playPrompt.style.left = "50%";
-      playPrompt.style.transform = "translate(-50%, -50%)";
-      playPrompt.style.padding = "20px";
-      playPrompt.style.backgroundColor = "rgba(0, 0, 0, 0.7)";
-      playPrompt.style.color = "white";
-      playPrompt.style.cursor = "pointer";
-      playPrompt.style.borderRadius = "10px";
-      playPrompt.style.zIndex = "1000";
+   // Autoplay music on first click 
+   document.body.addEventListener('click', function playAudio() {
+    bgm.play()
+      .then(() => {
+        musicToggle.textContent = "🔊";
+        document.body.removeEventListener('click', playAudio);
+      })
+      .catch(error => console.log("Autoplay still not allowed:", error));
+  }, { once: true });
 
-      playPrompt.addEventListener("click", () => {
-        toggleMusic();
-        document.body.removeChild(playPrompt);
-      });
+      // // 尝试自动播放
+      // bgm
+      //   .play()
+      //   .then(() => {
+      //     musicToggle.textContent = "🔊";
+      //   })
+      //   .catch(() => {
+      //     // 如果自动播放失败，显示提示
+      //     const playPrompt = document.createElement("div");
+      //     playPrompt.textContent = "Click here to start the music";
+      //     playPrompt.style.position = "fixed";
+      //     playPrompt.style.top = "50%";
+      //     playPrompt.style.left = "50%";
+      //     playPrompt.style.transform = "translate(-50%, -50%)";
+      //     playPrompt.style.padding = "20px";
+      //     playPrompt.style.backgroundColor = "rgba(0, 0, 0, 0.7)";
+      //     playPrompt.style.color = "white";
+      //     playPrompt.style.cursor = "pointer";
+      //     playPrompt.style.borderRadius = "10px";
+      //     playPrompt.style.zIndex = "1000";
 
-      document.body.appendChild(playPrompt);
-    });
+      //     playPrompt.addEventListener("click", () => {
+      //       toggleMusic();
+      //       document.body.removeChild(playPrompt);
+      //     });
+
+      //     document.body.appendChild(playPrompt);
+      //   });
 
   updateDialogue();
 });

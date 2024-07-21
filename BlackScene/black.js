@@ -1,144 +1,154 @@
 document.addEventListener("DOMContentLoaded", () => {
-  const dialogueText = document.getElementById("dialogue-text");
-  const prevButton = document.getElementById("prev-dialogue");
-  const nextButton = document.getElementById("next-dialogue");
+  const textContainer = document.getElementById("text-container");
+  const nextSceneButton = document.getElementById("next-scene");
   const backButton = document.getElementById("back-to-main");
   const musicToggle = document.getElementById("music-toggle");
   const languageToggle = document.getElementById("language-toggle");
   const bgm = document.getElementById("bgm");
 
   let currentLanguage = "en";
-  let currentDialogue = 0;
+  let currentLine = 0;
   const dialogues = [
-    {
-      background: "./images/dimly_lit_room.png",
-      textStyle: "futuristic",
-      en: "Welcome to the first scene. You find yourself in a <span class='highlight' data-item='old key' data-image='../items/old-key.png'>dimly lit room</span>.",
-      zh: "欢迎来到第一个场景。你发现自己身处一个<span class='highlight' data-item='old key' data-image='../items/old-key.png'>昏暗的房间</span>。"
-    },
-    {
-      background: "./images/dusty_room.png",
-      textStyle: "futuristic",
-      character: "./npc/Lisa.png",
-      en: "The air is thick with dust, and you can barely make out the shapes of old furniture.",
-      zh: "空气中充满了灰尘，你几乎看不清旧家具的轮廓。"
-    },
-    {
-      background: "./images/table_with_letter.png",
-      textStyle: "futuristic",
-      character: "./npc/Lisa.png",
-      en: "On a nearby table, you notice a <span class='highlight' data-item='mysterious letter' data-image='../items/letter.png'>yellowed piece of paper</span>.",
-      zh: "在附近的桌子上，你注意到一张<span class='highlight' data-item='mysterious letter' data-image='../items/letter.png'>发黄的纸</span>。"
-    },
-    {
-      background: "./images/creaking_floorboards.png",
-      textStyle: "futuristic",
-      character: "./npc/Lisa.png",
-      en: "As you move closer, you hear a faint <span class='highlight' data-item='eerie sound' data-image='../items/sound.png'>creaking sound</span> coming from the floorboards.",
-      zh: "当你靠近时，你听到地板传来一阵微弱的<span class='highlight' data-item='eerie sound' data-image='../items/sound.png'>吱吱声</span>。"
-    }
+      {
+          background: "./images/dimly_lit_room.png",
+          textStyle: "futuristic",
+          en: "You get the <span class='highlight' data-item='old key' data-image='../items/old-key.png'>truth about Kane's story</span>.",
+          zh: "你得到了<span class='highlight' data-item='old key' data-image='../items/old-key.png'>Kane故事的真相</span>。"
+      },
+      {
+          background: "./images/dusty_room.png",
+          textStyle: "futuristic",
+          en: "You find a <span class='highlight' data-item='old key' data-image='../items/old-key.png'>note</span> that reveals Kane's past. You learn that Kane had a good friend named Bob.",
+          zh: "你得到了一个<span class='highlight' data-item='old key' data-image='../items/old-key.png'>便条</span>,上面记载着Kane的过去,你知道了 Kane 有一个好朋友 Bob."
+      },
   ];
-
-
-  function updateDialogue() {
-    const currentDialogueObj = dialogues[currentDialogue];
-    dialogueText.innerHTML = currentDialogueObj[currentLanguage];
-    document.body.style.backgroundImage = `url('${currentDialogueObj.background}')`;
-    document.body.className = currentDialogueObj.textStyle;
-  
-    const characterImage = document.getElementById("character-image");
-    if (characterImage) {
-      characterImage.src = currentDialogueObj.character;
-      characterImage.style.display = "block";
-    }
-  
-    prevButton.disabled = currentDialogue === 0;
-    nextButton.disabled = currentDialogue === dialogues.length - 1;
-  
-    document.querySelectorAll(".highlight").forEach((item) => {
-      item.addEventListener("click", () => showPopup(item));
-    });
+ 
+ 
+  function typeWriter(element, text, callback) {
+    let index = 0;
+    const interval = setInterval(() => {
+      if (index < text.length) {
+        if (text.substr(index, 6) === '<span ') {
+          const endIndex = text.indexOf('</span>', index) + 7;
+          element.innerHTML += text.substring(index, endIndex);
+          index = endIndex;
+        } else {
+          element.innerHTML += text.charAt(index);
+          index++;
+        }
+      } else {
+        clearInterval(interval);
+        if (callback) setTimeout(callback, 1000);
+      }
+    }, 50);
   }
 
-  prevButton.addEventListener("click", () => {
-    if (currentDialogue > 0) {
-      currentDialogue--;
-      updateDialogue();
-    }
-  });
+  function parseText(text) {
+    const parts = [];
+    let lastIndex = 0;
+    const regex = /<span class='highlight' data-item='([^']*)' data-image='([^']*)'>(.*?)<\/span>/g;
+    let match;
 
-  nextButton.addEventListener("click", () => {
-    if (currentDialogue < dialogues.length - 1) {
-      currentDialogue++;
-      updateDialogue();
+    while ((match = regex.exec(text)) !== null) {
+      if (match.index > lastIndex) {
+        parts.push({ type: 'text', content: text.slice(lastIndex, match.index) });
+      }
+      parts.push({
+        type: 'highlight',
+        content: match[3],
+        item: match[1],
+        image: match[2]
+      });
+      lastIndex = regex.lastIndex;
     }
-  });
+
+    if (lastIndex < text.length) {
+      parts.push({ type: 'text', content: text.slice(lastIndex) });
+    }
+
+    return parts;
+  }
+  function updateDialogue() {
+    if (currentLine < dialogues.length) {
+      const currentDialogueObj = dialogues[currentLine];
+      
+      const dialogueElement = document.createElement('div');
+      dialogueElement.className = 'dialogue';
+      textContainer.appendChild(dialogueElement);
+      
+      document.body.style.backgroundImage = `url('${currentDialogueObj.background}')`;
+      document.body.className = currentDialogueObj.textStyle;
+
+      typeWriter(dialogueElement, currentDialogueObj[currentLanguage], () => {
+        // 对话结束后，自动添加高亮物品到背包
+        const highlights = dialogueElement.querySelectorAll('.highlight');
+        highlights.forEach(item => {
+          addToInventory(item.dataset.item, item.dataset.image);
+        });
+
+        // 为高亮文本添加点击事件
+        highlights.forEach(item => {
+          item.addEventListener('click', () => showPopup(item));
+        });
+
+        currentLine++;
+        setTimeout(updateDialogue, 1000);
+      });
+    } else {
+      nextSceneButton.style.display = "block";
+    }
+  }
+
+  function goToNextScene() {
+    // 跳转到下一个场景的代码
+    window.location.href = "../Map/map.html";
+  }
+
+  nextSceneButton.addEventListener("click", goToNextScene);
+  nextSceneButton.style.display = "none";
 
   backButton.addEventListener("click", () => {
-    window.location.href = "../Map/map.html";
+      window.location.href = "../Map/map.html";
   });
 
+
   function toggleMusic() {
-    if (bgm.paused) {
-      bgm.play();
-      musicToggle.textContent = "🔊";
-    } else {
-      bgm.pause();
-      musicToggle.textContent = "🔇";
-    }
+      if (bgm.paused) {
+          bgm.play();
+          musicToggle.textContent = "🔊";
+      } else {
+          bgm.pause();
+          musicToggle.textContent = "🔇";
+      }
   }
 
   musicToggle.addEventListener("click", toggleMusic);
 
   languageToggle.addEventListener("click", () => {
-    if (currentLanguage === "en") {
-      currentLanguage = "zh";
-      setLanguage("zh");
-      languageToggle.textContent = "CH";
-    } else {
-      currentLanguage = "en";
-      setLanguage("en");
-      languageToggle.textContent = "EN";
-    }
-    updateDialogue(); // 添加这行来更新对话
+      currentLanguage = currentLanguage === "en" ? "zh" : "en";
+      setLanguage(currentLanguage);
+      languageToggle.textContent = currentLanguage === "en" ? "EN" : "CH";
+      currentLine = 0;
+      updateDialogue();
   });
 
-
-  // 在初始化时，从 localStorage 获取语言设置
+  // Initialize language
   currentLanguage = getLanguage();
   languageToggle.textContent = currentLanguage === "en" ? "EN" : "CH";
 
-  bgm.src = "../Introduction/Music/Immediate Music - From The Light.mp3"; // 设置背景音乐路径
-  bgm.volume = 0.5; // 设置音量
+  // Set up background music
+  bgm.src = "../Introduction/Music/Immediate Music - From The Light.mp3";
+  bgm.volume = 0.5;
 
-  // 尝试自动播放
-  bgm
-    .play()
-    .then(() => {
-      musicToggle.textContent = "🔊";
-    })
-    .catch(() => {
-      // 如果自动播放失败，显示提示
-      const playPrompt = document.createElement("div");
-      playPrompt.textContent = "Click here to start the music";
-      playPrompt.style.position = "fixed";
-      playPrompt.style.top = "50%";
-      playPrompt.style.left = "50%";
-      playPrompt.style.transform = "translate(-50%, -50%)";
-      playPrompt.style.padding = "20px";
-      playPrompt.style.backgroundColor = "rgba(0, 0, 0, 0.7)";
-      playPrompt.style.color = "white";
-      playPrompt.style.cursor = "pointer";
-      playPrompt.style.borderRadius = "10px";
-      playPrompt.style.zIndex = "1000";
-
-      playPrompt.addEventListener("click", () => {
-        toggleMusic();
-        document.body.removeChild(playPrompt);
-      });
-
-      document.body.appendChild(playPrompt);
-    });
+  // Autoplay music on first click 
+  document.body.addEventListener('click', function playAudio() {
+    bgm.play()
+      .then(() => {
+        musicToggle.textContent = "🔊";
+        document.body.removeEventListener('click', playAudio);
+      })
+      .catch(error => console.log("Autoplay still not allowed:", error));
+  }, { once: true });
 
   updateDialogue();
 });
