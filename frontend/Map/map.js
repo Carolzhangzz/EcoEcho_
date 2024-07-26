@@ -11,7 +11,13 @@ document.addEventListener("DOMContentLoaded", () => {
     const scene1 = document.getElementById('scene1');
     if (scene1) {
         scene1.addEventListener('click', () => {
-            window.location.href = '../Scene1/scene1.html';
+            window.location.href = '../Lisa/Lisa.html';
+        });
+    }
+    const scene2 = document.getElementById('scene2'); 
+    if (scene2) {
+        scene2.addEventListener('click', () => {
+            window.location.href = '../Bob/Bob.html';
         });
     }
 

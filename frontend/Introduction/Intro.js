@@ -11,12 +11,14 @@ document.addEventListener("DOMContentLoaded", () => {
     console.log("Game container found");
     bgm = document.getElementById("bgm");
     bgm.loop = true; // Let the music loop
-    bgm.src = "./Music/Immediate Music - From The Light.mp3"; // 设置统一的背景音乐
+    bgm.src = "./Music/Save the World.mp3"; // 设置统一的背景音乐
+    bgm.volume = 0.5; // 设置音量为 50%
     startGame();
   } else {
     console.log("Game container not found");
   }
 });
+
 
 function startGame() {
   console.log("Starting game");
@@ -28,16 +30,16 @@ function startGame() {
 
   languageToggle.addEventListener("click", () => {
     if (currentLanguage === "en") {
-        currentLanguage = "zh";
-        setLanguage("zh");
-        languageToggle.textContent = "CH";
+      currentLanguage = "zh";
+      setLanguage("zh");
+      languageToggle.textContent = "CH";
     } else {
-        currentLanguage = "en";
-        setLanguage("en");
-        languageToggle.textContent = "EN";
+      currentLanguage = "en";
+      setLanguage("en");
+      languageToggle.textContent = "EN";
     }
     updateScene();
-});
+  });
 
   // 在初始化时，从 localStorage 获取语言设置
   currentLanguage = getLanguage();
@@ -46,120 +48,214 @@ function startGame() {
   const scenes = [
     {
       text: {
-        en: ["Welcome to the future."],
-        zh: ["欢迎来到未来。"],
+        en: [
+          "Welcome to Earth in 2056, an era where technology and sustainability blend seamlessly.",
+          "Advanced AI and automation systems have revolutionized human life.",
+          "Smart assistants are widely used in education and healthcare, helping people navigate daily challenges more efficiently.",
+          "Global transportation has been fully automated.",
+          "Public transit systems, including underground high-speed trains and aerial taxis, make travel quick and convenient.",
+          "In this world, environmental protection and sustainability are at the forefront.",
+          "Climate engineering technologies help control climate change, and cities are filled with green spaces and eco-friendly buildings.",
+          "International cooperation has reached unprecedented levels.",
+          "The United Nations plays a crucial role in setting standards for technology ethics and environmental protection.",
+          "In this hopeful future, Earth is moving toward a brighter and more sustainable path.",
+        ],
+        zh: [
+          "欢迎来到2056年的地球,一个科技与可持续发展完美融合的新时代。",
+          "人工智能和先进的自动化系统彻底改变了人类的生活方式。",
+          "智能助手广泛应用于教育和医疗领域，帮助人们更高效地应对生活中的挑战。",
+          "全球交通系统已经实现全面自动化。",
+          "地球上的公共交通包括地下高速列车和空中出租车，让人们的出行变得快捷而方便。",
+        ],
       },
       background: "./IntroImages/scene1.1-1.png",
       textStyle: "futuristic",
+      // character: "./npc/character1.png",
     },
     {
       text: {
         en: [
-          "A close-up view of a bustling central square in a futuristic city in the year 2056.",
-          "Towering skyscrapers with shiny metal and glass exteriors are prominently visible.",
-          "The streets and buildings are adorned with clean energy K power devices, such as transparent solar panels and wind turbines, seen up close.",
-          "Sleek flying cars and self-driving vehicles are in the foreground.",
-          "Large holographic billboards display the latest technology products and city news.",
-          "The square is lined with lush green plants, creating a modern urban garden, seen from a closer perspective.",
-          "The overall atmosphere is bright and busy, with a clear blue sky and futuristic elements in the scene. Sci-Fi Style.",
+          "In this world, environmental protection and sustainability are at the forefront.",
+          "Climate engineering technologies help control climate change, and cities are filled with green spaces and eco-friendly buildings.",
+          "International cooperation has reached unprecedented levels.",
+          "The United Nations plays a crucial role in setting standards for technology ethics and environmental protection.",
+          "In this hopeful future, Earth is moving toward a brighter and more sustainable path.",
         ],
         zh: [
-          "一个繁忙的中央广场的特写视图，位于2056年的未来城市。",
-          "高耸的摩天大楼，闪亮的金属和玻璃外墙醒目可见。",
-          "街道和建筑物装饰着清洁能源K电源装置，如透明太阳能电池板和风力涡轮机，近距离看。",
-          "时尚的飞行汽车和自动驾驶汽车在前景中。",
-          "大型全息广告牌展示最新的技术产品和城市新闻。",
-          "广场上种满了郁郁葱葱的绿色植物，形成现代城市花园，从更近的角度看。",
-          "整体氛围明亮繁忙，天空湛蓝，场景中有未来元素。科幻风格。",
+          "在这个世界中，环保和可持续发展成为核心议题。",
+          "气候工程技术帮助人类控制气候变化，城市中到处都是绿色空间和生态建筑。",
+          "国际合作也达到了前所未有的高度。",
+          "联合国在制定科技伦理和环境保护标准方面扮演着重要角色。",
+          "在这个充满希望的未来，地球正朝着一个更加美好的方向前进。",
         ],
       },
       background: "./IntroImages/scene1.1-2.png",
       textStyle: "futuristic",
-
-      character: "./npc/character1.png",
     },
     {
       text: {
         en: [
-          "A private high-tech office belonging to KI, with a single desk filled with advanced scientific instruments and equipment.",
-          "A holographic screen on the desk displays various data and research progress.",
-          "On the desk, there is a photo of KI’s father, and in one corner of the office, there are some mementos, indicating KI's fond memories of his father.",
-          "The desk also features a small model or device representing the clean energy source K, symbolizing KI’s field of research.",
-          "The office is tidy and modern, with a serene and focused atmosphere.",
-          "The overall setting is bright, with ample lighting during the day, reflecting KI's dedication to his work while subtly conveying his longing for his father.",
-          "No characters are present in the scene. Sci-Fi Style.",
+          "The discovery and development of a sustainable energy source called K have fundamentally transformed human society.",
+          "As a clean energy source from Mars, K energy effectively resolved Earth's energy crisis and significantly reduced dependence on traditional polluting energy sources.",
+          "Its high efficiency and environmental friendliness quickly made it the primary global energy source, driving progress across various sectors and bringing unprecedented prosperity and advancement to humanity.",
         ],
         zh: [
-          "一个高科技的私人办公室，属于KI，桌子上摆满了先进的科学仪器和设备。",
-          "桌上的全息屏幕显示各种数据和研究进展。",
-          "桌子上有KI父亲的照片，办公室的一角有一些纪念品，表明KI对父亲的深情回忆。",
-          "桌子上还有一个小模型或装置，代表清洁能源K，象征着KI的研究领域。",
-          "办公室整洁现代，气氛宁静专注。",
-          "整体环境明亮，白天有充足的光线，反映出KI对工作的投入，同时隐约传达出他对父亲的思念。",
-          "场景中没有角色。科幻风格。",
+          "一种叫K的可持续能源的发现和开发彻底改变了人类社会。",
+          "作为一种来自火星的清洁能源,K能源不仅有效解决了地球的能源危机,还显著减少了对传统污染性能源的依赖。",
+          "它的高效能和环保特性使其迅速成为全球主要能源来源，推动了各个领域的发展，为人类社会带来了前所未有的繁荣与进步。",
         ],
       },
-      background: "./IntroImages/scene1.2-1.png",
-      textStyle: "futuristic",
-    },
-    {
-      text: {
-        en: ["None."],
-        zh: ["无。"],
-      },
-      background: "./IntroImages/scene1.2-2.png",
+      background: "./IntroImages/scene1.2.png",
       textStyle: "futuristic",
     },
     {
       text: {
         en: [
-          "A futuristic research facility or exploration base, showcasing the discovery of clean energy source K.",
-          "The scene features advanced research equipment and a high-tech lab setup.",
-          "The discovery site includes sampling devices and instruments, set against the backdrop of a Martian surface base.",
-          "Prominently displayed is a sample or device representing clean energy source K, highlighting its significance.",
-          "Holographic screens on the walls illustrate the impact of clean energy K on Earth's development, such as reducing pollution and improving energy efficiency.",
-          "No characters are present in the scene. Sci-Fi Style.",
+          "In the year 2056, KI is a promising young scientist, only 26 years old.",
+          "He has made a name for himself in the scientific community, focusing on quantum physics and the study of time machines.",
         ],
         zh: [
-          "一个未来的研究设施或探测基地，展示了清洁能源K的发现。",
-          "场景中展示了先进的研究设备和高科技实验室设置。",
-          "发现现场包括采样设备和仪器，背景是火星表面基地。",
-          "突出的展示了一个样本或装置，代表清洁能源K，突显其重要性。",
-          "墙上的全息屏幕展示了清洁能源K对地球发展的影响，如减少污染和提高能源效率。",
-          "场景中没有角色。科幻风格。",
+          "2056年的地球上,KI是一位年轻有为的科学家,年仅26岁。",
+          "他在科学界崭露头角，专注于量子物理和时间机器的研究。",
         ],
       },
-      background: "./IntroImages/scene2-1.png",
+      background: "./IntroImages/scene1.3-1.png",
       textStyle: "futuristic",
     },
     {
       text: {
         en: [
-          "A close-up view of the research equipment and the clean energy source K, with intricate details visible.",
-          "Holographic displays on the equipment show the scientific data and analysis results.",
-          "The research facility or exploration base is bustling with activity, with scientists working and robots assisting in the tasks.",
-          "The environment is bright and well-lit, reflecting the advanced technology and the significance of the discovery.",
-          "Sci-Fi Style.",
+          "KI's passion for science and exploration stems from his father's teachings.",
+          "His father, an astronaut scientist, instilled in him a deep curiosity and love for the unknown universe from a young age.",
         ],
         zh: [
-          "研究设备和清洁能源K的特写视图，细节清晰可见。",
-          "设备上的全息显示屏显示科学数据和分析结果。",
-          "研究设施或探测基地繁忙，科学家们在工作，机器人协助任务。",
-          "环境明亮且光线充足，反映了先进技术和发现的重要性。",
-          "科幻风格。",
+          "KI对科学的热情和探索精神源于他父亲的教导。",
+          "他的父亲是一位宇宙科学家,从小就向KI灌输对未知宇宙的好奇和探索的热情。",
         ],
       },
-      background: "./IntroImages/scene2-2.png",
+      background: "./IntroImages/scene1.3-2.png",
       textStyle: "futuristic",
     },
     {
       text: {
-        en: ["You have obtained:","A mysterious key","An old photograph","A cryptic note"],
-        zh: ["你获得了：","一把神秘的钥匙","一张旧照片","一张神秘的便条"],
+        en: [
+          "KI's father was not only a brilliant scientist but also led the early exploration and research into the clean energy source known as K on Mars.",
+          "This mysterious energy had the potential to revolutionize Earth's energy landscape, offering a sustainable solution.",
+          "KI's father's pioneering work unveiled the initial secrets of K energy, making him a legend in the scientific community.",
+        ],
+        zh: [
+          "KI的父亲不仅是一位杰出的科学家,还主导了人类对火星上清洁能源K的早期探索和研究。",
+          "这种神秘能源有潜力彻底改变地球的能源结构，为人类提供可持续的能源解决方案。",
+          "KI的父亲带领团队揭开了K能源的初步奥秘,这一壮举让他成为科学界的传奇人物。",
+        ],
+      },
+      background: "./IntroImages/scene2.1.png",
+      textStyle: "futuristic",
+    },
+    {
+      text: {
+        en: [
+          "Tragically, in 2036, during a mission to Mars to further study K energy, KI's father died.",
+          "The mission, initially full of hope, aimed to fully understand the potential of K energy.",
+          "However, the mission's failure and his father's death were kept secret by the government, fearing public panic and backlash.",
+          "They forced KI's family to keep the truth hidden.",
+        ],
+        zh: [
+          "然而,在2036年一次深入火星的任务中,KI的父亲不幸殉职。",
+          "那次任务本充满希望,目标是深入了解K能源的全部潜力。",
+          "但任务的失败和父亲的牺牲却被政府所隐瞒，担心真相曝光会引发公众恐慌和舆论压力。",
+          "他们强迫KI一家保守这个秘密。",
+        ],
+      },
+      background: "./IntroImages/scene2.2.png",
+      textStyle: "futuristic",
+    },
+    {
+      text: {
+        en: [
+          "KI always harbors deep memories of his father. Whenever he feels nostalgic, he often visits his father's study, a room filled with cherished memories.",
+          "In this space, KI can almost feel his father's presence, as if he is still there reading books and jotting down research notes.",
+          "This study is not only where his father worked but also a connection to KI's heart, holding countless warm and unforgettable memories.",
+          "One day, while sorting through his father's study, KI unexpectedly discovered a key to the old garage.",
+          "This key reminded him of his father's beloved old car, which held many shared memories.",
+        ],
+        zh: [
+          "KI一直对父亲怀有深深的怀念。每当思念涌上心头,他常常来到父亲的书房，这个充满回忆的地方。",
+          "KI仿佛还能感受到父亲的存在,似乎他依然在那里阅读书籍和记录研究笔记。",
+          "这间书房不仅是KI父亲的工作空间,更是KI心中与父亲连接的纽带,承载着无数温暖而难忘的回忆。",
+          "一天,KI在整理父亲的书房时,意外发现了一把通往旧车库的钥匙。",
+          "这把钥匙让他想起了父亲最爱的那辆老车，承载着他们许多共同的记忆。",
+        ],
+      },
+      background: "./IntroImages/scene3.1.png",
+      textStyle: "futuristic",
+    },
+    {
+      text: {
+        en: [
+          "Using the key, KI returned to his old family home and unlocked the long-forgotten garage.",
+          "As the doors creaked open, an old-fashioned car came into view, covered in dust.",
+        ],
+        zh: [
+          "利用这把钥匙,KI回到了他的故居,打开了尘封已久的车库。",
+          "随着门吱呀一声打开，一辆老式的汽车映入眼帘，覆盖着一层尘土。",
+        ],
+      },
+      background: "./IntroImages/scene3.2-1.png",
+      textStyle: "futuristic",
+    },
+    {
+      text: {
+        en: [
+          "This car, a cherished piece of his childhood, held countless memories of times spent with his father.",
+        ],
+        zh: ["这辆车承载着他童年的无数记忆，是他与父亲共度时光的珍贵见证。"],
+      },
+      background: "./IntroImages/scene3.2-2.png",
+      textStyle: "futuristic",
+    },
+    {
+      text: {
+        en: [
+          "They had spent many wonderful moments together, driving to various places and exploring the beauty of nature.",
+          "His father always patiently explained the scientific wonders of the world as they traveled.",
+          "Whether on winding mountain roads or by the calm lakeside, his father showed KI the vastness and beauty of the world.",
+        ],
+        zh: [
+          "他们曾经一起驾车去过很多地方，探索大自然的美景，父亲总是耐心地给他讲解沿途的科学知识。",
+          "无论是山间的公路还是湖边的宁静,父亲总是让KI感受到世界的广阔和美丽。",
+        ],
+      },
+      background: "./IntroImages/scene3.3-1.png",
+      textStyle: "futuristic",
+    },
+    {
+      text: {
+        en: [
+          "On those many warm afternoons, they sang, talked, and laughed together, filling the car with joy.",
+          "This car became a special bond between them, holding the precious moments and the deep connection they shared as father and son.",
+        ],
+        zh: [
+          "在那些无数个温馨的下午，他们一起唱歌、聊天，车内充满了欢声笑语。",
+          "这辆车成了他们之间的一个特殊联结，记载着那些珍贵的时光和父子间深厚的感情。",
+        ],
+      },
+      background: "./IntroImages/scene3.3-2.png",
+      textStyle: "futuristic",
+    },
+    {
+      text: {
+        en: [
+          "You have obtained:",
+          "A mysterious key",
+          "An old photograph",
+          "A cryptic note",
+        ],
+        zh: ["你获得了：", "一把神秘的钥匙", "一张旧照片", "一张神秘的便条"],
       },
       background: "./IntroImages/black_screen.png", // 确保你有一个黑色背景图片
       textStyle: "futuristic",
-      isBlackScreen: true // 新添加的属性来标识黑屏场景
+      isBlackScreen: true, // 新添加的属性来标识黑屏场景
     },
   ];
 
@@ -186,7 +282,6 @@ function startGame() {
   };
 
   const updateScene = () => {
-
     const scene = scenes[currentScene];
     console.log("Updating scene to index:", currentScene);
     document.body.style.backgroundImage = `url('${scene.background}')`;
@@ -214,7 +309,7 @@ function startGame() {
     if (currentTextIndex >= scenes[currentScene].text[currentLanguage].length) {
       currentScene++;
       if (currentScene >= scenes.length) {
-        window.location.href = "./black_screen.html"; // 移除了 './'
+        updateScene();
       } else {
         currentTextIndex = 0;
         updateScene();
@@ -223,7 +318,6 @@ function startGame() {
       updateScene();
     }
   });
-
 
   prevButton.addEventListener("click", () => {
     currentTextIndex--;

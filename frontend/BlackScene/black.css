@@ -61,6 +61,16 @@ body {
   text-shadow: 0 0 15px #ff00ff;
 }
 
+.popup {
+  position: absolute;
+  z-index: 1000;
+}
+
+.popup-item {
+  width: 50px; /* 调整这个值来改变图片大小 */
+  height: 50px; /* 调整这个值来改变图片大小 */
+  object-fit: contain; /* 保持图片比例 */
+}
 /* 其他样式保持不变 */
 
 #next-scene {

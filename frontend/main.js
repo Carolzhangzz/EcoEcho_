@@ -1,6 +1,6 @@
 // 背景音乐
 var bgm = new Howl({
-    src: ['path/to/your/background-music.mp3'],
+    src: ['./Immediate Music - From The Light.mp3'],
     loop: true,
     volume: 0.5
 });
@@ -19,7 +19,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const scene1 = document.getElementById('scene1');
     
     scene1.addEventListener('click', () => {
-        window.location.href = './Scene1/scene1.html';
+        window.location.href = './Lisa/Lisa.html';
+    });
+
+    const scene2 = document.getElementById('scene2'); 
+    scene2.addEventListener('click', () => {
+        window.location.href = './Bob/Bob.html';
     });
 
     // 其他现有的代码...

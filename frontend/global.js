@@ -9,15 +9,26 @@ function clearInventory() {
   loadInventory();
 }
 
+function resetGame() {
+  localStorage.removeItem('gameProgress');
+  for (let key in gameProgress) {
+    if (gameProgress.hasOwnProperty(key)) {
+      gameProgress[key] = false;
+    }
+  }
+  // 重新保存重置后的进度到 localStorage
+   localStorage.setItem('gameProgress', JSON.stringify(gameProgress));
+}
 // 确保清空背包按钮正常工作
 document.getElementById("clear-inventory").addEventListener("click", () => {
   if (
     confirm(
-      "Are you sure you want to clear your bag? This will reset your game progress."
+      "Are you sure you want to clear your bag? This will reset your game progress.你确定你要清空背包吗? 这会重置你的游戏进度。",
     )
   ) {
     clearInventory();
-    alert("Your bag has been cleared. You can start the game anew.");
+    resetGame();
+    alert("Your bag has been cleared. You can restart the game now.你的背包被清空了, 你可以重新开始游戏。");
   }
 });
 
@@ -76,19 +87,17 @@ function showPopup(item) {
 
   popup.style.left = `${itemRect.left + window.scrollX}px`;
   popup.style.top = `${itemRect.top + window.scrollY}px`;
-  popup.style.width = "50px";
-  popup.style.height = "50px";
   popup.style.position = "absolute";
   popup.style.transition = "transform 1s ease, opacity 1s ease";
 
   setTimeout(() => {
     popup.style.transform = `translate(${
-        iconRect.left - itemRect.left + (iconRect.width / 2 - 15)  // 调整为新的尺寸的一半
+      iconRect.left - itemRect.left + (iconRect.width / 2 - 25)
     }px, ${
-        iconRect.top - itemRect.top + (iconRect.height / 2 - 15)   // 调整为新的尺寸的一半
-    }px) scale(0.1)`;
+      iconRect.top - itemRect.top + (iconRect.height / 2 - 25)
+    }px) scale(0.5)`;
     popup.style.opacity = "0";
-}, 100);
+  }, 100);
 
   popup.addEventListener("transitionend", () => {
     if (popup.parentElement) {
