@@ -3,17 +3,12 @@ let gameProgress = {
   talkedToNPC2: false,
 };
 
+let bgm;
+let currentNpcName = "Lisa"; // NPC 名字
+let intentExpressed = false; // 是否表达了特定的意图
+
 document.addEventListener("DOMContentLoaded", () => {
   console.log("Scene Lisa loaded");
-
-  // 从 localStorage 加载游戏进度
-  const savedProgress = JSON.parse(localStorage.getItem("gameProgress"));
-  if (savedProgress) {
-    gameProgress = savedProgress;
-    console.log("Loaded game progress from localStorage:", gameProgress);
-  } else {
-    console.log("No saved game progress found in localStorage.");
-  }
 
   if (document.querySelector(".game-container")) {
     console.log("Game container found");
@@ -48,7 +43,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const userMessage = userInput.value.trim();
     if (userMessage) {
       sendMessageToNPC(userMessage);
-
       userInput.value = "";
     }
   });
@@ -91,6 +85,7 @@ const scenes = [
   },
 ];
 
+
 function startGame() {
   console.log("Starting game");
 
@@ -106,7 +101,18 @@ function startGame() {
 
     const scene = scenes[currentScene];
     const textLines = scene.text[currentLanguage];
+
+    if (!textLines) {
+      console.error(`Text lines not found for language: ${currentLanguage}`);
+      return;
+    }
+
     const currentLine = textLines[currentTextIndex];
+    if (!currentLine) {
+      console.error(`Text line not found at index: ${currentTextIndex}`);
+      return;
+    }
+
     const paragraph = document.createElement("p");
     paragraph.innerHTML = currentLine; // 使用 innerHTML 而不是 textContent
     textContainer.appendChild(paragraph);
@@ -150,7 +156,6 @@ function startGame() {
       console.log("All scenes completed, talkedToLisa set to true.");
       localStorage.setItem("gameProgress", JSON.stringify(gameProgress)); // 保存到 localStorage
     }
-    
   };
 
   nextButton.addEventListener("click", () => {
@@ -182,11 +187,63 @@ function startGame() {
   updateScene();
 }
 
-// 向 NPC 发送消息并获取回复
+const intent = "Kane is KI's Father";
+
+// 检查用户是否表达了特定的意图
+async function Check(intent, message) {
+  try {
+
+    const prompt = `Analyze the following user message in the context of a conversation about family relationships:
+
+    User Message: "${message}"
+    
+    Determine if the user has expressed or implied the following intent, even if it's subtle or indirect:
+    Intent: "${intent}"
+    
+    Consider the following:
+    1. Direct statements about the relationship
+    2. Indirect references or hints
+    3. Questions that might imply knowledge of the relationship
+    4. Any context clues that suggest the user is aware of this relationship
+    
+    If the intent is expressed or strongly implied in any way, respond with "true".
+    If there's no clear indication of the intent, respond with "false".
+    
+    Respond ONLY with "true" or "false", no other words or explanations.`;
+    
+    console.log("Using translation prompt:", prompt);
+
+    const response = await fetch("/generate", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ prompt }),
+    });
+    if (!response.ok) {
+      throw new Error("Network response was not ok");
+    }
+
+    const data = await response.json();
+    console.log("Check Response:", data);
+    // 提取 data 属性并进行判断
+    return data.data === "true";
+  } catch (error) {
+    console.error("Error in Check:", error);
+    return false;
+  }
+}
 
 // 向 NPC 发送消息并获取回复
 async function sendMessageToNPC(message) {
   bgm.play(); // 播放背景音乐
+
+  // 检查用户是否表达了特定的意图, 如果没有，继续检查
+  if (!intentExpressed) {
+    intentExpressed = await Check(intent, message);
+    console.log("Intent expressed:", intentExpressed);
+  }
+
   // 生成对话提示
   console.log("Sending message to NPC:", message);
   const textContainer = document.getElementById("text-container");
@@ -226,16 +283,16 @@ async function sendMessageToNPC(message) {
 
     // Check the current language and generate response accordingly
     const languageToggle = document.getElementById("language-toggle");
-    let currentLanguage = "EN"; // Default to English
 
     if (languageToggle) {
-      currentLanguage = languageToggle.textContent.trim();
+      currentLanguage = languageToggle.textContent.trim().toLowerCase() === "中文" ? "zh" : "en";
     } else {
       console.warn("Language toggle button not found. Defaulting to English.");
+      currentLanguage = "en";
     }
 
     // Check for special conditions
-    if (checkSpecialCondition(npcReply, message)) {
+    if (checkSpecialCondition()) {
       startSceneDialogue();
       startGame();
       return;
@@ -310,9 +367,14 @@ function displayNPCReply(reply, audioReply) {
   }, 50);
 }
 
-function checkSpecialCondition(npcReply, userMessage) {
-  // 检查特定条件，例如用户消息包含特定关键词
-  return userMessage.includes("nihao") || npcReply.includes("start the scene");
+function checkSpecialCondition() {
+  console.log(
+    "Checking special condition:",
+    intentExpressed,
+    usedItems[currentNpcName]
+  );
+  // 这里我们检查用户是否表达了特定的意图 "Kane is K's Father" 以及 用户是否把物品分享给了 NPC
+  return intentExpressed && usedItems[currentNpcName];
 }
 
 function startSceneDialogue() {
@@ -321,7 +383,6 @@ function startSceneDialogue() {
   document.getElementById("prev-text-button").style.display = "inline-block";
   // 禁用用户输入
   document.getElementById("user-input-container").style.display = "none";
-  startGame();
 }
 
 document.addEventListener("DOMContentLoaded", () => {

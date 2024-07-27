@@ -1,12 +1,34 @@
-// 全局背包系统
-const inventoryIcon = document.getElementById("inventory-icon");
-const inventoryPopup = document.getElementById("inventory-popup");
-const inventoryItems = document.getElementById("inventory-items");
+let usedItems = {};
 
-// 清空背包
-function clearInventory() {
-  localStorage.removeItem("gameInventory");
-  loadInventory();
+ // 从 localStorage 加载游戏进度
+ const savedProgress = JSON.parse(localStorage.getItem("gameProgress"));
+ if (savedProgress) {
+   gameProgress = savedProgress;
+   console.log("Loaded game progress from localStorage:", gameProgress);
+ } else {
+   console.log("No saved game progress found in localStorage.");
+ }
+
+ // 从 localStorage 加载 usedItems
+ const savedUsedItems = JSON.parse(localStorage.getItem("usedItems"));
+ if (savedUsedItems) {
+   usedItems = savedUsedItems;
+   console.log("Loaded used items from localStorage:", usedItems);
+ } else {
+   console.log("No saved used items found in localStorage.");
+ }
+
+// 从 localStorage 加载背包内容
+function loadInventory() {
+  const inventory = JSON.parse(localStorage.getItem("gameInventory")) || [];
+  inventoryItems.innerHTML = "";
+  inventory.forEach((item) => {
+    const li = document.createElement("li");
+    li.innerHTML = `<img src="${item.image}" alt="${item.name}" style="width: 30px; height: 30px;"> ${item.name}`;
+    li.style.cursor = "pointer";
+    li.addEventListener("click", () => promptShareItem(item, currentNpcName)); // 使用全局变量 currentNpcName
+    inventoryItems.appendChild(li);
+  });
 }
 
 // 重置游戏进度
@@ -17,8 +39,42 @@ function resetGame() {
       gameProgress[key] = false;
     }
   }
-  // 重新保存重置后的进度到 localStorage
   localStorage.setItem('gameProgress', JSON.stringify(gameProgress));
+
+  // 重置 usedItems 对象
+  usedItems = {};
+  localStorage.setItem('usedItems', JSON.stringify(usedItems));
+}
+
+
+// 全局背包系统
+const inventoryIcon = document.getElementById("inventory-icon");
+const inventoryPopup = document.getElementById("inventory-popup");
+const inventoryItems = document.getElementById("inventory-items");
+
+// 提示是否要分享物品
+function promptShareItem(item, npcName) {
+  if (confirm(`Do you want to share this ${item.name} with ${npcName}?`)) {
+    usedItems[npcName] = true;
+    localStorage.setItem('usedItems', JSON.stringify(usedItems));
+    alert(`${item.name} has been shared with ${npcName}.`);
+    console.log("Used items:", usedItems);
+    removeFromInventory(item.name);
+  }
+}
+
+// 从背包中移除物品
+function removeFromInventory(itemName) {
+  let inventory = JSON.parse(localStorage.getItem("gameInventory")) || [];
+  inventory = inventory.filter(item => item.name !== itemName);
+  localStorage.setItem("gameInventory", JSON.stringify(inventory));
+  loadInventory();
+}
+
+// 清空背包
+function clearInventory() {
+  localStorage.removeItem("gameInventory");
+  loadInventory();
 }
 
 // 确保清空背包按钮正常工作
@@ -33,17 +89,6 @@ document.getElementById("clear-inventory").addEventListener("click", () => {
     alert("Your bag has been cleared. You can restart the game now.你的背包被清空了, 你可以重新开始游戏。");
   }
 });
-
-// 从 localStorage 加载背包内容
-function loadInventory() {
-  const inventory = JSON.parse(localStorage.getItem("gameInventory")) || [];
-  inventoryItems.innerHTML = "";
-  inventory.forEach((item) => {
-    const li = document.createElement("li");
-    li.innerHTML = `<img src="${item.image}" alt="${item.name}" style="width: 30px; height: 30px;"> ${item.name}`;
-    inventoryItems.appendChild(li);
-  });
-}
 
 // 添加物品到背包
 function addToInventory(item, itemImage) {
@@ -179,4 +224,3 @@ languageToggle.addEventListener("click", () => {
 // 在初始化时，从 localStorage 获取语言设置
 currentLanguage = getLanguage();
 languageToggle.textContent = currentLanguage === "en" ? "EN" : "CH";
-
