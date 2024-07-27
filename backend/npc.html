@@ -37,12 +37,11 @@
             const prompt = document.getElementById('prompt').value;
             const responseDiv = document.getElementById('response');
             responseDiv.textContent = 'Generating...';
-            const charID = '4d2ef564-4b89-11ef-ad21-42010a7be011'; // 替换为你的角色 ID
 
             const requestData = {
                 prompt: prompt,
+                charID: '4d2ef564-4b89-11ef-ad21-42010a7be011', // 替换为你的角色 ID
                 sessionID: sessionID,
-                charID: charID,
                 voiceResponse: true
             };
 

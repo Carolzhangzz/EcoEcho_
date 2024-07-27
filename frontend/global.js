@@ -141,3 +141,40 @@ function getLanguage() {
 // 导出这些函数
 window.setLanguage = setLanguage;
 window.getLanguage = getLanguage;
+
+
+// Music toggle logic
+const musicToggle = document.getElementById("music-toggle");
+let isMuted = false;
+
+musicToggle.addEventListener("click", () => {
+  if (isMuted) {
+    bgm.muted = false;
+    musicToggle.textContent = "🔊";
+    isMuted = false;
+  } else {
+    bgm.muted = true;
+    musicToggle.textContent = "🔇";
+    isMuted = true;
+  }
+});
+
+
+const languageToggle = document.getElementById("language-toggle");
+
+languageToggle.addEventListener("click", () => {
+  if (currentLanguage === "en") {
+    currentLanguage = "zh";
+    setLanguage("zh");
+    languageToggle.textContent = "CH";
+  } else {
+    currentLanguage = "en";
+    setLanguage("en");
+    languageToggle.textContent = "EN";
+  }
+});
+
+// 在初始化时，从 localStorage 获取语言设置
+currentLanguage = getLanguage();
+languageToggle.textContent = currentLanguage === "en" ? "EN" : "CH";
+

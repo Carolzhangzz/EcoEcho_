@@ -63,13 +63,17 @@ body {
   padding: 20px;
   border-radius: 10px 10px 0 0;
   display: flex;
+  flex-direction: column;
   justify-content: flex-start;
-  align-items: flex-start;
+  align-items: center;
   margin-bottom: 0;
 }
 
 #text-container {
-  width: 70%;
+  width: 100%;
+  min-height :50px;
+  max-height:300px;
+  overflow-y: auto;
   text-align: left;
   background-color: rgba(0, 0, 0, 0.5); /* 半透明的黑色背景 */
   padding: 10px;
@@ -218,6 +222,7 @@ body {
   );
   box-shadow: 0 0 15px #5af7ff;
 }
+
 @keyframes fadeIn {
   to {
     opacity: 1;
@@ -294,4 +299,43 @@ body {
   50% {
     opacity: 0.5;
   }
+}
+
+/* ... 之前的样式 ... */
+
+#user-input-container {
+  display: flex;
+  margin-top: 10px;
+  width: 100%; /* 新增：确保宽度与文本容器一致 */
+}
+
+#user-input {
+  flex-grow: 1;
+  padding: 5px;
+  font-size: 16px;
+}
+
+#send-message {
+  padding: 5px 10px;
+  font-size: 16px;
+  background: linear-gradient(135deg, rgba(0, 128, 255, 0.8), rgba(0, 255, 128, 0.8));
+  color: #ffffff;
+  border: none;
+  cursor: pointer;
+  margin-left: 5px;
+}
+
+.user-message {
+  color: #00ffff;
+  text-align: right;
+}
+
+.npc-message {
+  color: #ff00ff;
+  text-align: left;
+}
+
+.error-message {
+  color: #ff0000;
+  text-align: center;
 }

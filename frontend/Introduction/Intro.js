@@ -26,6 +26,8 @@ function startGame() {
   const textContainer = document.getElementById("text-container");
   const nextButton = document.getElementById("next-text-button");
   const prevButton = document.getElementById("prev-text-button");
+ 
+  //写在内部可以实时切换语言 
   const languageToggle = document.getElementById("language-toggle");
 
   languageToggle.addEventListener("click", () => {
@@ -66,22 +68,6 @@ function startGame() {
           "智能助手广泛应用于教育和医疗领域，帮助人们更高效地应对生活中的挑战。",
           "全球交通系统已经实现全面自动化。",
           "地球上的公共交通包括地下高速列车和空中出租车，让人们的出行变得快捷而方便。",
-        ],
-      },
-      background: "./IntroImages/scene1.1-1.png",
-      textStyle: "futuristic",
-      // character: "./npc/character1.png",
-    },
-    {
-      text: {
-        en: [
-          "In this world, environmental protection and sustainability are at the forefront.",
-          "Climate engineering technologies help control climate change, and cities are filled with green spaces and eco-friendly buildings.",
-          "International cooperation has reached unprecedented levels.",
-          "The United Nations plays a crucial role in setting standards for technology ethics and environmental protection.",
-          "In this hopeful future, Earth is moving toward a brighter and more sustainable path.",
-        ],
-        zh: [
           "在这个世界中，环保和可持续发展成为核心议题。",
           "气候工程技术帮助人类控制气候变化，城市中到处都是绿色空间和生态建筑。",
           "国际合作也达到了前所未有的高度。",
@@ -89,8 +75,9 @@ function startGame() {
           "在这个充满希望的未来，地球正朝着一个更加美好的方向前进。",
         ],
       },
-      background: "./IntroImages/scene1.1-2.png",
+      background: "./IntroImages/scene1.1-1.png",
       textStyle: "futuristic",
+      // character: "./npc/character1.png",
     },
     {
       text: {
@@ -113,27 +100,17 @@ function startGame() {
         en: [
           "In the year 2056, KI is a promising young scientist, only 26 years old.",
           "He has made a name for himself in the scientific community, focusing on quantum physics and the study of time machines.",
-        ],
-        zh: [
-          "2056年的地球上,KI是一位年轻有为的科学家,年仅26岁。",
-          "他在科学界崭露头角，专注于量子物理和时间机器的研究。",
-        ],
-      },
-      background: "./IntroImages/scene1.3-1.png",
-      textStyle: "futuristic",
-    },
-    {
-      text: {
-        en: [
           "KI's passion for science and exploration stems from his father's teachings.",
           "His father, an astronaut scientist, instilled in him a deep curiosity and love for the unknown universe from a young age.",
         ],
         zh: [
+          "2056年的地球上,KI是一位年轻有为的科学家,年仅26岁。",
+          "他在科学界崭露头角，专注于量子物理和时间机器的研究。",
           "KI对科学的热情和探索精神源于他父亲的教导。",
           "他的父亲是一位宇宙科学家,从小就向KI灌输对未知宇宙的好奇和探索的热情。",
         ],
       },
-      background: "./IntroImages/scene1.3-2.png",
+      background: "./IntroImages/scene1.3-1.png",
       textStyle: "futuristic",
     },
     {
@@ -195,21 +172,13 @@ function startGame() {
         en: [
           "Using the key, KI returned to his old family home and unlocked the long-forgotten garage.",
           "As the doors creaked open, an old-fashioned car came into view, covered in dust.",
+          "This car, a cherished piece of his childhood, held countless memories of times spent with his father.",
         ],
         zh: [
           "利用这把钥匙,KI回到了他的故居,打开了尘封已久的车库。",
           "随着门吱呀一声打开，一辆老式的汽车映入眼帘，覆盖着一层尘土。",
+          "这辆车承载着他童年的无数记忆，是他与父亲共度时光的珍贵见证。",
         ],
-      },
-      background: "./IntroImages/scene3.2-1.png",
-      textStyle: "futuristic",
-    },
-    {
-      text: {
-        en: [
-          "This car, a cherished piece of his childhood, held countless memories of times spent with his father.",
-        ],
-        zh: ["这辆车承载着他童年的无数记忆，是他与父亲共度时光的珍贵见证。"],
       },
       background: "./IntroImages/scene3.2-2.png",
       textStyle: "futuristic",
@@ -220,28 +189,48 @@ function startGame() {
           "They had spent many wonderful moments together, driving to various places and exploring the beauty of nature.",
           "His father always patiently explained the scientific wonders of the world as they traveled.",
           "Whether on winding mountain roads or by the calm lakeside, his father showed KI the vastness and beauty of the world.",
-        ],
-        zh: [
-          "他们曾经一起驾车去过很多地方，探索大自然的美景，父亲总是耐心地给他讲解沿途的科学知识。",
-          "无论是山间的公路还是湖边的宁静,父亲总是让KI感受到世界的广阔和美丽。",
-        ],
-      },
-      background: "./IntroImages/scene3.3-1.png",
-      textStyle: "futuristic",
-    },
-    {
-      text: {
-        en: [
           "On those many warm afternoons, they sang, talked, and laughed together, filling the car with joy.",
           "This car became a special bond between them, holding the precious moments and the deep connection they shared as father and son.",
         ],
         zh: [
+          "他们曾经一起驾车去过很多地方，探索大自然的美景，父亲总是耐心地给他讲解沿途的科学知识。",
+          "无论是山间的公路还是湖边的宁静,父亲总是让KI感受到世界的广阔和美丽。",
           "在那些无数个温馨的下午，他们一起唱歌、聊天，车内充满了欢声笑语。",
           "这辆车成了他们之间的一个特殊联结，记载着那些珍贵的时光和父子间深厚的感情。",
         ],
       },
       background: "./IntroImages/scene3.3-2.png",
       textStyle: "futuristic",
+    },
+    {
+      text: {
+        en: [
+          "KI opened the car door, hoping to relive the beautiful memories of the past. However, as he tried to start the car, he discovered that the fuel tank was empty.",
+          "The car, which once carried so many joyous moments, couldn't be started. The reality of the situation hit him hard, reminding him of the changes that had occurred since those carefree days with his father."
+        ],
+        zh: [
+          "KI打开了车门,想要重温那些美好的旧日时光。然而,当他试图启动汽车时，却发现油箱已经空了。",
+          "这辆曾经承载了无数欢乐时光的车，现在却无法启动。这个现实让他深刻地感受到自从那些无忧无虑的日子以来所发生的变化。"
+        ]
+      },
+      background: "./IntroImages/scene3.4.png",
+      textStyle: "futuristic"
+    },    
+    {
+      text: {
+        en: [
+          "KI felt a deep sense of longing and sadness; he missed his father so much. He wanted to start the old car, hoping that doing so might somehow bring back those cherished moments from the past.",
+          "Suddenly, he remembered the recently developed and still classified time machine at his lab. Although it could only go back ten years, it might be his chance to return to the past, obtain gasoline, and possibly eliminate the source of his father's demise—'K.' This could be a way to avenge his father's death.",
+          "He took a deep breath, preparing to embark on the adventure."
+        ],
+        zh: [
+          "KI感到深深的怀念和伤感,他太想念父亲了,想要启动这辆旧车，仿佛这样就可以把那些美好的旧时光带回来。",
+          "突然,他想起了实验室最近研发的、仍在保密阶段的时光机器。虽然这台时光机器只能回到十年前,但这也许是一个机会,让他能够回到过去,重新获得石油,同时找到机会阻止能源K的开发,为父亲的死讨回公道。",
+          "他深吸一口气，准备踏上冒险。"
+        ]
+      },
+      background: "./IntroImages/scene4.1.png",
+      textStyle: "futuristic"
     },
     {
       text: {
@@ -301,7 +290,6 @@ function startGame() {
 
     bgm.play();
 
-    // 移除音乐相关的代码，因为我们现在使用统一的背景音乐
   };
 
   nextButton.addEventListener("click", () => {
@@ -337,3 +325,13 @@ function startGame() {
   // Initial scene setup
   updateScene();
 }
+
+
+document.addEventListener('DOMContentLoaded', () => {
+
+  const backMainButton = document.getElementById('back-main');
+  backMainButton.addEventListener('click', () => {
+      window.location.href = '../Main.html'; // 确保这是正确的主页面路径
+  });
+
+});

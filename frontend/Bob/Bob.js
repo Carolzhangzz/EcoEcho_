@@ -97,7 +97,7 @@ function startGame() {
               "你应该先去和 Lisa 谈谈"
             ],
           },
-          background: "./IntroImages/scene1.1-1.png",
+          background: "./images/Union.png",
           textStyle: "futuristic",
           character: "./npc/Bob.png",
         },
@@ -180,21 +180,6 @@ function startGame() {
   updateScene();
 }
 
-// Music toggle logic
-const musicToggle = document.getElementById("music-toggle");
-let isMuted = false;
-
-musicToggle.addEventListener("click", () => {
-  if (isMuted) {
-    bgm.muted = false;
-    musicToggle.textContent = "🔊";
-    isMuted = false;
-  } else {
-    bgm.muted = true;
-    musicToggle.textContent = "🔇";
-    isMuted = true;
-  }
-});
 
 document.addEventListener('DOMContentLoaded', () => {
 

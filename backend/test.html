@@ -26,7 +26,7 @@
             responseDiv.textContent = 'Generating...';
 
             try {
-                const response = await fetch('http://localhost:3001/generate', { // 注意这里的端口号变更
+                const response = await fetch('/generate', { // 注意这里的端口号变更
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
