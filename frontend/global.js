@@ -9,6 +9,7 @@ function clearInventory() {
   loadInventory();
 }
 
+// 重置游戏进度
 function resetGame() {
   localStorage.removeItem('gameProgress');
   for (let key in gameProgress) {
@@ -17,8 +18,9 @@ function resetGame() {
     }
   }
   // 重新保存重置后的进度到 localStorage
-   localStorage.setItem('gameProgress', JSON.stringify(gameProgress));
+  localStorage.setItem('gameProgress', JSON.stringify(gameProgress));
 }
+
 // 确保清空背包按钮正常工作
 document.getElementById("clear-inventory").addEventListener("click", () => {
   if (

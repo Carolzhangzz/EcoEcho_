@@ -30,7 +30,7 @@ app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '../frontend/Main.html'));
 });
 
-// API 路由 
+// Groq 路由 
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
 app.post('/generate', async (req, res) => {
@@ -48,7 +48,6 @@ app.post('/generate', async (req, res) => {
   }
 });
 
-// Convai API 路由 
 // Convai API 路由 
 app.post('/api/convai', async (req, res) => {
   console.log('Received request to /api/convai');

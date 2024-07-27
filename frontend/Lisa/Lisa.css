@@ -306,23 +306,46 @@ body {
 #user-input-container {
   display: flex;
   margin-top: 10px;
-  width: 100%; /* 新增：确保宽度与文本容器一致 */
+  width: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  border-radius: 10px;
+  padding: 5px;
 }
 
 #user-input {
   flex-grow: 1;
-  padding: 5px;
+  padding: 10px;
   font-size: 16px;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #00ffff;
+  border: 1px solid #00ffff;
+  border-radius: 5px;
+  outline: none;
+  box-shadow: 0 0 10px #00ffff;
+  transition: box-shadow 0.3s ease-in-out;
+}
+
+#user-input:focus {
+  box-shadow: 0 0 15px #00ffff;
 }
 
 #send-message {
-  padding: 5px 10px;
+  padding: 10px 20px;
   font-size: 16px;
   background: linear-gradient(135deg, rgba(0, 128, 255, 0.8), rgba(0, 255, 128, 0.8));
   color: #ffffff;
-  border: none;
+  border: 2px solid #00ffff;
+  border-radius: 50px;
   cursor: pointer;
-  margin-left: 5px;
+  margin-left: 10px;
+  outline: none;
+  box-shadow: 0 0 10px #00ffff;
+  transition: all 0.3s ease;
+}
+
+#send-message:hover {
+  background: linear-gradient(135deg, rgba(0, 255, 128, 0.8), rgba(0, 128, 255, 0.8));
+  box-shadow: 0 0 15px #00ffff;
 }
 
 .user-message {

@@ -1,11 +1,20 @@
 let gameProgress = {
   talkedToLisa: false,
   talkedToNPC2: false,
-}
-
+};
 
 document.addEventListener("DOMContentLoaded", () => {
-  console.log("DOM is loaded");
+  console.log("Scene Lisa loaded");
+
+  // 从 localStorage 加载游戏进度
+  const savedProgress = JSON.parse(localStorage.getItem("gameProgress"));
+  if (savedProgress) {
+    gameProgress = savedProgress;
+    console.log("Loaded game progress from localStorage:", gameProgress);
+  } else {
+    console.log("No saved game progress found in localStorage.");
+  }
+
   if (document.querySelector(".game-container")) {
     console.log("Game container found");
     bgm = document.getElementById("bgm");
@@ -131,6 +140,17 @@ function startGame() {
     }
 
     bgm.play();
+
+    // 检查是否是最后一个场景的最后一行文本
+    if (
+      currentScene === scenes.length - 1 &&
+      currentTextIndex === scene.text[currentLanguage].length - 1
+    ) {
+      gameProgress.talkedToLisa = true;
+      console.log("All scenes completed, talkedToLisa set to true.");
+      localStorage.setItem("gameProgress", JSON.stringify(gameProgress)); // 保存到 localStorage
+    }
+    
   };
 
   nextButton.addEventListener("click", () => {
@@ -167,7 +187,7 @@ function startGame() {
 // 向 NPC 发送消息并获取回复
 async function sendMessageToNPC(message) {
   bgm.play(); // 播放背景音乐
-  // 生成对话提示 
+  // 生成对话提示
   console.log("Sending message to NPC:", message);
   const textContainer = document.getElementById("text-container");
 
@@ -175,18 +195,18 @@ async function sendMessageToNPC(message) {
 
   const requestData = {
     prompt: message,
-    charID: '4d2ef564-4b89-11ef-ad21-42010a7be011', // 替换为你的角色 ID
+    charID: "4d2ef564-4b89-11ef-ad21-42010a7be011", // 替换为你的角色 ID
     sessionID: sessionID,
-    voiceResponse: true
+    voiceResponse: true,
   };
 
   try {
-    const response = await fetch('/api/convai', {
-      method: 'POST',
+    const response = await fetch("/api/convai", {
+      method: "POST",
       headers: {
-          'Content-Type': 'application/json'
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify(requestData)
+      body: JSON.stringify(requestData),
     });
 
     if (!response.ok) {
@@ -265,8 +285,6 @@ async function generateResponse(npcReply) {
   }
 }
 
-
-
 function displayNPCReply(reply, audioReply) {
   const textContainer = document.getElementById("text-container");
   let index = 0;
@@ -275,8 +293,8 @@ function displayNPCReply(reply, audioReply) {
   replyElement.textContent = "Lisa: ";
   textContainer.appendChild(replyElement);
 
-   // Play the audio if it exists
-   if (audioReply) {
+  // Play the audio if it exists
+  if (audioReply) {
     const audioElement = new Audio(`data:audio/wav;base64,${audioReply}`);
     audioElement.play();
   }

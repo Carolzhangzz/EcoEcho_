@@ -5,9 +5,18 @@ let currentTextIndex = 0;
 let currentLanguage = "en"; 
 let bgm; // 背景音乐
 
+
+
+
+
 document.addEventListener("DOMContentLoaded", () => {
     console.log("DOM is loaded");
     
+    const backMainButton = document.getElementById('back-main');
+    backMainButton.addEventListener('click', () => {
+        window.location.href = '../Main.html'; // 确保这是正确的主页面路径
+    });
+
     const scene1 = document.getElementById('scene1');
     if (scene1) {
         scene1.addEventListener('click', () => {
