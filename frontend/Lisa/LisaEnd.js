@@ -3,19 +3,18 @@ bgm.loop = true; // Let the music loop
 bgm.src = "./Music/Save the World.mp3"; // 设置统一的背景音乐
 bgm.volume = 0.1; // 设置音量为 50%
 
-//用 dom 元素来控制,这样才可以实现实时的语言切换
-document.addEventListener("DOMContentLoaded", () => {
-   startNewSceneDialogue();
+document.addEventListener('languageChanged', () => {
+    displayNewSceneText();
 });
 
 const newScenes = [
   {
     text: {
       en: [
-        "This is the new scene dialogue for the English version.",
-        "It will be displayed when the special condition is met.",
+        "Hmm? We meet again.",
+        "Have you noticed anything different about me recently?",
       ],
-      zh: ["这是新场景对话的中文版。", "当满足特殊条件时将显示。"],
+      zh: ["嗯？又见面了。", "你最近有没有发现什么不同？"],
     },
     background: "./images/Media.png",
     textStyle: "futuristic",
@@ -28,20 +27,9 @@ function startNewSceneDialogue() {
     const textContainer = document.getElementById("text-container");
     const nextButton = document.getElementById("next-text-button");
     const prevButton = document.getElementById("prev-text-button");
+
     let currentTextIndex = 0;
-    languageToggle.addEventListener("click", () => {
-        if (currentLanguage === "en") {
-          currentLanguage = "zh";
-          setLanguage("zh");
-          languageToggle.textContent = "CH";
-        } else {
-          currentLanguage = "en";
-          setLanguage("en");
-          languageToggle.textContent = "EN";
-        }
-        displayNewSceneText();
-      });
-  
+
     const scene = newScenes[0];
     
     const displayNewSceneText = () => {

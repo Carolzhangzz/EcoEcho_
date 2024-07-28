@@ -1,25 +1,16 @@
-console.log("Script is running");
-
 let bgm;
+bgm = document.getElementById("bgm");
+bgm.loop = true; // Let the music loop
+bgm.src = "./Music/Save the World.mp3"; // 设置统一的背景音乐
+bgm.volume = 0.5; // 设置音量为 50%
 let currentScene = 0;
 let currentTextIndex = 0;
 
-
 document.addEventListener("DOMContentLoaded", () => {
-
-  console.log("lisa", gameProgress.talkedToLisa);
-  if (document.querySelector(".game-container")) {
-    console.log("Game container found");
-    bgm = document.getElementById("bgm");
-    bgm.loop = true; // Let the music loop
-    bgm.src = "./Music/Save the World.mp3"; // 设置统一的背景音乐
-    bgm.volume = 0.5; // 设置音量为 50%
+    console.log("Bob DOM is loaded");
     startGame();
-  } else {
-    console.log("Game container not found");
-  }
+    updateScene();
 });
-
 
 function startGame() {
 
@@ -27,19 +18,6 @@ function startGame() {
   const nextButton = document.getElementById("next-text-button");
   const prevButton = document.getElementById("prev-text-button");
   
-  languageToggle.addEventListener("click", () => {
-    if (currentLanguage === "en") {
-      currentLanguage = "zh";
-      setLanguage("zh");
-      languageToggle.textContent = "CH";
-    } else {
-      currentLanguage = "en";
-      setLanguage("en");
-      languageToggle.textContent = "EN";
-    }
-    updateScene();
-  });
-
   let scenes = [
     {
       text: {

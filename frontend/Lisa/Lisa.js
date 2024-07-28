@@ -1,28 +1,20 @@
 
-
 let bgm;
 let currentNpcName = "Lisa"; // NPC 名字
+bgm = document.getElementById("bgm");
+bgm.loop = true; // Let the music loop
+bgm.src = "./Music/Save the World.mp3"; // 设置统一的背景音乐
+bgm.volume = 0.1; // 设置音量为 50%
+
+let sessionID = "-1"; // 会话 ID，用于区分不同的游戏进度
 
 document.addEventListener("DOMContentLoaded", () => {
-  languageToggle.addEventListener("click", () => {
-    if (currentLanguage === "en") {
-      currentLanguage = "zh";
-      languageToggle.textContent = "CH";
-    } else {
-      currentLanguage = "en";
-      languageToggle.textContent = "EN";
-    }
-  });
+
   // Check for special conditions
-    if (checkSpecialCondition()) {
+  if (checkSpecialCondition()) {
       startNewSceneDialogue();
       return;
   }
-  // 播放背景音乐 
-    bgm = document.getElementById("bgm");
-    bgm.loop = true; // Let the music loop
-    bgm.src = "./Music/Save the World.mp3"; // 设置统一的背景音乐
-    bgm.volume = 0.1; // 设置音量为 50%
  
   const characterImage = document.getElementById("character-image");
   const backgroundImage = "./images/Media.png"; // 设置一个默认的背景图
@@ -58,10 +50,6 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
-
-let sessionID = "-1"; // 会话 ID，用于区分不同的游戏进度
-let npcInteractionComplete = false; // 标志 NPC 互动是否完成
-
 const scenes = [
   {
     text: {
@@ -82,7 +70,6 @@ const scenes = [
 
 
 function startGame() {
-  console.log("Starting game");
 
   const textContainer = document.getElementById("text-container");
   const nextButton = document.getElementById("next-text-button");
@@ -91,20 +78,20 @@ function startGame() {
 
   // // 在初始化时，从 localStorage 获取语言设置
   // currentLanguage = getLanguage();
-  // languageToggle.textContent = currentLanguage === "en" ? "EN" : "CH";
+  // // languageToggle.textContent = currentLanguage === "en" ? "EN" : "CH";
 
-  languageToggle.addEventListener("click", () => {
-    if (currentLanguage === "en") {
-      currentLanguage = "zh";
-      setLanguage("zh");
-      languageToggle.textContent = "CH";
-    } else {
-      currentLanguage = "en";
-      setLanguage("en");
-      languageToggle.textContent = "EN";
-    }
-    updateScene();
-  });
+  // languageToggle.addEventListener("click", () => {
+  //   if (currentLanguage === "en") {
+  //     currentLanguage = "zh";
+  //     setLanguage("zh");
+  //     languageToggle.textContent = "CH";
+  //   } else {
+  //     currentLanguage = "en";
+  //     setLanguage("en");
+  //     languageToggle.textContent = "EN";
+  //   }
+  //   updateScene();
+  // });
 
   let currentScene = 0;
   let currentTextIndex = 0;
@@ -321,9 +308,7 @@ async function sendMessageToNPC(message) {
   }
 }
 
-
-// 修改 generateResponse 函数
-//把 npc 的回复拿到，发给 Lamma 不同的语言版本，然后显示在页面上
+//把 npc 的回复拿到，然后翻译成中文
 async function generateResponse(npcReply) {
   try {
     const prompt = `Translate the following English text to Simplified Chinese. Ensure the translation is natural, 
@@ -403,5 +388,5 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
-
+// Export functions for testing
 window.checkSpecialCondition = checkSpecialCondition;

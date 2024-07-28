@@ -1,48 +1,41 @@
-console.log("Script is running");
-
-
 let currentScene = 0;
 let currentTextIndex = 0;
-
+bgm = document.getElementById("bgm");
+bgm.loop = true; // Let the music loop
+bgm.src = "./Music/Save the World.mp3"; // 设置统一的背景音乐
+bgm.volume = 0.5; // 设置音量为 50%
 
 document.addEventListener("DOMContentLoaded", () => {
-  console.log("DOM is loaded");
-  if (document.querySelector(".game-container")) {
-    console.log("Game container found");
-    bgm = document.getElementById("bgm");
-    bgm.loop = true; // Let the music loop
-    bgm.src = "./Music/Save the World.mp3"; // 设置统一的背景音乐
-    bgm.volume = 0.5; // 设置音量为 50%
-    startGame();
-  } else {
-    console.log("Game container not found");
-  }
+  console.log("Intro DOM is loaded");
+  startGame();
+});
+
+document.addEventListener('languageChanged', () => {
+  updateScene();
 });
 
 
 function startGame() {
-
-  //写在内部可以实时切换语言 
-  const languageToggle = document.getElementById("language-toggle");
+  //写在内部可以实时切换语言
+  // const languageToggle = document.getElementById("language-toggle");
   const textContainer = document.getElementById("text-container");
   const nextButton = document.getElementById("next-text-button");
   const prevButton = document.getElementById("prev-text-button");
 
-  // 随时更新语言切换按钮
-  languageToggle.addEventListener("click", () => {
-    if (currentLanguage === "en") {
-      currentLanguage = "zh";
-      setLanguage("zh");
-      languageToggle.textContent = "CH";
-    } else {
-      currentLanguage = "en";
-      setLanguage("en");
-      languageToggle.textContent = "EN";
-    }
-    updateScene();
-  });
+  // // 随时更新语言切换按钮
+  // languageToggle.addEventListener("click", () => {
+  //   if (currentLanguage === "en") {
+  //     currentLanguage = "zh";
+  //     setLanguage("zh");
+  //     languageToggle.textContent = "CH";
+  //   } else {
+  //     currentLanguage = "en";
+  //     setLanguage("en");
+  //     languageToggle.textContent = "EN";
+  //   }
+  //   updateScene();
+  // });
 
- 
   const scenes = [
     {
       text: {
@@ -202,31 +195,31 @@ function startGame() {
       text: {
         en: [
           "KI opened the car door, hoping to relive the beautiful memories of the past. However, as he tried to start the car, he discovered that the fuel tank was empty.",
-          "The car, which once carried so many joyous moments, couldn't be started. The reality of the situation hit him hard, reminding him of the changes that had occurred since those carefree days with his father."
+          "The car, which once carried so many joyous moments, couldn't be started. The reality of the situation hit him hard, reminding him of the changes that had occurred since those carefree days with his father.",
         ],
         zh: [
           "KI打开了车门,想要重温那些美好的旧日时光。然而,当他试图启动汽车时，却发现油箱已经空了。",
-          "这辆曾经承载了无数欢乐时光的车，现在却无法启动。这个现实让他深刻地感受到自从那些无忧无虑的日子以来所发生的变化。"
-        ]
+          "这辆曾经承载了无数欢乐时光的车，现在却无法启动。这个现实让他深刻地感受到自从那些无忧无虑的日子以来所发生的变化。",
+        ],
       },
       background: "./IntroImages/scene3.4.png",
-      textStyle: "futuristic"
-    },    
+      textStyle: "futuristic",
+    },
     {
       text: {
         en: [
           "KI felt a deep sense of longing and sadness; he missed his father so much. He wanted to start the old car, hoping that doing so might somehow bring back those cherished moments from the past.",
           "Suddenly, he remembered the recently developed and still classified time machine at his lab. Although it could only go back ten years, it might be his chance to return to the past, obtain gasoline, and possibly eliminate the source of his father's demise—'K.' This could be a way to avenge his father's death.",
-          "He took a deep breath, preparing to embark on the adventure."
+          "He took a deep breath, preparing to embark on the adventure.",
         ],
         zh: [
           "KI感到深深的怀念和伤感,他太想念父亲了,想要启动这辆旧车，仿佛这样就可以把那些美好的旧时光带回来。",
           "突然,他想起了实验室最近研发的、仍在保密阶段的时光机器。虽然这台时光机器只能回到十年前,但这也许是一个机会,让他能够回到过去,重新获得石油,同时找到机会阻止能源K的开发,为父亲的死讨回公道。",
-          "他深吸一口气，准备踏上冒险。"
-        ]
+          "他深吸一口气，准备踏上冒险。",
+        ],
       },
       background: "./IntroImages/scene4.1.png",
-      textStyle: "futuristic"
+      textStyle: "futuristic",
     },
     {
       text: {
@@ -285,7 +278,6 @@ function startGame() {
     }
 
     bgm.play();
-
   };
 
   nextButton.addEventListener("click", () => {
@@ -317,17 +309,13 @@ function startGame() {
     }
     updateScene();
   });
-
   // Initial scene setup
   updateScene();
 }
 
-
-document.addEventListener('DOMContentLoaded', () => {
-
-  const backMainButton = document.getElementById('back-main');
-  backMainButton.addEventListener('click', () => {
-      window.location.href = '../Main.html'; // 确保这是正确的主页面路径
+document.addEventListener("DOMContentLoaded", () => {
+  const backMainButton = document.getElementById("back-main");
+  backMainButton.addEventListener("click", () => {
+    window.location.href = "../Main.html"; // 确保这是正确的主页面路径
   });
-
 });

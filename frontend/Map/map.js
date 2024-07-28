@@ -1,10 +1,6 @@
-console.log("Script is running");
-
 let currentScene = 0;
 let currentTextIndex = 0;
-let currentLanguage = "en"; 
-let bgm; // 背景音乐
-
+let bgm;
 
 document.addEventListener("DOMContentLoaded", () => {
     console.log("DOM is loaded");
