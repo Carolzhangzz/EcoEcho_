@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Memory Recollection - The First Scene</title>
     <link rel="stylesheet" href="black.css">
+    <link rel="stylesheet" href="../global.css">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron&display=swap" rel="stylesheet">
 </head>
 <body>
@@ -15,7 +16,7 @@
         <button id="music-toggle">🔇</button>
         <button id="language-toggle">EN</button>
         <div id="inventory-icon"></div>
-        <button id="clear-inventory">Clear Bag</button>
+        <button id="clear-inventory" onclick="clearInventory()">Clear the bag</button>
         <div id="inventory-popup" class="hidden">
             <h3>Bag Content</h3>
             <ul id="inventory-items"></ul>

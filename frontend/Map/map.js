@@ -1,6 +1,5 @@
 const MUSIC_PATH = "./Music/Immediate Music - From The Light.mp3";
 const MAIN_PAGE_PATH = "../Main.html";
-
 let bgm;
 
 function initializeAudio() {
@@ -33,18 +32,19 @@ document.addEventListener("DOMContentLoaded", () => {
       goToScene("../Bob/Bob.html");
     }
   });
+  bgm.play();
 });
 
-// Autoplay music on first click
-document.body.addEventListener(
-  "click",
-  function playAudio() {
-    bgm.play()
-      .then(() => {
-        musicToggle.textContent = "🔊";
-        document.body.removeEventListener("click", playAudio);
-      })
-      .catch((error) => console.log("Autoplay still not allowed:", error));
-  },
-  { once: true }
-);
+// // Autoplay music on first click
+// document.body.addEventListener(
+//   "click",
+//   function playAudio() {
+//     bgm.play()
+//       .then(() => {
+//         musicToggle.textContent = "🔊";
+//         document.body.removeEventListener("click", playAudio);
+//       })
+//       .catch((error) => console.log("Autoplay still not allowed:", error));
+//   },
+//   { once: true }
+// );

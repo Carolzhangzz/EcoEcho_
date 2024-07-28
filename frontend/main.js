@@ -26,7 +26,6 @@ document.addEventListener('DOMContentLoaded', () => {
     scene2.addEventListener('click', () => {
         window.location.href = './Bob/Bob.html';
     });
-
     // 其他现有的代码...
 });
 

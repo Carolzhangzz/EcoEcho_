@@ -1,0 +1,52 @@
+/* global.css */
+
+/* 自定义 alert 样式 */
+.custom-alert {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 300px;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.9); /* 半透明的黑色背景 */
+    color: #00ffff;
+    border: 2px solid #00ffff;
+    border-radius: 10px;
+    box-shadow: 0 0 15px #00ffff;
+    z-index: 1000;
+    text-align: center;
+    font-family: 'Orbitron', sans-serif;
+    text-shadow: 0 0 10px #00ffff;
+  }
+  
+  .custom-alert p {
+    margin: 10px 0;
+    font-size: 18px;
+  }
+  
+  .custom-alert button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    background: linear-gradient(
+      135deg,
+      rgba(0, 128, 255, 0.8),
+      rgba(0, 255, 128, 0.8)
+    );
+    color: #000; /* 改为黑色 */
+    border: 2px solid #00ffff;
+    border-radius: 50px;
+    cursor: pointer;
+    outline: none;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 10px #00ffff;
+  }
+  
+  .custom-alert button:hover {
+    background: linear-gradient(
+      135deg,
+      rgba(0, 255, 128, 0.8),
+      rgba(0, 128, 255, 0.8)
+    );
+    box-shadow: 0 0 15px #00ffff;
+  }
+  
