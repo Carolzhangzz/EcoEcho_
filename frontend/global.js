@@ -30,9 +30,7 @@ if (savedUsedItems) {
 }
 
 // 从 localStorage 加载 intentExpressed
-const savedIntentExpressed = JSON.parse(
-  localStorage.getItem("intentExpressed")
-);
+const savedIntentExpressed = JSON.parse(localStorage.getItem("intentExpressed"));
 if (savedIntentExpressed) {
   intentExpressed = savedIntentExpressed;
   console.log("Loaded intent expressed from localStorage:", intentExpressed);
@@ -48,7 +46,9 @@ function loadInventory() {
     const li = document.createElement("li");
     li.innerHTML = `<img src="${item.image}" alt="${item.name}" style="width: 30px; height: 30px;"> ${item.name}`;
     li.style.cursor = "pointer";
-    li.addEventListener("click", () => promptShareItem(item, currentNpcName)); // 使用全局变量 currentNpcName
+    if (typeof currentNpcName !== 'undefined') {
+      li.addEventListener("click", () => promptShareItem(item, currentNpcName)); // 使用全局变量 currentNpcName
+    }
     inventoryItems.appendChild(li);
   });
 }
@@ -105,9 +105,10 @@ function showAlert(message) {
   alertBox.className = 'custom-alert';
   alertBox.innerHTML = `
     <p>${message}</p>
-    <button onclick="this.parentElement.remove()">OK</button>
+    <button id="alert-ok">OK</button>
   `;
   document.body.appendChild(alertBox);
+  document.getElementById('alert-ok').addEventListener('click', () => alertBox.remove());
 }
 
 // 显示自定义 confirm 框
@@ -153,9 +154,6 @@ function clearInventory() {
     }
   );
 }
-
-// // 确保清空背包按钮正常工作
-// document.getElementById("clear-inventory").addEventListener("click", clearInventory);
 
 // 添加物品到背包
 function addToInventory(item, itemImage) {
@@ -315,5 +313,6 @@ async function generateResponse(npcReply) {
     return "Error: " + error.message;
   }
 }
+
 //导出接口函数 
 window.generateResponse = generateResponse;
