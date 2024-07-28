@@ -7,16 +7,15 @@ let currentScene = 0;
 let currentTextIndex = 0;
 
 document.addEventListener("DOMContentLoaded", () => {
-    console.log("Bob DOM is loaded");
-    startGame(); 
+  console.log("Bob DOM is loaded");
+  startGame();
 });
 
 function startGame() {
-
   const textContainer = document.getElementById("text-container");
   const nextButton = document.getElementById("next-text-button");
   const prevButton = document.getElementById("prev-text-button");
-  
+
   let scenes = [
     {
       text: {
@@ -50,17 +49,14 @@ function startGame() {
   const displayText = () => {
     textContainer.innerHTML = ""; // Clear previous text
     if (!gameProgress.talkedToLisa) {
-     scenes = [
+      scenes = [
         {
           text: {
             en: [
               "I don;t think you have prepared to talk to me yet.",
-              "You should go talk to Lisa first."
+              "You should go talk to Lisa first.",
             ],
-            zh: [
-              "你似乎还没准备好和我对话。",
-              "你应该先去和 Lisa 谈谈"
-            ],
+            zh: ["你似乎还没准备好和我对话。", "你应该先去和 Lisa 谈谈"],
           },
           background: "./images/Union.png",
           textStyle: "futuristic",
@@ -145,13 +141,7 @@ function startGame() {
   updateScene();
 }
 
-
-document.addEventListener('DOMContentLoaded', () => {
-
-  const backMainButton = document.getElementById('back-main');
-  backMainButton.addEventListener('click', () => {
-      window.location.href = '../Map/map.html'; // 确保这是正确的主页面路径
-  });
-
+const backMainButton = document.getElementById("back-main");
+backMainButton.addEventListener("click", () => {
+  window.location.href = "../Map/map.html"; // 确保这是正确的主页面路径
 });
-

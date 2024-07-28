@@ -10,12 +10,6 @@ document.addEventListener("DOMContentLoaded", () => {
   startGame();
 });
 
-//好像不用也可以
-// document.addEventListener('languageChanged', () => {
-//   updateScene();
-// });
-
-
 function startGame() {
   //写在内部可以实时切换语言
   // const languageToggle = document.getElementById("language-toggle");
@@ -314,9 +308,7 @@ function startGame() {
   updateScene();
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-  const backMainButton = document.getElementById("back-main");
-  backMainButton.addEventListener("click", () => {
-    window.location.href = "../Main.html"; // 确保这是正确的主页面路径
-  });
+const backMainButton = document.getElementById("back-main");
+backMainButton.addEventListener("click", () => {
+  window.location.href = "../Main.html"; // 确保这是正确的主页面路径
 });
