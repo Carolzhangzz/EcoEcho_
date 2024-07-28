@@ -1,9 +1,9 @@
 console.log("Script is running");
 
-let bgm;
+
 let currentScene = 0;
 let currentTextIndex = 0;
-let currentLanguage = "en"; // 默认语言为英语
+
 
 document.addEventListener("DOMContentLoaded", () => {
   console.log("DOM is loaded");
@@ -21,15 +21,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 function startGame() {
-  console.log("Starting game");
 
+  //写在内部可以实时切换语言 
+  const languageToggle = document.getElementById("language-toggle");
   const textContainer = document.getElementById("text-container");
   const nextButton = document.getElementById("next-text-button");
   const prevButton = document.getElementById("prev-text-button");
- 
-  //写在内部可以实时切换语言 
-  const languageToggle = document.getElementById("language-toggle");
 
+  // 随时更新语言切换按钮
   languageToggle.addEventListener("click", () => {
     if (currentLanguage === "en") {
       currentLanguage = "zh";
@@ -43,10 +42,7 @@ function startGame() {
     updateScene();
   });
 
-  // 在初始化时，从 localStorage 获取语言设置
-  currentLanguage = getLanguage();
-  languageToggle.textContent = currentLanguage === "en" ? "EN" : "CH";
-
+ 
   const scenes = [
     {
       text: {

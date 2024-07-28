@@ -6,9 +6,6 @@ let currentLanguage = "en";
 let bgm; // 背景音乐
 
 
-
-
-
 document.addEventListener("DOMContentLoaded", () => {
     console.log("DOM is loaded");
     

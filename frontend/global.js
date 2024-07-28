@@ -1,5 +1,5 @@
 let usedItems = {};
-
+let currentLanguage = "en"; // 默认语言为英语
 let gameProgress = {
   talkedToLisa: false,
   talkedToBob: false,
@@ -67,13 +67,13 @@ function resetGame() {
   usedItems = {};
   localStorage.setItem("usedItems", JSON.stringify(usedItems));
 
-   // 重置 intentExpressed 对象
-   for (let key in intentExpressed) {
+  // 重置 intentExpressed 对象
+  for (let key in intentExpressed) {
     if (intentExpressed.hasOwnProperty(key)) {
       intentExpressed[key] = false;
     }
   }
-  localStorage.setItem('intentExpressed', JSON.stringify(intentExpressed));
+  localStorage.setItem("intentExpressed", JSON.stringify(intentExpressed));
 }
 
 // 全局背包系统
@@ -236,20 +236,22 @@ musicToggle.addEventListener("click", () => {
   }
 });
 
+// Language toggle logic (global.js)
 const languageToggle = document.getElementById("language-toggle");
 
-languageToggle.addEventListener("click", () => {
-  if (currentLanguage === "en") {
-    currentLanguage = "zh";
-    setLanguage("zh");
-    languageToggle.textContent = "CH";
-  } else {
-    currentLanguage = "en";
-    setLanguage("en");
-    languageToggle.textContent = "EN";
-  }
-});
+document.addEventListener("DOMContentLoaded", () => {
+  // 在初始化时，从 localStorage 获取语言设置
+  currentLanguage = getLanguage();
+  languageToggle.textContent = currentLanguage === "en" ? "EN" : "CH";
 
-// 在初始化时，从 localStorage 获取语言设置
-currentLanguage = getLanguage();
-languageToggle.textContent = currentLanguage === "en" ? "EN" : "CH";
+  // //切换语言设定
+  // languageToggle.addEventListener("click", () => {
+  //   if (currentLanguage === "en") {
+  //     currentLanguage = "zh";
+  //     languageToggle.textContent = "CH";
+  //   } else {
+  //     currentLanguage = "en";
+  //     languageToggle.textContent = "EN";
+  //   }
+  // });
+});

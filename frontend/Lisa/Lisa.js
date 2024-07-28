@@ -3,21 +3,27 @@
 let bgm;
 let currentNpcName = "Lisa"; // NPC 名字
 
-
-
 document.addEventListener("DOMContentLoaded", () => {
-  console.log("Scene Lisa loaded");
-
-  if (document.querySelector(".game-container")) {
-    console.log("Game container found");
+  languageToggle.addEventListener("click", () => {
+    if (currentLanguage === "en") {
+      currentLanguage = "zh";
+      languageToggle.textContent = "CH";
+    } else {
+      currentLanguage = "en";
+      languageToggle.textContent = "EN";
+    }
+  });
+  // Check for special conditions
+    if (checkSpecialCondition()) {
+      startNewSceneDialogue();
+      return;
+  }
+  // 播放背景音乐 
     bgm = document.getElementById("bgm");
     bgm.loop = true; // Let the music loop
     bgm.src = "./Music/Save the World.mp3"; // 设置统一的背景音乐
     bgm.volume = 0.1; // 设置音量为 50%
-  } else {
-    console.log("Game container not found");
-  }
-
+ 
   const characterImage = document.getElementById("character-image");
   const backgroundImage = "./images/Media.png"; // 设置一个默认的背景图
 
@@ -52,7 +58,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
-let currentLanguage = "en"; // 默认语言为英语
+
 let sessionID = "-1"; // 会话 ID，用于区分不同的游戏进度
 let npcInteractionComplete = false; // 标志 NPC 互动是否完成
 
@@ -81,7 +87,11 @@ function startGame() {
   const textContainer = document.getElementById("text-container");
   const nextButton = document.getElementById("next-text-button");
   const prevButton = document.getElementById("prev-text-button");
-  const languageToggle = document.getElementById("language-toggle");
+  // const languageToggle = document.getElementById("language-toggle");
+
+  // // 在初始化时，从 localStorage 获取语言设置
+  // currentLanguage = getLanguage();
+  // languageToggle.textContent = currentLanguage === "en" ? "EN" : "CH";
 
   languageToggle.addEventListener("click", () => {
     if (currentLanguage === "en") {
@@ -95,10 +105,6 @@ function startGame() {
     }
     updateScene();
   });
-
-  // 在初始化时，从 localStorage 获取语言设置
-  currentLanguage = getLanguage();
-  languageToggle.textContent = currentLanguage === "en" ? "EN" : "CH";
 
   let currentScene = 0;
   let currentTextIndex = 0;
@@ -218,8 +224,6 @@ async function Check(intent, message) {
     
     Respond ONLY with "true" or "false", no other words or explanations.`;
 
-    console.log("Using translation prompt:", prompt);
-
     const response = await fetch("/generate", {
       method: "POST",
       headers: {
@@ -295,16 +299,7 @@ async function sendMessageToNPC(message) {
 
     let npcReply = data.text;
     let audioReply = data.audio; // 获取音频回复
-
-    // Check the current language and generate response accordingly
-    const languageToggle = document.getElementById("language-toggle");
-
-    if (languageToggle) {
-      currentLanguage = languageToggle.textContent.trim().toLowerCase() === "中文" ? "zh" : "en";
-    } else {
-      console.warn("Language toggle button not found. Defaulting to English.");
-      currentLanguage = "en";
-    }
+  
 
     // Check for special conditions
     if (checkSpecialCondition()) {
@@ -313,7 +308,7 @@ async function sendMessageToNPC(message) {
       return;
     }
 
-    if (currentLanguage === "EN") {
+    if (currentLanguage === "en") {
       displayNPCReply(npcReply, audioReply);
     } else {
       const translatedReply = await generateResponse(npcReply);
@@ -407,3 +402,6 @@ document.addEventListener("DOMContentLoaded", () => {
     window.location.href = "../Map/map.html"; // 确保这是正确的主页面路径
   });
 });
+
+
+window.checkSpecialCondition = checkSpecialCondition;

@@ -3,16 +3,10 @@ console.log("Script is running");
 let bgm;
 let currentScene = 0;
 let currentTextIndex = 0;
-let currentLanguage = "en"; // 默认语言为英语
-// 全局变量来跟踪玩家进度
-let gameProgress = JSON.parse(localStorage.getItem('gameProgress')) || {
-  talkedToLisa: false,
-  talkedToNPC2: false,
-};
-// 当前NPC对话函数
-let currentNPCDialogueCount = 3;
+
 
 document.addEventListener("DOMContentLoaded", () => {
+
   console.log("lisa", gameProgress.talkedToLisa);
   if (document.querySelector(".game-container")) {
     console.log("Game container found");
@@ -28,13 +22,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 function startGame() {
-  console.log("Starting game");
 
   const textContainer = document.getElementById("text-container");
   const nextButton = document.getElementById("next-text-button");
   const prevButton = document.getElementById("prev-text-button");
-  const languageToggle = document.getElementById("language-toggle");
-
+  
   languageToggle.addEventListener("click", () => {
     if (currentLanguage === "en") {
       currentLanguage = "zh";
@@ -47,10 +39,6 @@ function startGame() {
     }
     updateScene();
   });
-
-  // 在初始化时，从 localStorage 获取语言设置
-  currentLanguage = getLanguage();
-  languageToggle.textContent = currentLanguage === "en" ? "EN" : "CH";
 
   let scenes = [
     {
