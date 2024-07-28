@@ -6,9 +6,12 @@ bgm.src = "./Music/Save the World.mp3"; // 设置统一的背景音乐
 bgm.volume = 0.1; // 设置音量为 50%
 
 let sessionID = "-1"; // 会话 ID，用于区分不同的游戏进度
+let conversationCount = 0; // 对话次数计数器
+let interactionCount = 0; // 用户交互计数器
+let allScenesCompleted = false; // 记录是否所有对话结束
+let intentExpressedFlag = false; // 标记是否已经表达过意图
 
 document.addEventListener("DOMContentLoaded", () => {
-
   // Check for special conditions
   if (checkSpecialCondition()) {
     startNewSceneDialogue();
@@ -226,6 +229,8 @@ async function Check(intent, message) {
     if (intentExpressedValue) {
       intentExpressed[currentNpcName] = true; // 动态设置属性
       localStorage.setItem("intentExpressed", JSON.stringify(intentExpressed));
+      intentExpressedFlag = true; // 设置意图表达标志
+      conversationCount = 0; // 重置对话次数
     }
 
     return intentExpressedValue;
@@ -237,27 +242,23 @@ async function Check(intent, message) {
 
 // 向 NPC 发送消息并获取回复
 async function sendMessageToNPC(message) {
-  bgm.play(); // 播放背景音乐
-
-  // 生成对话提示
-  console.log("Sending message to NPC:", message);
-  const textContainer = document.getElementById("text-container");
-  textContainer.innerHTML += `<p class="user-message">You: ${message}</p>`;
-
-  // 检查用户是否表达了特定的意图,如果没有继续调用这个 api
-  if (!intentExpressed[currentNpcName]) {
-    // 确保检查的是当前 NPC 的意图
-    intentExpressed[currentNpcName] = await Check(intent, message);
-    console.log("Intent expressed:", intentExpressed);
-  }
-
   if (shouldTriggerAutoReply()) {
     const fixedReply = getFixedReply();
+    const textContainer = document.getElementById("text-container");
     textContainer.innerHTML += `<p class="npc-message">Lisa: ${
       currentLanguage === "en" ? fixedReply.en : fixedReply.zh
     }</p>`;
     return;
   }
+
+  bgm.play(); // 播放背景音乐
+  interactionCount++; // 增加交互次数
+
+  // 生成对话提示
+  console.log("Sending message to NPC:", message);
+  const textContainer = document.getElementById("text-container");
+
+  textContainer.innerHTML += `<p class="user-message">You: ${message}</p>`;
 
   const requestData = {
     prompt: message,
@@ -277,9 +278,6 @@ async function sendMessageToNPC(message) {
 
     if (!response.ok) {
       throw new Error("Network response was not ok");
-    } else {
-      conversationCount[currentNpcName]++; // 只有在成功发送消息后才会增加对话次数
-      localStorage.setItem("conversationCount", JSON.stringify(conversationCount)); // 保存对话次数到 localStorage
     }
 
     const data = await response.json();
@@ -300,13 +298,8 @@ async function sendMessageToNPC(message) {
       return;
     }
 
-    if (currentLanguage === "en") {
-      displayNPCReply(npcReply, audioReply);
-    } else {
-      const translatedReply = await generateResponse(npcReply);
-      console.log("Translated Reply:", translatedReply);
-      displayNPCReply(translatedReply.data, audioReply);
-    }
+    displayNPCReply(npcReply, audioReply);
+    conversationCount++; // 仅在成功收到回复后增加对话次数
   } catch (error) {
     console.error("Error:", error);
     textContainer.innerHTML += `<p class="error-message">Error: Unable to get NPC response</p>`;
@@ -356,23 +349,39 @@ function startSceneDialogue() {
   document.getElementById("user-input-container").style.display = "none";
 }
 
-// 函数：添加物品到背包
 function addToInventory(item, image) {
-  // 获取背包容器
   const inventoryContainer = document.getElementById("inventory-container");
-  // 创建新的物品元素
   const newItem = document.createElement("img");
   newItem.src = image;
   newItem.alt = item;
   newItem.className = "inventory-item";
-  // 将物品添加到背包
   inventoryContainer.appendChild(newItem);
+
+  interactionCount++; // 增加交互次数
+
+  if (shouldTriggerAutoReply()) {
+    const fixedReply = getFixedReply();
+    const textContainer = document.getElementById("text-container");
+    textContainer.innerHTML += `<p class="npc-message">Lisa: ${
+      currentLanguage === "en" ? fixedReply.en : fixedReply.zh
+    }</p>`;
+  }
 }
 
-// 自定义自动回复逻辑，现在次数是用完才会出现自动回复，因为成功调用才会增加对话次数 
+function shouldTriggerAutoReply() {
+  if (
+    (conversationCount >= 5 && !usedItems[currentNpcName] && !intentExpressed[currentNpcName]) ||
+    (conversationCount >= 10 && intentExpressed[currentNpcName] && !usedItems[currentNpcName]) ||
+    (conversationCount >= 10 && !intentExpressed[currentNpcName] && usedItems[currentNpcName])
+  ) {
+    return true;
+  }
+  return false;
+}
+
 function getFixedReply() {
   if (
-    conversationCount[currentNpcName] >= 3 &&
+    conversationCount >= 5 &&
     !usedItems[currentNpcName] &&
     !intentExpressed[currentNpcName]
   ) {
@@ -382,7 +391,7 @@ function getFixedReply() {
     };
   }
   if (
-    conversationCount[currentNpcName] >= 5 &&
+    conversationCount >= 10 &&
     intentExpressed[currentNpcName] &&
     !usedItems[currentNpcName]
   ) {
@@ -392,7 +401,7 @@ function getFixedReply() {
     };
   }
   if (
-    conversationCount[currentNpcName] >= 5 &&
+    conversationCount >= 10 &&
     !intentExpressed[currentNpcName] &&
     usedItems[currentNpcName]
   ) {

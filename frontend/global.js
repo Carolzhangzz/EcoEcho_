@@ -11,32 +11,28 @@ let intentExpressed = {
   Johnathan: false,
 };
 
-// 从 localStorage 加载游戏进度
-const savedProgress = JSON.parse(localStorage.getItem("gameProgress"));
-if (savedProgress) {
-  gameProgress = savedProgress;
-  console.log("Loaded game progress from localStorage:", gameProgress);
-} else {
-  console.log("No saved game progress found in localStorage.");
-}
+let conversationCount = {
+  Lisa: 0,
+  Bob: 0,
+  Johnathan: 0,
+};
 
-// 从 localStorage 加载 usedItems
-const savedUsedItems = JSON.parse(localStorage.getItem("usedItems"));
-if (savedUsedItems) {
-  usedItems = savedUsedItems;
-  console.log("Loaded used items from localStorage:", usedItems);
-} else {
-  console.log("No saved used items found in localStorage.");
-}
+// 从 localStorage 加载数据
+const loadDataFromLocalStorage = (key, defaultValue) => {
+  const savedData = JSON.parse(localStorage.getItem(key));
+  if (savedData) {
+    console.log(`Loaded ${key} from localStorage:`, savedData);
+    return savedData;
+  } else {
+    console.log(`No saved ${key} found in localStorage.`);
+    return defaultValue;
+  }
+};
 
-// 从 localStorage 加载 intentExpressed
-const savedIntentExpressed = JSON.parse(localStorage.getItem("intentExpressed"));
-if (savedIntentExpressed) {
-  intentExpressed = savedIntentExpressed;
-  console.log("Loaded intent expressed from localStorage:", intentExpressed);
-} else {
-  console.log("No saved intent expressed found in localStorage.");
-}
+gameProgress = loadDataFromLocalStorage("gameProgress", gameProgress);
+usedItems = loadDataFromLocalStorage("usedItems", usedItems);
+intentExpressed = loadDataFromLocalStorage("intentExpressed", intentExpressed);
+conversationCount = loadDataFromLocalStorage("conversationCount", conversationCount);
 
 // 从 localStorage 加载背包内容
 function loadInventory() {
@@ -55,25 +51,26 @@ function loadInventory() {
 
 // 重置游戏进度
 function resetGame() {
-  localStorage.removeItem("gameProgress");
-  for (let key in gameProgress) {
-    if (gameProgress.hasOwnProperty(key)) {
-      gameProgress[key] = false;
+  const resetObject = (obj, value) => {
+    for (let key in obj) {
+      if (obj.hasOwnProperty(key)) {
+        obj[key] = value;
+      }
     }
-  }
+  };
+
+  localStorage.removeItem("gameProgress");
+  resetObject(gameProgress, false);
   localStorage.setItem("gameProgress", JSON.stringify(gameProgress));
 
-  // 重置 usedItems 对象
   usedItems = {};
   localStorage.setItem("usedItems", JSON.stringify(usedItems));
 
-  // 重置 intentExpressed 对象
-  for (let key in intentExpressed) {
-    if (intentExpressed.hasOwnProperty(key)) {
-      intentExpressed[key] = false;
-    }
-  }
+  resetObject(intentExpressed, false);
   localStorage.setItem("intentExpressed", JSON.stringify(intentExpressed));
+
+  resetObject(conversationCount, 0);
+  localStorage.setItem("conversationCount", JSON.stringify(conversationCount));
 }
 
 // 全局背包系统
@@ -283,8 +280,8 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
-//接口函数
-//get the translated response
+// 接口函数
+// 获取翻译后的回复
 async function generateResponse(npcReply) {
   try {
     const prompt = `Translate the following English text to Simplified Chinese. Ensure the translation is natural, 
@@ -314,5 +311,20 @@ async function generateResponse(npcReply) {
   }
 }
 
-//导出接口函数 
+// 导出接口函数 
 window.generateResponse = generateResponse;
+
+// 自动回复触发条件函数
+function shouldTriggerAutoReply() {
+  if (
+    (conversationCount[currentNpcName] >= 2 && !usedItems[currentNpcName] && !intentExpressed[currentNpcName]) ||
+    (conversationCount[currentNpcName] >= 4 && intentExpressed[currentNpcName] && !usedItems[currentNpcName]) ||
+    (conversationCount[currentNpcName] >= 4 && !intentExpressed[currentNpcName] && usedItems[currentNpcName])
+  ) {
+    return true;
+  }
+  return false;
+}
+
+// 导出自动回复触发条件函数
+window.shouldTriggerAutoReply = shouldTriggerAutoReply;
