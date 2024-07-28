@@ -8,8 +8,7 @@ let currentTextIndex = 0;
 
 document.addEventListener("DOMContentLoaded", () => {
     console.log("Bob DOM is loaded");
-    startGame();
-    updateScene();
+    startGame(); 
 });
 
 function startGame() {

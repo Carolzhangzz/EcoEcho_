@@ -238,15 +238,6 @@ musicToggle.addEventListener("click", () => {
   }
 });
 
-// Language toggle logic (global.js)
-// const languageToggle = document.getElementById("language-toggle");
-
-// document.addEventListener("DOMContentLoaded", () => {
-//   // 在初始化时，从 localStorage 获取语言设置
-//   currentLanguage = getLanguage();
-//   languageToggle.textContent = currentLanguage === "en" ? "EN" : "CH";
-  
-// });
 const languageToggle = document.getElementById("language-toggle");
 document.addEventListener("DOMContentLoaded", () => {
   currentLanguage = getLanguage();

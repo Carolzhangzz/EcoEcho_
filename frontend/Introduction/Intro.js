@@ -10,9 +10,10 @@ document.addEventListener("DOMContentLoaded", () => {
   startGame();
 });
 
-document.addEventListener('languageChanged', () => {
-  updateScene();
-});
+//好像不用也可以
+// document.addEventListener('languageChanged', () => {
+//   updateScene();
+// });
 
 
 function startGame() {

@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const languageToggle = document.getElementById("language-toggle");
   const bgm = document.getElementById("bgm");
 
-  let currentLanguage = "en";
+
   let currentLine = 0;
   const dialogues = [
       {
@@ -43,31 +43,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 50);
   }
 
-  function parseText(text) {
-    const parts = [];
-    let lastIndex = 0;
-    const regex = /<span class='highlight' data-item='([^']*)' data-image='([^']*)'>(.*?)<\/span>/g;
-    let match;
-
-    while ((match = regex.exec(text)) !== null) {
-      if (match.index > lastIndex) {
-        parts.push({ type: 'text', content: text.slice(lastIndex, match.index) });
-      }
-      parts.push({
-        type: 'highlight',
-        content: match[3],
-        item: match[1],
-        image: match[2]
-      });
-      lastIndex = regex.lastIndex;
-    }
-
-    if (lastIndex < text.length) {
-      parts.push({ type: 'text', content: text.slice(lastIndex) });
-    }
-
-    return parts;
-  }
   function updateDialogue() {
     if (currentLine < dialogues.length) {
       const currentDialogueObj = dialogues[currentLine];
