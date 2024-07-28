@@ -1,22 +1,44 @@
 let usedItems = {};
 
- // 从 localStorage 加载游戏进度
- const savedProgress = JSON.parse(localStorage.getItem("gameProgress"));
- if (savedProgress) {
-   gameProgress = savedProgress;
-   console.log("Loaded game progress from localStorage:", gameProgress);
- } else {
-   console.log("No saved game progress found in localStorage.");
- }
+let gameProgress = {
+  talkedToLisa: false,
+  talkedToBob: false,
+};
 
- // 从 localStorage 加载 usedItems
- const savedUsedItems = JSON.parse(localStorage.getItem("usedItems"));
- if (savedUsedItems) {
-   usedItems = savedUsedItems;
-   console.log("Loaded used items from localStorage:", usedItems);
- } else {
-   console.log("No saved used items found in localStorage.");
- }
+let intentExpressed = {
+  Lisa: false,
+  Bob: false,
+  Johnathan: false,
+};
+
+// 从 localStorage 加载游戏进度
+const savedProgress = JSON.parse(localStorage.getItem("gameProgress"));
+if (savedProgress) {
+  gameProgress = savedProgress;
+  console.log("Loaded game progress from localStorage:", gameProgress);
+} else {
+  console.log("No saved game progress found in localStorage.");
+}
+
+// 从 localStorage 加载 usedItems
+const savedUsedItems = JSON.parse(localStorage.getItem("usedItems"));
+if (savedUsedItems) {
+  usedItems = savedUsedItems;
+  console.log("Loaded used items from localStorage:", usedItems);
+} else {
+  console.log("No saved used items found in localStorage.");
+}
+
+// 从 localStorage 加载 intentExpressed
+const savedIntentExpressed = JSON.parse(
+  localStorage.getItem("intentExpressed")
+);
+if (savedIntentExpressed) {
+  intentExpressed = savedIntentExpressed;
+  console.log("Loaded intent expressed from localStorage:", intentExpressed);
+} else {
+  console.log("No saved intent expressed found in localStorage.");
+}
 
 // 从 localStorage 加载背包内容
 function loadInventory() {
@@ -33,19 +55,26 @@ function loadInventory() {
 
 // 重置游戏进度
 function resetGame() {
-  localStorage.removeItem('gameProgress');
+  localStorage.removeItem("gameProgress");
   for (let key in gameProgress) {
     if (gameProgress.hasOwnProperty(key)) {
       gameProgress[key] = false;
     }
   }
-  localStorage.setItem('gameProgress', JSON.stringify(gameProgress));
+  localStorage.setItem("gameProgress", JSON.stringify(gameProgress));
 
   // 重置 usedItems 对象
   usedItems = {};
-  localStorage.setItem('usedItems', JSON.stringify(usedItems));
-}
+  localStorage.setItem("usedItems", JSON.stringify(usedItems));
 
+   // 重置 intentExpressed 对象
+   for (let key in intentExpressed) {
+    if (intentExpressed.hasOwnProperty(key)) {
+      intentExpressed[key] = false;
+    }
+  }
+  localStorage.setItem('intentExpressed', JSON.stringify(intentExpressed));
+}
 
 // 全局背包系统
 const inventoryIcon = document.getElementById("inventory-icon");
@@ -56,7 +85,7 @@ const inventoryItems = document.getElementById("inventory-items");
 function promptShareItem(item, npcName) {
   if (confirm(`Do you want to share this ${item.name} with ${npcName}?`)) {
     usedItems[npcName] = true;
-    localStorage.setItem('usedItems', JSON.stringify(usedItems));
+    localStorage.setItem("usedItems", JSON.stringify(usedItems));
     alert(`${item.name} has been shared with ${npcName}.`);
     console.log("Used items:", usedItems);
     removeFromInventory(item.name);
@@ -66,7 +95,7 @@ function promptShareItem(item, npcName) {
 // 从背包中移除物品
 function removeFromInventory(itemName) {
   let inventory = JSON.parse(localStorage.getItem("gameInventory")) || [];
-  inventory = inventory.filter(item => item.name !== itemName);
+  inventory = inventory.filter((item) => item.name !== itemName);
   localStorage.setItem("gameInventory", JSON.stringify(inventory));
   loadInventory();
 }
@@ -81,12 +110,14 @@ function clearInventory() {
 document.getElementById("clear-inventory").addEventListener("click", () => {
   if (
     confirm(
-      "Are you sure you want to clear your bag? This will reset your game progress.你确定你要清空背包吗? 这会重置你的游戏进度。",
+      "Are you sure you want to clear your bag? This will reset your game progress.你确定你要清空背包吗? 这会重置你的游戏进度。"
     )
   ) {
     clearInventory();
     resetGame();
-    alert("Your bag has been cleared. You can restart the game now.你的背包被清空了, 你可以重新开始游戏。");
+    alert(
+      "Your bag has been cleared. You can restart the game now.你的背包被清空了, 你可以重新开始游戏。"
+    );
   }
 });
 
@@ -177,18 +208,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
 // 设置语言
 function setLanguage(lang) {
-  localStorage.setItem('language', lang);
+  localStorage.setItem("language", lang);
 }
 
 // 获取当前语言
 function getLanguage() {
-  return localStorage.getItem('language') || 'en'; // 默认英语
+  return localStorage.getItem("language") || "en"; // 默认英语
 }
 
 // 导出这些函数
 window.setLanguage = setLanguage;
 window.getLanguage = getLanguage;
-
 
 // Music toggle logic
 const musicToggle = document.getElementById("music-toggle");
@@ -205,7 +235,6 @@ musicToggle.addEventListener("click", () => {
     isMuted = true;
   }
 });
-
 
 const languageToggle = document.getElementById("language-toggle");
 

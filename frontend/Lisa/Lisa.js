@@ -1,11 +1,9 @@
-let gameProgress = {
-  talkedToLisa: false,
-  talkedToNPC2: false,
-};
+
 
 let bgm;
 let currentNpcName = "Lisa"; // NPC 名字
-let intentExpressed = false; // 是否表达了特定的意图
+
+
 
 document.addEventListener("DOMContentLoaded", () => {
   console.log("Scene Lisa loaded");
@@ -62,27 +60,18 @@ const scenes = [
   {
     text: {
       en: [
-        "Welcome to the first scene. You find yourself in a <span class='highlight' data-item='old key' data-image='../items/old-key.png'>dimly lit room</span>.",
+        "Oh, so you're Kane's son. That makes sense now. If I were you, I'd head to the Guild Hall and find Bob.", 
+        "They're having a heated debate about K, and your arrival could make things a lot more interesting. I will support you."
       ],
       zh: [
-        "欢迎来到第一个场景。你发现自己身处一个<span class='highlight' data-item='old key' data-image='../items/old-key.png'>昏暗的房间</span>。",
-      ],
+        "哦,原来你是凯恩的儿子,这就有道理了。如果我是你,我会去工会大楼找鲍勃。",
+        "他们正为K的事吵得不可开交,你的出现可能会让事情变得更有趣。我会支持你的。"
+      ]
     },
     background: "./images/Media.png",
     textStyle: "futuristic",
     character: "./npc/Lisa.png",
-  },
-  {
-    text: {
-      en: [
-        "The air is thick with dust, and you can barely make out the shapes of old furniture.",
-      ],
-      zh: ["空气中充满了灰尘，你几乎看不清旧家具的轮廓。"],
-    },
-    background: "./images/Media.png",
-    textStyle: "futuristic",
-    character: "./npc/Lisa.png",
-  },
+  },  
 ];
 
 
@@ -92,6 +81,24 @@ function startGame() {
   const textContainer = document.getElementById("text-container");
   const nextButton = document.getElementById("next-text-button");
   const prevButton = document.getElementById("prev-text-button");
+  const languageToggle = document.getElementById("language-toggle");
+
+  languageToggle.addEventListener("click", () => {
+    if (currentLanguage === "en") {
+      currentLanguage = "zh";
+      setLanguage("zh");
+      languageToggle.textContent = "CH";
+    } else {
+      currentLanguage = "en";
+      setLanguage("en");
+      languageToggle.textContent = "EN";
+    }
+    updateScene();
+  });
+
+  // 在初始化时，从 localStorage 获取语言设置
+  currentLanguage = getLanguage();
+  languageToggle.textContent = currentLanguage === "en" ? "EN" : "CH";
 
   let currentScene = 0;
   let currentTextIndex = 0;
@@ -210,7 +217,7 @@ async function Check(intent, message) {
     If there's no clear indication of the intent, respond with "false".
     
     Respond ONLY with "true" or "false", no other words or explanations.`;
-    
+
     console.log("Using translation prompt:", prompt);
 
     const response = await fetch("/generate", {
@@ -226,8 +233,16 @@ async function Check(intent, message) {
 
     const data = await response.json();
     console.log("Check Response:", data);
-    // 提取 data 属性并进行判断
-    return data.data === "true";
+   // 解析玩家的意图是不是符合预期 
+   const intentExpressedValue = data.data === "true";
+    
+   if (intentExpressedValue) {
+     intentExpressed[currentNpcName] = true; // 动态设置属性
+     localStorage.setItem('intentExpressed', JSON.stringify(intentExpressed));
+   }
+
+   return intentExpressedValue;
+
   } catch (error) {
     console.error("Error in Check:", error);
     return false;
@@ -239,8 +254,8 @@ async function sendMessageToNPC(message) {
   bgm.play(); // 播放背景音乐
 
   // 检查用户是否表达了特定的意图, 如果没有，继续检查
-  if (!intentExpressed) {
-    intentExpressed = await Check(intent, message);
+  if (!intentExpressed[currentNpcName]) { // 确保检查的是当前 NPC 的意图
+    intentExpressed[currentNpcName] = await Check(intent, message);
     console.log("Intent expressed:", intentExpressed);
   }
 
@@ -311,6 +326,7 @@ async function sendMessageToNPC(message) {
   }
 }
 
+
 // 修改 generateResponse 函数
 //把 npc 的回复拿到，发给 Lamma 不同的语言版本，然后显示在页面上
 async function generateResponse(npcReply) {
@@ -370,11 +386,11 @@ function displayNPCReply(reply, audioReply) {
 function checkSpecialCondition() {
   console.log(
     "Checking special condition:",
-    intentExpressed,
+    intentExpressed.Lisa, // 检查 Lisa 的意图
     usedItems[currentNpcName]
   );
   // 这里我们检查用户是否表达了特定的意图 "Kane is K's Father" 以及 用户是否把物品分享给了 NPC
-  return intentExpressed && usedItems[currentNpcName];
+  return intentExpressed.Lisa && usedItems[currentNpcName];
 }
 
 function startSceneDialogue() {
