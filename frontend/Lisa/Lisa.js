@@ -6,15 +6,8 @@ bgm.src = "./Music/Save the World.mp3"; // 设置统一的背景音乐
 bgm.volume = 0.1; // 设置音量为 50%
 
 let sessionID = "-1"; // 会话 ID，用于区分不同的游戏进度
-
+let backupReplyIndex = 0; // 备用回复的索引
 document.addEventListener("DOMContentLoaded", () => {
-
-  // Check for special conditions
-  if (checkSpecialCondition()) {
-    startNewSceneDialogue();
-    return;
-  }
-
   const characterImage = document.getElementById("character-image");
   const backgroundImage = "./images/Media.png"; // 设置一个默认的背景图
 
@@ -37,7 +30,7 @@ document.addEventListener("DOMContentLoaded", () => {
   sendMessageButton.addEventListener("click", () => {
     const userMessage = userInput.value.trim();
     if (userMessage) {
-      sendMessageToNPC(userMessage);
+      handleMessage(userMessage);
       userInput.value = "";
     }
   });
@@ -52,6 +45,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const backMainButton = document.getElementById("back-main");
   backMainButton.addEventListener("click", () => {
     if (allScenesCompleted && !newSceneCompleted) {
+      // 如果所有对话都结束了，但是新对话还没有开始，那么跳转到 Emilia 页面， 先设置上一页 
+      setPreviousPage(window.location.pathname); // 设置上一页
       window.location.href = "../Emilia/Emilia.html"; // 跳转到特殊地图页面
     } else {
       window.location.href = "../Map/map.html"; // 跳转到默认地图页面
@@ -63,11 +58,11 @@ const scenes = [
   {
     text: {
       en: [
-        "Oh, so you're Kane's son. That makes sense now. If I were you, I'd head to the Guild Hall and find <span class='highlight' data-item='truth' data-image='../items/truth.png'>Bob</span>.",
+        "Oh, so you're Kane's son. That makes sense now. If I were you, I'd head to the Guild Hall and find <span class='highlight' data-item='Journalist ID' data-image='../items/Journalist ID.png'>Bob</span>.",
         "They're having a heated debate about K, and your arrival could make things a lot more interesting. I will support you.",
       ],
       zh: [
-        "哦,原来你是凯恩的儿子,这就有道理了。如果我是你,我会去工会大楼找<span class='highlight' data-item='truth' data-image='../items/truth.png'>鲍勃</span>。",
+        "哦,原来你是凯恩的儿子,这就有道理了。如果我是你,我会去工会大楼找<span class='highlight' data-item='记者证' data-image='../items/Journalist ID.png'>鲍勃</span>。",
         "他们正为K的事吵得不可开交,你的出现可能会让事情变得更有趣。我会支持你的。",
       ],
     },
@@ -188,6 +183,8 @@ const intent =
 
 // 检查用户是否表达了特定的意图
 async function Check(intent, message) {
+  const keywords = ["truth", "father's death", "Kane","真相","死","父亲去世"]; // 关键字列表
+
   try {
     const prompt = `Analyze the following user message in the context of a conversation about family relationships:
 
@@ -214,6 +211,10 @@ async function Check(intent, message) {
       },
       body: JSON.stringify({ prompt }),
     });
+
+    // // 模拟 ConvAI 接口失败，强制抛出错误
+    // throw new Error("Simulated Intent API failure");
+
     if (!response.ok) {
       throw new Error("Network response was not ok");
     }
@@ -231,12 +232,21 @@ async function Check(intent, message) {
     return intentExpressedValue;
   } catch (error) {
     console.error("Error in Check:", error);
+    
+    // 检查用户输入是否包含关键字
+    const containsKeyword = keywords.some(keyword => message.includes(keyword));
+    
+    if (containsKeyword) {
+      intentExpressed[currentNpcName] = true; // 动态设置属性
+      localStorage.setItem("intentExpressed", JSON.stringify(intentExpressed));
+      return true;
+    }
+
     return false;
   }
 }
 
-// 向 NPC 发送消息并获取回复
-async function sendMessageToNPC(message) {
+async function handleMessage(message) {
   bgm.play(); // 播放背景音乐
 
   // 生成对话提示
@@ -244,13 +254,20 @@ async function sendMessageToNPC(message) {
   const textContainer = document.getElementById("text-container");
   textContainer.innerHTML += `<p class="user-message">You: ${message}</p>`;
 
-  // 检查用户是否表达了特定的意图,如果没有继续调用这个 api
+  // 检查用户是否表达了特定的意图
   if (!intentExpressed[currentNpcName]) {
-    // 确保检查的是当前 NPC 的意图
     intentExpressed[currentNpcName] = await Check(intent, message);
     console.log("Intent expressed:", intentExpressed);
   }
 
+  // Check for special conditions before sending the message
+  if (checkSpecialCondition()) {
+    startSceneDialogue();
+    startGame();
+    return;
+  }
+  
+  // Check if the auto-reply should be triggered before sending the message
   if (shouldTriggerAutoReply()) {
     const fixedReply = getFixedReply();
     textContainer.innerHTML += `<p class="npc-message">Lisa: ${
@@ -259,6 +276,16 @@ async function sendMessageToNPC(message) {
     return;
   }
 
+  try {
+    await sendMessageToNPC(message);
+  } catch (error) {
+    console.error("Error in sendMessageToNPC:", error);
+    await generateBackupResponse(message);
+  }
+}
+
+// 向 NPC 发送消息并获取回复
+async function sendMessageToNPC(message) {
   const requestData = {
     prompt: message,
     charID: "4d2ef564-4b89-11ef-ad21-42010a7be011", // 替换为你的角色 ID
@@ -266,50 +293,99 @@ async function sendMessageToNPC(message) {
     voiceResponse: true,
   };
 
+  // // 模拟 ConvAI 接口失败，强制抛出错误
+  // throw new Error("Simulated ConvAI API failure");
+
+  const response = await fetch("/api/convai", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(requestData),
+  });
+
+  if (!response.ok) {
+    throw new Error("Network response was not ok");
+  }
+
+  conversationCount[currentNpcName]++; // 只有在成功发送消息后才会增加对话次数
+  localStorage.setItem("conversationCount", JSON.stringify(conversationCount)); // 保存对话次数到 localStorage
+
+  const data = await response.json();
+  console.log("NPC Response:", data);
+
+  // Check if the session ID has been updated
+  if (data.sessionID) {
+    sessionID = data.sessionID;
+  }
+
+  let npcReply = data.text;
+  let audioReply = data.audio; // 获取音频回复
+
+  if (currentLanguage === "en") {
+    displayNPCReply(npcReply, audioReply);
+  } else {
+    const translatedReply = await generateResponse(npcReply);
+    console.log("Translated Reply:", translatedReply);
+    displayNPCReply(translatedReply.data, audioReply);
+  }
+}
+
+// 调用 generate 接口获取 NPC 的回复
+async function generateBackupResponse(message) {
+  const prompt = getNPCSpecificPrompt(currentNpcName, message);
   try {
-    const response = await fetch("/api/convai", {
+    const response = await fetch("/generate", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(requestData),
+      body: JSON.stringify({ prompt }),
     });
 
+    //  模拟 第二个 NPC 调用 接口失败，强制抛出错误
+    //  throw new Error("Simulated Second NPC API failure");
+
     if (!response.ok) {
-      throw new Error("Network response was not ok");
-    } else {
-      conversationCount[currentNpcName]++; // 只有在成功发送消息后才会增加对话次数
-      localStorage.setItem("conversationCount", JSON.stringify(conversationCount)); // 保存对话次数到 localStorage
+      throw new Error("Network response was not ok for backup response");
     }
 
     const data = await response.json();
-    console.log("NPC Response:", data);
+    console.log("Backup NPC Response:", data);
 
-    // Check if the session ID has been updated
-    if (data.sessionID) {
-      sessionID = data.sessionID;
-    }
+    let npcReply = data.data;
 
-    let npcReply = data.text;
-    let audioReply = data.audio; // 获取音频回复
-
-    // Check for special conditions
-    if (checkSpecialCondition()) {
-      startSceneDialogue();
-      startGame();
-      return;
-    }
+    conversationCount[currentNpcName]++; // 增加对话次数，即使是使用备份接口
+    localStorage.setItem("conversationCount", JSON.stringify(conversationCount)); // 保存对话次数到 localStorage
 
     if (currentLanguage === "en") {
-      displayNPCReply(npcReply, audioReply);
+      displayNPCReply(npcReply);
     } else {
       const translatedReply = await generateResponse(npcReply);
-      console.log("Translated Reply:", translatedReply);
-      displayNPCReply(translatedReply.data, audioReply);
+      console.log("Translated Backup Reply:", translatedReply);
+      displayNPCReply(translatedReply.data);
     }
   } catch (error) {
-    console.error("Error:", error);
-    textContainer.innerHTML += `<p class="error-message">Error: Unable to get NPC response</p>`;
+    console.error("Error in generateBackupResponse:", error);
+    // 备用接口也失败时，显示固定的回复
+    const fixedReply = backupFixedReply();
+    const textContainer = document.getElementById("text-container");
+    textContainer.innerHTML += `<p class="npc-message">Lisa: ${
+      currentLanguage === "en" ? fixedReply.en : fixedReply.zh
+    }</p>`;
+    //这个时候也得累积对话次数 
+    conversationCount[currentNpcName]++;
+    localStorage.setItem("conversationCount", JSON.stringify(conversationCount)); // 保存对话次数到 localStorage
+  }
+}
+
+function getNPCSpecificPrompt(npcName, userMessage) {
+  switch (npcName) {
+    case "Lisa":
+      return `You are Lisa, a knowledgeable NPC in a futuristic world. Respond to the user's message in a way that fits your character's background and style. User Message: "${userMessage}"`;
+    // Add more cases for other NPCs as needed
+    default:
+      return `You are an NPC. Respond to the user's message appropriately. User Message: "${userMessage}"`;
   }
 }
 
@@ -318,7 +394,7 @@ function displayNPCReply(reply, audioReply) {
   let index = 0;
   const replyElement = document.createElement("p");
   replyElement.className = "npc-message";
-  replyElement.textContent = "Lisa: ";
+  replyElement.textContent = `${currentNpcName}: `;
   textContainer.appendChild(replyElement);
 
   // Play the audio if it exists
@@ -369,10 +445,28 @@ function addToInventory(item, image) {
   inventoryContainer.appendChild(newItem);
 }
 
-// 自定义自动回复逻辑，现在次数是用完才会出现自动回复，因为成功调用才会增加对话次数 
+// 两个接口都失败时，显示固定的回复 
+const backupReplies = [
+  {
+    en: "I'm sorry, I cannot understand what you are saying. Please try again.",
+    zh: "对不起，我无法理解你在说什么。请再试一次。",
+  },
+  {
+    en:"Hmm, that does sound interesting, but how can I trust you? Unless... you're an insider?",
+    zh:"嗯，听起来很有趣，但我怎么能相信你？除非...你是内部人员？",
+  },
+];
+
+function backupFixedReply() {
+  const reply = backupReplies[backupReplyIndex];
+  backupReplyIndex = (backupReplyIndex + 1) % backupReplies.length; // 循环选择备用回复
+  return reply;
+}
+
+// 自定义自动回复逻辑，现在次数是用完才会出现自动回复，因为成功调用才会增加对话次数
 function getFixedReply() {
   if (
-    conversationCount[currentNpcName] >= 3 &&
+    conversationCount[currentNpcName] >= 2 &&
     !usedItems[currentNpcName] &&
     !intentExpressed[currentNpcName]
   ) {
@@ -382,7 +476,7 @@ function getFixedReply() {
     };
   }
   if (
-    conversationCount[currentNpcName] >= 5 &&
+    conversationCount[currentNpcName] >= 4 &&
     intentExpressed[currentNpcName] &&
     !usedItems[currentNpcName]
   ) {
@@ -392,7 +486,7 @@ function getFixedReply() {
     };
   }
   if (
-    conversationCount[currentNpcName] >= 5 &&
+    conversationCount[currentNpcName] >= 4 &&
     !intentExpressed[currentNpcName] &&
     usedItems[currentNpcName]
   ) {

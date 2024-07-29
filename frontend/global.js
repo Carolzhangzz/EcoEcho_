@@ -328,3 +328,11 @@ function shouldTriggerAutoReply() {
 
 // 导出自动回复触发条件函数
 window.shouldTriggerAutoReply = shouldTriggerAutoReply;
+
+// 设置上一页 
+function setPreviousPage(pagePath) {
+  localStorage.setItem("previousPage", pagePath);
+}
+
+// 导出函数
+window.setPreviousPage = setPreviousPage;

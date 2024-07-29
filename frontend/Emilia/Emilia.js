@@ -1,4 +1,3 @@
-
 let currentScene = 0;
 let currentTextIndex = 0;
 const MUSIC_PATH = "./Music/Immediate Music - From The Light.mp3";
@@ -38,7 +37,6 @@ document.addEventListener("DOMContentLoaded", () => {
   });
   bgm.play();
 });
-
 
 function startGame() {
   console.log("Starting game");
@@ -91,7 +89,6 @@ function startGame() {
   };
 
   const updateScene = () => {
-
     const scene = scenes[currentScene];
     console.log("Updating scene to index:", currentScene);
     document.body.style.backgroundImage = `url('${scene.background}')`;
@@ -115,7 +112,13 @@ function startGame() {
     if (currentTextIndex >= scenes[currentScene].text[currentLanguage].length) {
       currentScene++;
       if (currentScene >= scenes.length) {
-        window.location.href = "./black_screen.html"; // 移除了 './'
+        const previousPage = localStorage.getItem("previousPage");
+        if (previousPage) {
+          localStorage.removeItem("previousPage");
+          window.location.href = previousPage; // 返回上一个页面
+        } else {
+          window.location.href = MAIN_PAGE_PATH; // 跳转到默认地图页面
+        }
       } else {
         currentTextIndex = 0;
         updateScene();
@@ -124,7 +127,6 @@ function startGame() {
       updateScene();
     }
   });
-
 
   prevButton.addEventListener("click", () => {
     currentTextIndex--;

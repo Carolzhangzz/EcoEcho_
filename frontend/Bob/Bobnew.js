@@ -6,9 +6,9 @@ bgm.src = "./Music/Save the World.mp3"; // 设置统一的背景音乐
 bgm.volume = 0.1; // 设置音量为 50%
 
 let sessionID = "-1"; // 会话 ID，用于区分不同的游戏进度
-let conversationCount = 0; // 对话次数计数器
 
 document.addEventListener("DOMContentLoaded", () => {
+
   // Check for special conditions
   if (checkSpecialCondition()) {
     startNewSceneDialogue();
@@ -21,7 +21,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // 设置背景图
   document.body.style.backgroundImage = `url('${backgroundImage}')`;
   // 设置角色图片
-  characterImage.src = "./npc/Bob.png"; // 设置一个默认的角色图片
+  characterImage.src = "./npc/Lisa.png"; // 设置一个默认的角色图片
   characterImage.style.display = "block";
 
   const nextButton = document.getElementById("next-text-button");
@@ -47,17 +47,27 @@ document.addEventListener("DOMContentLoaded", () => {
       sendMessageButton.click();
     }
   });
+
+  // 处理 back to the map 按钮点击事件
+  const backMainButton = document.getElementById("back-main");
+  backMainButton.addEventListener("click", () => {
+    if (allScenesCompleted && !newSceneCompleted) {
+      window.location.href = "../Emilia/Emilia.html"; // 跳转到特殊地图页面
+    } else {
+      window.location.href = "../Map/map.html"; // 跳转到默认地图页面
+    }
+  });
 });
 
 const scenes = [
   {
     text: {
       en: [
-        "Oh, so you're Kane's son. That makes sense now. If I were you, I'd head to the Guild Hall and find Bob.",
+        "Oh, so you're Kane's son. That makes sense now. If I were you, I'd head to the Guild Hall and find <span class='highlight' data-item='Journalist ID' data-image='../items/Journalist ID.png'>Bob</span>.",
         "They're having a heated debate about K, and your arrival could make things a lot more interesting. I will support you.",
       ],
       zh: [
-        "哦,原来你是凯恩的儿子,这就有道理了。如果我是你,我会去工会大楼找鲍勃。",
+        "哦,原来你是凯恩的儿子,这就有道理了。如果我是你,我会去工会大楼找<span class='highlight' data-item='记者证' data-image='../items/Journalist ID.png'>鲍勃</span>。",
         "他们正为K的事吵得不可开交,你的出现可能会让事情变得更有趣。我会支持你的。",
       ],
     },
@@ -140,6 +150,7 @@ function startGame() {
       gameProgress.talkedToLisa = true;
       console.log("All scenes completed, talkedToLisa set to true.");
       localStorage.setItem("gameProgress", JSON.stringify(gameProgress)); // 保存到 localStorage
+      allScenesCompleted = true; // 设置所有对话结束标志
     }
   };
 
@@ -227,37 +238,30 @@ async function Check(intent, message) {
 // 向 NPC 发送消息并获取回复
 async function sendMessageToNPC(message) {
   bgm.play(); // 播放背景音乐
-  conversationCount++; // 增加对话次数
 
   // 生成对话提示
   console.log("Sending message to NPC:", message);
   const textContainer = document.getElementById("text-container");
-
   textContainer.innerHTML += `<p class="user-message">You: ${message}</p>`;
 
-  // 检查对话次数是否达到五次且 `usedItem` 是否未使用
-  if (conversationCount >= 5 && !usedItems[currentNpcName]) {
-    const fixedReply = {
-      en: "Enough, you are talking something never be good news for the public. Maybe you should go right now. See you.",
-      zh: "够了,你说的事情对公众来说从来都不是好消息。也许你现在应该走了。再见。",
-    };
-    const textContainer = document.getElementById("text-container");
-    textContainer.innerHTML += `<p class="npc-message">Lisa: ${
-      currentLanguage === "en" ? fixedReply.en : fixedReply.zh
-    }</p>`;
-    return;
-  }
-
-  // 检查用户是否表达了特定的意图, 如果没有，继续检查
+  // 检查用户是否表达了特定的意图,如果没有继续调用这个 api
   if (!intentExpressed[currentNpcName]) {
     // 确保检查的是当前 NPC 的意图
     intentExpressed[currentNpcName] = await Check(intent, message);
     console.log("Intent expressed:", intentExpressed);
   }
 
+  if (shouldTriggerAutoReply()) {
+    const fixedReply = getFixedReply();
+    textContainer.innerHTML += `<p class="npc-message">Lisa: ${
+      currentLanguage === "en" ? fixedReply.en : fixedReply.zh
+    }</p>`;
+    return;
+  }
+
   const requestData = {
     prompt: message,
-    charID: "", // bob's id
+    charID: "4d2ef564-4b89-11ef-ad21-42010a7be011", // 替换为你的角色 ID
     sessionID: sessionID,
     voiceResponse: true,
   };
@@ -273,6 +277,9 @@ async function sendMessageToNPC(message) {
 
     if (!response.ok) {
       throw new Error("Network response was not ok");
+    } else {
+      conversationCount[currentNpcName]++; // 只有在成功发送消息后才会增加对话次数
+      localStorage.setItem("conversationCount", JSON.stringify(conversationCount)); // 保存对话次数到 localStorage
     }
 
     const data = await response.json();
@@ -305,7 +312,6 @@ async function sendMessageToNPC(message) {
     textContainer.innerHTML += `<p class="error-message">Error: Unable to get NPC response</p>`;
   }
 }
-
 
 function displayNPCReply(reply, audioReply) {
   const textContainer = document.getElementById("text-container");
@@ -350,12 +356,54 @@ function startSceneDialogue() {
   document.getElementById("user-input-container").style.display = "none";
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-  const backMainButton = document.getElementById("back-main");
-  backMainButton.addEventListener("click", () => {
-    window.location.href = "../Map/map.html"; // 确保这是正确的主页面路径
-  });
-});
+// 函数：添加物品到背包
+function addToInventory(item, image) {
+  // 获取背包容器
+  const inventoryContainer = document.getElementById("inventory-container");
+  // 创建新的物品元素
+  const newItem = document.createElement("img");
+  newItem.src = image;
+  newItem.alt = item;
+  newItem.className = "inventory-item";
+  // 将物品添加到背包
+  inventoryContainer.appendChild(newItem);
+}
+
+// 自定义自动回复逻辑，现在次数是用完才会出现自动回复，因为成功调用才会增加对话次数 
+function getFixedReply() {
+  if (
+    conversationCount[currentNpcName] >= 3 &&
+    !usedItems[currentNpcName] &&
+    !intentExpressed[currentNpcName]
+  ) {
+    return {
+      en: "Enough, you are talking something never be good news for the public. Maybe you should go right now. See you.",
+      zh: "够了,你说的事情对公众来说从来都不是好消息。也许你现在应该走了。再见。",
+    };
+  }
+  if (
+    conversationCount[currentNpcName] >= 5 &&
+    intentExpressed[currentNpcName] &&
+    !usedItems[currentNpcName]
+  ) {
+    return {
+      en: "What you mentioned is interesting. Do you have something for me? I think you should leave now. Goodbye.",
+      zh: "你提到的事情很有意思。你有什么东西给我吗？我觉得你现在应该离开了。再见。",
+    };
+  }
+  if (
+    conversationCount[currentNpcName] >= 5 &&
+    !intentExpressed[currentNpcName] &&
+    usedItems[currentNpcName]
+  ) {
+    return {
+      en: "Thank you for the gift. But I think you might need to sort out your thoughts. Goodbye.",
+      zh: "谢谢你的礼物。但是我觉得你可能还需要理清自己的思绪。再见。",
+    };
+  }
+  return null;
+}
 
 // Export functions for testing
 window.checkSpecialCondition = checkSpecialCondition;
+window.addToInventory = addToInventory;
