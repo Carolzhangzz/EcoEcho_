@@ -6,7 +6,6 @@ bgm.src = "./Music/Save the World.mp3"; // 设置统一的背景音乐
 bgm.volume = 0.5; // 设置音量为 50%
 
 document.addEventListener("DOMContentLoaded", () => {
-  console.log("Intro DOM is loaded");
   startGame();
 });
 
@@ -256,7 +255,6 @@ function startGame() {
 
   const updateScene = () => {
     const scene = scenes[currentScene];
-    console.log("Updating scene to index:", currentScene);
     document.body.style.backgroundImage = `url('${scene.background}')`;
     displayText();
 

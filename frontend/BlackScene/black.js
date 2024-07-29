@@ -2,10 +2,12 @@ document.addEventListener("DOMContentLoaded", () => {
   const textContainer = document.getElementById("text-container");
   const nextSceneButton = document.getElementById("next-scene");
   const backButton = document.getElementById("back-to-main");
-  const musicToggle = document.getElementById("music-toggle");
-  const languageToggle = document.getElementById("language-toggle");
   const bgm = document.getElementById("bgm");
 
+  backButton.addEventListener("click", () => {
+    window.location.href = "../Emilia/Emilia.html";
+  });
+  
   let currentLine = 0;
   const dialogues = [
     {
@@ -18,7 +20,7 @@ document.addEventListener("DOMContentLoaded", () => {
       background: "./images/dimly_lit_room.png",
       textStyle: "futuristic",
       en: "You have obtained <span class='highlight' data-item='truth' data-image='../items/truth.png'>the truth about the death of KI's father, Kane</span>.",
-      zh: "你得到了<span class='highlight' data-item='truth' data-image='../items/truth.png'>关于KI父亲Kane死亡的真相</span>。",
+      zh: "你得到了<span class='highlight' data-item='真相' data-image='../items/truth.png'>关于KI父亲Kane死亡的真相</span>。",
     },
   ];
 
@@ -44,7 +46,6 @@ document.addEventListener("DOMContentLoaded", () => {
   function updateDialogue() {
     if (currentLine < dialogues.length) {
       const currentDialogueObj = dialogues[currentLine];
-
       const dialogueElement = document.createElement("div");
       dialogueElement.className = "dialogue";
       textContainer.appendChild(dialogueElement);
@@ -53,6 +54,7 @@ document.addEventListener("DOMContentLoaded", () => {
       document.body.className = currentDialogueObj.textStyle;
 
       typeWriter(dialogueElement, currentDialogueObj[currentLanguage], () => {
+
         // 对话结束后，自动添加高亮物品到背包
         const highlights = dialogueElement.querySelectorAll(".highlight");
         highlights.forEach((item) => {
@@ -73,40 +75,17 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function goToNextScene() {
-    // 跳转到下一个场景的代码
-    window.location.href = "../Map/map.html";
+   
+
+    // 设置最后交互的"NPC"为Ki
+    setLastSigner("Ki");
+
+    // 跳转到Emilia页面
+    window.location.href = "../Emilia/Emilia.html";
   }
 
   nextSceneButton.addEventListener("click", goToNextScene);
   nextSceneButton.style.display = "none";
-
-  backButton.addEventListener("click", () => {
-    window.location.href = "../Map/map.html";
-  });
-
-  function toggleMusic() {
-    if (bgm.paused) {
-      bgm.play();
-      musicToggle.textContent = "🔊";
-    } else {
-      bgm.pause();
-      musicToggle.textContent = "🔇";
-    }
-  }
-
-  musicToggle.addEventListener("click", toggleMusic);
-
-  languageToggle.addEventListener("click", () => {
-    currentLanguage = currentLanguage === "en" ? "zh" : "en";
-    setLanguage(currentLanguage);
-    languageToggle.textContent = currentLanguage === "en" ? "EN" : "CH";
-    currentLine = 0;
-    updateDialogue();
-  });
-
-  // Initialize language
-  currentLanguage = getLanguage();
-  languageToggle.textContent = currentLanguage === "en" ? "EN" : "CH";
 
   // Set up background music
   bgm.src = "../Introduction/Music/Immediate Music - From The Light.mp3";

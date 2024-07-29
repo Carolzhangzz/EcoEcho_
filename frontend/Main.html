@@ -1,27 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Memory Recollection</title>
+    <title>Game Start</title>
+    <link rel="stylesheet" href="./global.css">
     <link rel="stylesheet" href="main.css">
 </head>
+
 <body>
+    <button id="music-toggle">🔊</button>
+    <button id="language-toggle">EN</button>
+     
     <div class="container">
-        <div class="header">
-            <div class="title">Memory Recollection</div>
-            <div class="completion">Progress: 9.09%</div>
-        </div>
-        <div class="center">
-            <a href="./Introduction/Intro.html" class="start-button" id="startButton">START GAME</a>
-        </div>
-        <div class="footer">
-            <div id="scene1">The first scene</div>
-            <div id="scene2">The second scene</div>
-            <div id="scene3">The third scene</div>
-        </div>
+        <button id="back-main">Go to Map</button>
+        <button id="startButton" class="start-button">Start Game</button>
+    </div>
+    <button id="clear-inventory" onclick="clearInventory()">Clear the bag</button>
+    <div id="inventory-icon"></div>
+    <div id="inventory-popup" class="hidden">
+        <h3>Bag Content</h3>
+        <ul id="inventory-items"></ul>
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.3/howler.min.js"></script>
     <script src="main.js"></script>
+    <script src="global.js"></script>
 </body>
+
 </html>

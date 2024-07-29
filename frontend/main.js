@@ -1,50 +1,52 @@
 // 背景音乐
 var bgm = new Howl({
-    src: ['./Immediate Music - From The Light.mp3'],
-    loop: true,
-    volume: 0.5
+  src: ["./Immediate Music - From The Light.mp3"],
+  loop: true,
+  volume: 0.5,
 });
 
 // 开始播放背景音乐
 bgm.play();
 
-// 开始游戏按钮点击事件
-document.getElementById('startButton').addEventListener('click', function() {
-    // 这里添加开始游戏的逻辑
-    console.log('游戏开始');
-});
+document.addEventListener("DOMContentLoaded", () => {
+  const startGameButton = document.getElementById("startButton");
 
-// 可以在这里添加更多游戏相关的 JavaScript 代码
-document.addEventListener('DOMContentLoaded', () => {
-    const scene1 = document.getElementById('scene1');
-    
-    scene1.addEventListener('click', () => {
-        window.location.href = './Lisa/Lisa.html';
-    });
+  const backMainButton = document.getElementById("back-main");
+  backMainButton.addEventListener("click", () => {
+    window.location.href = "./Map/map.html"; // 
+  });
 
-    const scene2 = document.getElementById('scene2'); 
-    scene2.addEventListener('click', () => {
-        window.location.href = './Bob/Bob.html';
-    });
-    // 其他现有的代码...
-});
+  // 检查游戏是否已经开始
+  function isGameStarted() {
+    const gameStarted = lastSigner !== null && lastSigner !== undefined && lastSigner !== '';
+    return gameStarted;
+  }
 
-async function callAI(prompt) {
-    try {
-      const response = await fetch('http://localhost:3000/api/generate', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ prompt }),
-      });
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-      const data = await response.json();
-      return data.choices[0].text;
-    } catch (error) {
-      console.error('Error:', error);
-      throw error;
+  function updateStartButton() {
+    const currentLanguage = localStorage.getItem("language") || "en";
+    const gameStarted = isGameStarted();
+    if (gameStarted) {
+      startGameButton.textContent =
+        currentLanguage === "en" ? "Continue Game" : "继续游戏";
+    } else {
+      startGameButton.textContent =
+        currentLanguage === "en" ? "Start New Game" : "开始新游戏";
     }
   }
+
+  // 初始化时更新按钮
+  updateStartButton();
+
+  // 修改开始游戏按钮的行为
+  startGameButton.addEventListener("click", () => {
+    const gameStarted = isGameStarted();
+    console.log("Start button clicked. Game started:", gameStarted);
+    if (gameStarted) {
+      console.log("Redirecting to map page");
+      window.location.href = "./Map/map.html";
+    } else {
+      console.log("Redirecting to intro page");
+      window.location.href = "./Introduction/Intro.html";
+    }
+  });
+});

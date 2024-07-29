@@ -32,7 +32,6 @@ document.addEventListener("DOMContentLoaded", () => {
       goToScene("../Bob/Bob.html");
     }
   });
-  bgm.play();
 });
 
 // // Autoplay music on first click

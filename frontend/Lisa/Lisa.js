@@ -3,10 +3,10 @@ let currentNpcName = "Lisa"; // NPC 名字
 bgm = document.getElementById("bgm");
 bgm.loop = true; // Let the music loop
 bgm.src = "./Music/Save the World.mp3"; // 设置统一的背景音乐
-bgm.volume = 0.1; // 设置音量为 50%
-
+bgm.volume = 0.1; //  音量设置为 10%
 let sessionID = "-1"; // 会话 ID，用于区分不同的游戏进度
 let backupReplyIndex = 0; // 备用回复的索引
+
 document.addEventListener("DOMContentLoaded", () => {
   const characterImage = document.getElementById("character-image");
   const backgroundImage = "./images/Media.png"; // 设置一个默认的背景图
@@ -41,13 +41,20 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
+  //判断是否这个对话已经结束 如果结束了，就显示 new scene 的对话
+  if (allScenesCompleted.Lisa) {
+    startNewSceneDialogue();
+  }
+
   // 处理 back to the map 按钮点击事件
   const backMainButton = document.getElementById("back-main");
   backMainButton.addEventListener("click", () => {
-    if (allScenesCompleted && !newSceneCompleted) {
-      // 如果所有对话都结束了，但是新对话还没有开始，那么跳转到 Emilia 页面， 先设置上一页 
-      setPreviousPage(window.location.pathname); // 设置上一页
-      window.location.href = "../Emilia/Emilia.html"; // 跳转到特殊地图页面
+    if ( allScenesCompleted.Lisa && newSceneCompleted.Lisa === null) {
+      // 如果所有对话都结束了，但是新对话还没有结束，说明用户直接点击了 back to main 而没有去艾米丽那边
+      // 设置最后交互的NPC
+      setLastSigner(currentNpcName);
+      // 跳转到Room页面,并传递当前NPC作为lastSigner参数
+      window.location.href = `../Room/room.html?lastSigner=${currentNpcName}`;
     } else {
       window.location.href = "../Map/map.html"; // 跳转到默认地图页面
     }
@@ -58,11 +65,11 @@ const scenes = [
   {
     text: {
       en: [
-        "Oh, so you're Kane's son. That makes sense now. If I were you, I'd head to the Guild Hall and find <span class='highlight' data-item='Journalist ID' data-image='../items/Journalist ID.png'>Bob</span>.",
+        "Oh, so you're Kane's son. That makes sense now. If I were you, I'd head to the Guild Hall and find <span class='highlight' data-item='Journalist_ID' data-image='../items/Journalist_ID.png'>Bob</span>.",
         "They're having a heated debate about K, and your arrival could make things a lot more interesting. I will support you.",
       ],
       zh: [
-        "哦,原来你是凯恩的儿子,这就有道理了。如果我是你,我会去工会大楼找<span class='highlight' data-item='记者证' data-image='../items/Journalist ID.png'>鲍勃</span>。",
+        "哦,原来你是凯恩的儿子,这就有道理了。如果我是你,我会去工会大楼找<span class='highlight' data-item='记者证' data-image='../items/Journalist_ID.png'>鲍勃</span>。",
         "他们正为K的事吵得不可开交,你的出现可能会让事情变得更有趣。我会支持你的。",
       ],
     },
@@ -122,7 +129,6 @@ function startGame() {
 
   const updateScene = () => {
     const scene = scenes[currentScene];
-    console.log("Updating scene to index:", currentScene);
     document.body.style.backgroundImage = `url('${scene.background}')`;
     displayText();
 
@@ -142,10 +148,18 @@ function startGame() {
       currentScene === scenes.length - 1 &&
       currentTextIndex === scene.text[currentLanguage].length - 1
     ) {
+      //设定 talkToLisa 为 true
       gameProgress.talkedToLisa = true;
-      console.log("All scenes completed, talkedToLisa set to true.");
+      updateAllScenesCompleted("Lisa", true); // 更新Lisa的allScenesCompleted状态
       localStorage.setItem("gameProgress", JSON.stringify(gameProgress)); // 保存到 localStorage
-      allScenesCompleted = true; // 设置所有对话结束标志
+
+      // 修改这里的逻辑
+      setTimeout(() => {
+        // 设置最后交互的NPC
+        setLastSigner(currentNpcName);
+        // 跳转到Room页面,并传递当前NPC作为lastSigner参数
+        window.location.href = `../Room/room.html?lastSigner=${currentNpcName}`;
+      }, 2000);
     }
   };
 
@@ -183,7 +197,14 @@ const intent =
 
 // 检查用户是否表达了特定的意图
 async function Check(intent, message) {
-  const keywords = ["truth", "father's death", "Kane","真相","死","父亲去世"]; // 关键字列表
+  const keywords = [
+    "truth",
+    "father's death",
+    "Kane",
+    "真相",
+    "死",
+    "父亲去世",
+  ]; // 关键字列表
 
   try {
     const prompt = `Analyze the following user message in the context of a conversation about family relationships:
@@ -227,15 +248,19 @@ async function Check(intent, message) {
     if (intentExpressedValue) {
       intentExpressed[currentNpcName] = true; // 动态设置属性
       localStorage.setItem("intentExpressed", JSON.stringify(intentExpressed));
+      // 重置对话计数
+      resetConversationCount();
     }
 
     return intentExpressedValue;
   } catch (error) {
     console.error("Error in Check:", error);
-    
+
     // 检查用户输入是否包含关键字
-    const containsKeyword = keywords.some(keyword => message.includes(keyword));
-    
+    const containsKeyword = keywords.some((keyword) =>
+      message.includes(keyword)
+    );
+
     if (containsKeyword) {
       intentExpressed[currentNpcName] = true; // 动态设置属性
       localStorage.setItem("intentExpressed", JSON.stringify(intentExpressed));
@@ -266,7 +291,7 @@ async function handleMessage(message) {
     startGame();
     return;
   }
-  
+
   // Check if the auto-reply should be triggered before sending the message
   if (shouldTriggerAutoReply()) {
     const fixedReply = getFixedReply();
@@ -284,14 +309,14 @@ async function handleMessage(message) {
   }
 }
 
-// 向 NPC 发送消息并获取回复
-async function sendMessageToNPC(message) {
-  const requestData = {
-    prompt: message,
-    charID: "4d2ef564-4b89-11ef-ad21-42010a7be011", // 替换为你的角色 ID
-    sessionID: sessionID,
-    voiceResponse: true,
-  };
+  // 向 NPC 发送消息并获取回复
+  async function sendMessageToNPC(message) {
+    const requestData = {
+      prompt: message,
+      charID: "4d2ef564-4b89-11ef-ad21-42010a7be011", // 替换为你的角色 ID
+      sessionID: sessionID,
+      voiceResponse: true,
+    };
 
   // // 模拟 ConvAI 接口失败，强制抛出错误
   // throw new Error("Simulated ConvAI API failure");
@@ -308,7 +333,8 @@ async function sendMessageToNPC(message) {
     throw new Error("Network response was not ok");
   }
 
-  conversationCount[currentNpcName]++; // 只有在成功发送消息后才会增加对话次数
+  // 例如，在成功发送消息后
+  updateConversationCount(currentNpcName, conversationCount[currentNpcName] + 1); // 只有在成功发送消息后才会增加对话次数
   localStorage.setItem("conversationCount", JSON.stringify(conversationCount)); // 保存对话次数到 localStorage
 
   const data = await response.json();
@@ -355,8 +381,8 @@ async function generateBackupResponse(message) {
 
     let npcReply = data.data;
 
-    conversationCount[currentNpcName]++; // 增加对话次数，即使是使用备份接口
-    localStorage.setItem("conversationCount", JSON.stringify(conversationCount)); // 保存对话次数到 localStorage
+    // 例如，在成功发送消息后
+    updateConversationCount(currentNpcName, conversationCount[currentNpcName] + 1);
 
     if (currentLanguage === "en") {
       displayNPCReply(npcReply);
@@ -367,15 +393,13 @@ async function generateBackupResponse(message) {
     }
   } catch (error) {
     console.error("Error in generateBackupResponse:", error);
-    // 备用接口也失败时，显示固定的回复
     const fixedReply = backupFixedReply();
     const textContainer = document.getElementById("text-container");
     textContainer.innerHTML += `<p class="npc-message">Lisa: ${
       currentLanguage === "en" ? fixedReply.en : fixedReply.zh
     }</p>`;
-    //这个时候也得累积对话次数 
-    conversationCount[currentNpcName]++;
-    localStorage.setItem("conversationCount", JSON.stringify(conversationCount)); // 保存对话次数到 localStorage
+    //这个时候也得累积对话次数
+    updateConversationCount(currentNpcName, conversationCount[currentNpcName] + 1);
   }
 }
 
@@ -445,15 +469,15 @@ function addToInventory(item, image) {
   inventoryContainer.appendChild(newItem);
 }
 
-// 两个接口都失败时，显示固定的回复 
+// 两个接口都失败时，显示固定的回复
 const backupReplies = [
   {
     en: "I'm sorry, I cannot understand what you are saying. Please try again.",
     zh: "对不起，我无法理解你在说什么。请再试一次。",
   },
   {
-    en:"Hmm, that does sound interesting, but how can I trust you? Unless... you're an insider?",
-    zh:"嗯，听起来很有趣，但我怎么能相信你？除非...你是内部人员？",
+    en: "Hmm, that does sound interesting, but how can I trust you? Unless... you're an insider?",
+    zh: "嗯，听起来很有趣，但我怎么能相信你？除非...你是内部人员？",
   },
 ];
 
@@ -463,7 +487,7 @@ function backupFixedReply() {
   return reply;
 }
 
-// 自定义自动回复逻辑，现在次数是用完才会出现自动回复，因为成功调用才会增加对话次数
+// 自定义自动回复逻辑，现在次数是用完才会出现自动回复，成功调用才会增加对话次数
 function getFixedReply() {
   if (
     conversationCount[currentNpcName] >= 2 &&

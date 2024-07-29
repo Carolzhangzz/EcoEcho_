@@ -2,7 +2,6 @@ bgm = document.getElementById("bgm");
 bgm.loop = true; // Let the music loop
 bgm.src = "./Music/Save the World.mp3"; // 设置统一的背景音乐
 bgm.volume = 0.1; // 设置音量为 50%
-let newSceneCompleted = false; // 记录新场景是否结束
 
 const newScenes = [
   {
@@ -20,7 +19,9 @@ const newScenes = [
 ];
 
 function startNewSceneDialogue() {
+
   bgm.play();
+
   const textContainer = document.getElementById("text-container");
   const nextButton = document.getElementById("next-text-button");
   const prevButton = document.getElementById("prev-text-button");
@@ -50,7 +51,8 @@ function startNewSceneDialogue() {
       currentTextIndex++;
       displayNewSceneText();
     } else {
-      newSceneCompleted = true; // 设置新场景结束标志
+      console.log("Lisa all scene completed");
+      updateNewSceneCompleted("Lisa", true);
     }
   });
 
@@ -77,9 +79,6 @@ function startNewSceneDialogue() {
   displayNewSceneText();
 }
 
-window.startNewSceneDialogue = startNewSceneDialogue;
-
-// 使用 newSceneCompleted 判断新场景是否结束
 function goToMap() {
   window.location.href = "../Map/map.html"; // 跳转到默认地图页
 }
