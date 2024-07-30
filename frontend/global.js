@@ -51,6 +51,12 @@ let newSceneCompleted = {
   Johnathan: false,
 };
 
+let bobIntentExpress = {
+  comeForK: false,
+  kaneRelation: false,
+  lisaSupport: false
+};
+
 // 从 localStorage 加载数据
 const loadDataFromLocalStorage = (key, defaultValue) => {
   const savedData = localStorage.getItem(key);
@@ -58,6 +64,16 @@ const loadDataFromLocalStorage = (key, defaultValue) => {
     try {
       const parsedData = JSON.parse(savedData);
       console.log(`Loaded ${key} from localStorage:`, parsedData);
+
+      // 对于 bobIntentExpress，进行额外的格式检查 
+      if (key === "bobIntentExpress") {
+        const validKeys = ["comeForK", "kaneRelation", "lisaSupport"];
+        const cleanedData = {};
+        for (const validKey of validKeys) {
+          cleanedData[validKey] = parsedData[validKey] === true;
+        }
+        return cleanedData;
+      }
 
       // 对于 conversationCount，进行额外的格式检查
       if (key === "conversationCount") {
@@ -139,6 +155,29 @@ conversationCount = loadDataFromLocalStorage(
 metEmilia = loadDataFromLocalStorage("metEmilia", metEmilia);
 signatures = loadDataFromLocalStorage("signatures", signatures);
 lastSigner = loadDataFromLocalStorage("lastSigner", lastSigner);
+bobIntentExpress= loadDataFromLocalStorage("bobIntentExpress", bobIntentExpress);
+
+
+// 检查 Bob 的所有意图是否都已表达
+function allBobIntentsExpressed() {
+  return Object.values(bobIntentExpress).every(intent => intent);
+}
+
+// 更新 Bob 的意图
+function updateBobIntentExpress(key, value) {
+  bobIntentExpress[key] = value;
+  localStorage.setItem('bobIntentExpress', JSON.stringify(bobIntentExpress));
+}
+
+// 重置 Bob 的意图
+function resetBobIntentExpress() {
+  bobIntentExpress = {
+    comeForK: false,
+    kaneRelation: false,
+    lisaSupport: false
+  };
+  localStorage.setItem('bobIntentExpress', JSON.stringify(bobIntentExpress));
+}
 
 // Count 的更新函数
 function updateConversationCount(npcName, count) {
@@ -262,6 +301,9 @@ function resetGame() {
 
   // 清除 lastSigner
   clearLastSigner();
+
+  // 重置 Bob 的意图 
+  resetBobIntentExpress();
 
   window.location.href = "/Main.html";
 }
@@ -523,8 +565,7 @@ async function generateResponse(npcReply) {
     console.log("Received translated reply:", translatedReply);
     return translatedReply;
   } catch (error) {
-    console.error("Error in generateResponse:", error);
-    return "Error: " + error.message;
+    return npcReply; // 返回原始回复 
   }
 }
 

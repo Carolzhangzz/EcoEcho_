@@ -49,7 +49,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // 处理 back to the map 按钮点击事件
   const backMainButton = document.getElementById("back-main");
   backMainButton.addEventListener("click", () => {
-    if ( allScenesCompleted.Lisa && newSceneCompleted.Lisa === null) {
+    if (allScenesCompleted.Lisa && newSceneCompleted.Lisa === null) {
       // 如果所有对话都结束了，但是新对话还没有结束，说明用户直接点击了 back to main 而没有去艾米丽那边
       // 设置最后交互的NPC
       setLastSigner(currentNpcName);
@@ -285,32 +285,33 @@ async function handleMessage(message) {
     console.log("Intent expressed:", intentExpressed);
   }
 
-  // Check for special conditions before sending the message
+  // 检查特殊条件
   if (checkSpecialCondition()) {
     startSceneDialogue();
     startGame();
     return;
   }
 
-  // Check if the auto-reply should be triggered before sending the message
+  // 检查是否应该触发自动回复
   if (shouldTriggerAutoReply(currentNpcName)) {
     const fixedReply = getFixedReply();
-    textContainer.innerHTML += `<p class="npc-message">Lisa: ${
-      currentLanguage === "en" ? fixedReply.en : fixedReply.zh
-    }</p>`;
+    displayNPCReply(currentLanguage === "en" ? fixedReply.en : fixedReply.zh);
     return;
   }
 
+  // 尝试发送消息给 NPC
   try {
     await sendMessageToNPC(message);
   } catch (error) {
-    console.error("Error in sendMessageToNPC:", error);
-    await generateBackupResponse(message);
+    console.error("Error in handleMessage:", error);
+    // 如果 sendMessageToNPC 失败，它会内部调用 generateBackupResponse
+    // 所以这里不需要再次调用 generateBackupResponse
   }
 }
 
-  // 向 NPC 发送消息并获取回复
-  async function sendMessageToNPC(message) {
+// 向 NPC 发送消息并获取回复
+async function sendMessageToNPC(message) {
+  try {
     const requestData = {
       prompt: message,
       charID: "4d2ef564-4b89-11ef-ad21-42010a7be011", // 替换为你的角色 ID
@@ -318,42 +319,63 @@ async function handleMessage(message) {
       voiceResponse: true,
     };
 
-  // // 模拟 ConvAI 接口失败，强制抛出错误
-  // throw new Error("Simulated ConvAI API failure");
+    // 模拟 ConvAI 接口失败，强制抛出错误
+    // throw new Error("Simulated ConvAI API failure");
 
-  const response = await fetch("/api/convai", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(requestData),
-  });
+    const response = await fetch("/api/convai", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(requestData),
+    });
 
-  if (!response.ok) {
-    throw new Error("Network response was not ok");
+    if (!response.ok) {
+      throw new Error("Network response was not ok");
+    }
+
+    const data = await response.json();
+    console.log("NPC Response:", data);
+
+    // Check if the session ID has been updated
+    if (data.sessionID) {
+      sessionID = data.sessionID;
+    }
+
+    let npcReply = data.text;
+    let audioReply = data.audio; // 获取音频回复
+
+    // 例如，在成功发送消息后
+    updateConversationCount(
+      currentNpcName,
+      conversationCount[currentNpcName] + 1
+    ); // 只有在成功发送消息后才会增加对话次数
+    localStorage.setItem(
+      "conversationCount",
+      JSON.stringify(conversationCount)
+    ); // 保存对话次数到 localStorage
+
+    if (currentLanguage === "en") {
+      displayNPCReply(npcReply, audioReply);
+    } else {
+      const translatedReply = await generateResponse(npcReply);
+      console.log("Translated Reply:", translatedReply);
+      displayNPCReply(translatedReply.data, audioReply);
+    }
+  } catch (error) {
+    console.error("Error in sendMessageToNPC:", error);
+    // 在这里调用备用响应生成函数
+    await generateBackupResponse(message);
   }
+}
 
-  // 例如，在成功发送消息后
-  updateConversationCount(currentNpcName, conversationCount[currentNpcName] + 1); // 只有在成功发送消息后才会增加对话次数
-  localStorage.setItem("conversationCount", JSON.stringify(conversationCount)); // 保存对话次数到 localStorage
-
-  const data = await response.json();
-  console.log("NPC Response:", data);
-
-  // Check if the session ID has been updated
-  if (data.sessionID) {
-    sessionID = data.sessionID;
-  }
-
-  let npcReply = data.text;
-  let audioReply = data.audio; // 获取音频回复
-
-  if (currentLanguage === "en") {
-    displayNPCReply(npcReply, audioReply);
-  } else {
-    const translatedReply = await generateResponse(npcReply);
-    console.log("Translated Reply:", translatedReply);
-    displayNPCReply(translatedReply.data, audioReply);
+function getNPCSpecificPrompt(npcName, userMessage) {
+  switch (npcName) {
+    case "Lisa":
+      return `You are Lisa, a knowledgeable NPC in a futuristic world. Respond to the user's message in a way that fits your character's background and style. User Message: "${userMessage}"`;
+    // Add more cases for other NPCs as needed
+    default:
+      return `You are an NPC. Respond to the user's message appropriately. User Message: "${userMessage}"`;
   }
 }
 
@@ -369,9 +391,6 @@ async function generateBackupResponse(message) {
       body: JSON.stringify({ prompt }),
     });
 
-    //  模拟 第二个 NPC 调用 接口失败，强制抛出错误
-    //  throw new Error("Simulated Second NPC API failure");
-
     if (!response.ok) {
       throw new Error("Network response was not ok for backup response");
     }
@@ -381,35 +400,29 @@ async function generateBackupResponse(message) {
 
     let npcReply = data.data;
 
-    // 例如，在成功发送消息后
-    updateConversationCount(currentNpcName, conversationCount[currentNpcName] + 1);
+    // 更新对话计数
+    updateConversationCount(
+      currentNpcName,
+      conversationCount[currentNpcName] + 1
+    );
 
+    // 显示回复
     if (currentLanguage === "en") {
       displayNPCReply(npcReply);
     } else {
       const translatedReply = await generateResponse(npcReply);
-      console.log("Translated Backup Reply:", translatedReply);
       displayNPCReply(translatedReply.data);
     }
   } catch (error) {
     console.error("Error in generateBackupResponse:", error);
+    // 如果备用 API 也失败，使用固定回复
     const fixedReply = backupFixedReply();
-    const textContainer = document.getElementById("text-container");
-    textContainer.innerHTML += `<p class="npc-message">Lisa: ${
-      currentLanguage === "en" ? fixedReply.en : fixedReply.zh
-    }</p>`;
-    //这个时候也得累积对话次数
-    updateConversationCount(currentNpcName, conversationCount[currentNpcName] + 1);
-  }
-}
-
-function getNPCSpecificPrompt(npcName, userMessage) {
-  switch (npcName) {
-    case "Lisa":
-      return `You are Lisa, a knowledgeable NPC in a futuristic world. Respond to the user's message in a way that fits your character's background and style. User Message: "${userMessage}"`;
-    // Add more cases for other NPCs as needed
-    default:
-      return `You are an NPC. Respond to the user's message appropriately. User Message: "${userMessage}"`;
+    displayNPCReply(currentLanguage === "en" ? fixedReply.en : fixedReply.zh);
+    // 即使使用固定回复，也要更新对话计数
+    updateConversationCount(
+      currentNpcName,
+      conversationCount[currentNpcName] + 1
+    );
   }
 }
 

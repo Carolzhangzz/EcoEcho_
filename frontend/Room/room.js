@@ -11,9 +11,12 @@ document.addEventListener("DOMContentLoaded", () => {
   // 使用 lastSigner 来设置相应的场景或对话
   startGame(lastSigner);
 
-  // 禁用返回主页按钮
+  // 不禁用返回主页按钮
   const backMainButton = document.getElementById("back-main");
-  backMainButton.style.display = "none";
+  //跳转到艾米丽
+  backMainButton.addEventListener("click", () => {
+    window.location.href = "../Emilia/Emilia.html";
+  });
 });
 
 function getScenes(lastSigner) {
@@ -29,7 +32,7 @@ function getScenes(lastSigner) {
             ],
             zh: [
               "KI回到现实世界后, 他坐在房间中, 望着熟悉的书桌和窗外美丽的环境, 陷入了沉思。",
-              "他心想：事情似乎比我想象的要顺利，但为什么心里总有一种不安的感觉……",
+              "他心想：事情似乎比我想象的要顺利，但为什么心里总有一种不安的感觉…… ",
               "希望能尽早带回石油吧。",
             ],
           },
@@ -45,13 +48,13 @@ function getScenes(lastSigner) {
               "Returning to the present after another journey to the past, KI felt an overwhelming sense of exhaustion.",
               "At least the plan was about to succeed, giving him some comfort.",
               "Sitting in his room, he opened the window, only to be shocked to see that the dense forest outside had disappeared, and there was an indescribable smell in the air.",
-              "He muttered to himself, 'Maybe I haven't had a good rest in a while...'",
+              "He muttered to himself, Maybe I haven't had a good rest in a while... ",
             ],
             zh: [
-              "再次结束了过去的旅程回到现在,KI感到无尽的疲惫。",
+              "再次结束了过去的旅程回到现在, KI感到无尽的疲惫。",
               "好在计划即将成功，他感到些许安慰。",
               "坐在房间中，他推开窗户，却惊讶地发现窗前那片茂密的森林消失了，空气中似乎弥漫着一种说不上来的味道。",
-              "他低声自语道：'可能是我好久没有好好休息了……'",
+              "他低声自语道: 可能是我好久没有好好休息了…… ",
             ],
           },
           background: "./RoomImages/Bob_scene.png",
@@ -68,7 +71,7 @@ function getScenes(lastSigner) {
               "However, KI seemed completely oblivious to these changes, lost in his own joy, as he quickly stepped out of the room.",
             ],
             zh: [
-              "终于, KI成功了, 阻止了K的开采, 重新回到了“传统能源的世界”。",
+              "终于, KI成功了, 阻止了K的开采, 重新回到了“传统能源的世界。",
               "他看向窗外，发现那里悄然建起了工厂，巨大的烟囱不停地排放着黑色的浓烟。",
               "然而, KI似乎完全没有注意到这些变化, 他沉浸在自己的喜悦中, 快步走出房间。",
             ],
@@ -125,21 +128,21 @@ function startGame(lastSigner) {
     document.body.style.backgroundImage = `url('${scene.background}')`;
     displayText();
 
-    // 检查是否是最后一个场景的最后一行文本
-    if (
-      currentScene === scenes.length - 1 &&
-      currentTextIndex === scene.text[currentLanguage].length - 1
-    ) {
-      // 添加一个延迟，给用户一些时间阅读最后的文本
-      setTimeout(() => {
-        console.log(
-          "`lastSigner at Room and MetEmilia`:",
-          lastSigner,
-          metEmilia[lastSigner]
-        );
-        window.location.href = "../Emilia/Emilia.html"; // 跳转到艾米丽的页面
-      }, 5000); // 2秒后执行
-    }
+    // // 检查是否是最后一个场景的最后一行文本
+    // if (
+    //   currentScene === scenes.length - 1 &&
+    //   currentTextIndex === scene.text[currentLanguage].length - 1
+    // ) {
+    //   // 添加一个延迟，给用户一些时间阅读最后的文本
+    //   setTimeout(() => {
+    //     console.log(
+    //       "`lastSigner at Room and MetEmilia`:",
+    //       lastSigner,
+    //       metEmilia[lastSigner]
+    //     );
+    //     window.location.href = "../Emilia/Emilia.html"; // 跳转到艾米丽的页面
+    //   }, 5000); // 2秒后执行
+    // }
 
     bgm.play();
   };

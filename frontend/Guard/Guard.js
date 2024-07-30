@@ -13,7 +13,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const nextButton = document.getElementById("next-text-button");
   const prevButton = document.getElementById("prev-text-button");
   const userInputContainer = document.getElementById("user-input-container");
- 
+
   // 设置背景图和角色图片
   document.body.style.backgroundImage = `url('${backgroundImage}')`;
   characterImage.src = "./npc/Guard.png";
@@ -27,11 +27,11 @@ document.addEventListener("DOMContentLoaded", () => {
     // 如果没有与Lisa对话，显示初始对话
     startFirstDialogue();
   } else if (gameProgress.talkedToLisa && gameProgress.talkedToGuard) {
-    // 如果已经与Lisa和Guard对话，显示新场景对话 
+    // 如果已经与Lisa和Guard对话，显示新场景对话
     startNewSceneDialogue();
   }
 
-  //其余情况就是直接显示Guard的对话 
+  //其余情况就是直接显示Guard的对话
   nextButton.style.display = "inline-block";
   prevButton.style.display = "none";
 
@@ -241,6 +241,7 @@ async function Check(intent, message) {
     // 解析玩家的意图是不是符合预期
     const intentExpressedValue = data.data === "true";
 
+    //如果符合预期，就设置intentExpressed为true 并且重置对话次数
     if (intentExpressedValue) {
       intentExpressed[currentNpcName] = true; // 动态设置属性
       localStorage.setItem("intentExpressed", JSON.stringify(intentExpressed));
@@ -258,6 +259,7 @@ async function Check(intent, message) {
     );
 
     if (containsKeyword) {
+      //如果包含关键字，就设置intentExpressed为true 并且重置对话次数
       intentExpressed[currentNpcName] = true; // 动态设置属性
       localStorage.setItem("intentExpressed", JSON.stringify(intentExpressed));
       return true;
@@ -307,55 +309,60 @@ async function handleMessage(message) {
 
 // 向 NPC 发送消息并获取回复
 async function sendMessageToNPC(message) {
-  const requestData = {
-    prompt: message,
-    charID: "4d2ef564-4b89-11ef-ad21-42010a7be011", // 替换为你的角色 ID
-    sessionID: sessionID,
-    voiceResponse: true,
-  };
+  try {
+    const requestData = {
+      prompt: message,
+      charID: "4d2ef564-4b89-11ef-ad21-42010a7be011", // 替换为你的角色 ID
+      sessionID: sessionID,
+      voiceResponse: true,
+    };
 
-  // // 模拟 ConvAI 接口失败，强制抛出错误
-  // throw new Error("Simulated ConvAI API failure");
+    const response = await fetch("/api/convai", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(requestData),
+    });
 
-  const response = await fetch("/api/convai", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(requestData),
-  });
+    if (!response.ok) {
+      throw new Error("Network response was not ok");
+    }
 
-  if (!response.ok) {
-    throw new Error("Network response was not ok");
-  }
+    const data = await response.json();
+    console.log("NPC Response:", data);
 
-  // 例如，在成功发送消息后
-  updateConversationCount(
-    currentNpcName,
-    conversationCount[currentNpcName] + 1
-  ); // 只有在成功发送消息后才会增加对话次数
-  localStorage.setItem("conversationCount", JSON.stringify(conversationCount)); // 保存对话次数到 localStorage
+    // Check if the session ID has been updated
+    if (data.sessionID) {
+      sessionID = data.sessionID;
+    }
 
-  const data = await response.json();
-  console.log("NPC Response:", data);
+    let npcReply = data.text;
+    let audioReply = data.audio; // 获取音频回复
 
-  // Check if the session ID has been updated
-  if (data.sessionID) {
-    sessionID = data.sessionID;
-  }
+    // 例如，在成功发送消息后
+    updateConversationCount(
+      currentNpcName,
+      conversationCount[currentNpcName] + 1
+    ); // 只有在成功发送消息后才会增加对话次数
+    localStorage.setItem(
+      "conversationCount",
+      JSON.stringify(conversationCount)
+    ); // 保存对话次数到 localStorage
 
-  let npcReply = data.text;
-  let audioReply = data.audio; // 获取音频回复
-
-  if (currentLanguage === "en") {
-    displayNPCReply(npcReply, audioReply);
-  } else {
-    const translatedReply = await generateResponse(npcReply);
-    console.log("Translated Reply:", translatedReply);
-    displayNPCReply(translatedReply.data, audioReply);
+    if (currentLanguage === "en") {
+      displayNPCReply(npcReply, audioReply);
+    } else {
+      const translatedReply = await generateResponse(npcReply);
+      console.log("Translated Reply:", translatedReply);
+      displayNPCReply(translatedReply.data, audioReply);
+    }
+  } catch (error) {
+    console.error("Error in sendMessageToNPC:", error);
+    // 当 NPC 接口崩溃时，调用 generateBackupResponse
+    await generateBackupResponse(message);
   }
 }
-
 // 调用 generate 接口获取 NPC 的回复
 async function generateBackupResponse(message) {
   const prompt = getNPCSpecificPrompt(currentNpcName, message);
@@ -380,12 +387,12 @@ async function generateBackupResponse(message) {
 
     let npcReply = data.data;
 
-    // 例如，在成功发送消息后
+    //只有在成功发送消息后才会增加对话次数
     updateConversationCount(
       currentNpcName,
       conversationCount[currentNpcName] + 1
-    );
-
+    ); 
+ 
     if (currentLanguage === "en") {
       displayNPCReply(npcReply);
     } else {

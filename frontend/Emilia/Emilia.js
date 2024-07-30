@@ -25,7 +25,6 @@ function goToScene(scenePath) {
 document.addEventListener("DOMContentLoaded", () => {
   initializeAudio();
 
-
   const lastSigner = getLastSigner();
 
   startGame(lastSigner);
@@ -44,8 +43,6 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 function startGame(lastSigner) {
-  
-
   const textContainer = document.getElementById("text-container");
   const nextButton = document.getElementById("next-text-button");
   const prevButton = document.getElementById("prev-text-button");
@@ -56,15 +53,17 @@ function startGame(lastSigner) {
     dialogues = [
       {
         en: [
-          `Welcome to ${lastSigner}'s map. This is your first time meeting Emilia here.`,
+          `We are conducting the second public petition on the new energy K.`,
         ],
-        zh: [`欢迎来到${lastSigner}的地图。这是你第一次在这里遇到艾米莉亚。`],
+        zh: [`我们正在进行关于新型能源K的第二次民意联署。`],
       },
       {
         en: [
-          `${lastSigner} has told me about you. It's nice to finally meet you in person.`,
+          `Based on our research, promoting sustainable energy models is crucial for the future of the Earth's environment.`,
         ],
-        zh: [`${lastSigner}跟我提到过你。很高兴终于亲自见到你。`],
+        zh: [
+          `根据我们的研究, 推广可持续的能源模式对于未来的地球环境至关重要。`,
+        ],
       },
     ];
     updateMetEmilia(lastSigner, true);
@@ -86,7 +85,24 @@ function startGame(lastSigner) {
       },
     ];
     updateMetEmilia(lastSigner, true);
- 
+  } else if (lastSigner === "Bob" && !metEmilia["Bob"]) {
+    dialogues = [
+      {
+        en: [
+          " We are conducting the third public petition on the new energy K.",
+        ],
+        zh: ["我们正在进行关于新型能源K的第三次民意联署。"],
+      },
+      {
+        en: [
+          "Based on our research, promoting sustainable energy models is crucial for the future of the Earth's environment.",
+        ],
+        zh: [
+          "根据我们的研究，推广可持续的能源模式对于未来的地球环境至关重要。",
+        ],
+      },
+    ];
+    updateMetEmilia(lastSigner, true);
   } else {
     dialogues = [
       {
@@ -103,7 +119,6 @@ function startGame(lastSigner) {
       },
     ];
   }
-
   const scenes = dialogues.map((dialogue) => ({
     text: dialogue,
     background: "./map.png",
@@ -242,9 +257,8 @@ function showSignaturePrompt() {
   });
 }
 
-
 function AfterEmilia() {
-  const lastSigner = getLastSigner();  // 使用 getLastSigner() 而不是直接从 localStorage 获取
+  const lastSigner = getLastSigner(); // 使用 getLastSigner() 而不是直接从 localStorage 获取
 
   // 根据最后签名的人设置场景参数
   let sceneParam = "";
@@ -256,12 +270,11 @@ function AfterEmilia() {
 
   // 如果签名的人是 Lisa ，就不跳转，去普通地图
   if (lastSigner === "Lisa") {
-    //到时候改成保安
+    //直接地图找保安吧
     console.log("Redirecting to the guard scene");
-    //还是先去地图
-    window.location.href = MAIN_MAP_PATH; 
-  } else { 
-    //到时候改成保安
-    window.location.href = MAIN_MAP_PATH; 
-  } 
+    window.location.href = MAIN_MAP_PATH;
+  } else {
+    //跳转到地图 
+    window.location.href = MAIN_MAP_PATH;
+  }
 }
