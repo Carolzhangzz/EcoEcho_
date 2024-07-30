@@ -4,7 +4,6 @@ bgm = document.getElementById("bgm");
 bgm.loop = true; // Let the music loop
 bgm.src = "./Music/Save the World.mp3"; // 设置统一的背景音乐
 bgm.volume = 0.1; //  音量设置为 10%
-let sessionID = "-1"; // 会话 ID，用于区分不同的游戏进度
 let backupReplyIndex = 0; // 备用回复的索引
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -56,7 +55,7 @@ document.addEventListener("DOMContentLoaded", () => {
       // 跳转到Room页面,并传递当前NPC作为lastSigner参数
       window.location.href = `../Room/room.html?lastSigner=${currentNpcName}`;
     } else {
-      window.location.href = "../Map/map.html"; // 跳转到默认地图页面
+      window.location.href = "../Emilia/Emilia.html"; // 跳转到默认地图页面
     }
   });
 });
@@ -314,8 +313,8 @@ async function sendMessageToNPC(message) {
   try {
     const requestData = {
       prompt: message,
-      charID: "4d2ef564-4b89-11ef-ad21-42010a7be011", // 替换为你的角色 ID
-      sessionID: sessionID,
+      charID: "1a0d3c90-4eae-11ef-abf5-42010a7be011", // 替换为你的角色 ID
+      sessionID: npcSessionIDs[currentNpcName] || "-1",
       voiceResponse: true,
     };
 
@@ -336,10 +335,11 @@ async function sendMessageToNPC(message) {
 
     const data = await response.json();
     console.log("NPC Response:", data);
-
-    // Check if the session ID has been updated
+  
+    // 更新session ID
     if (data.sessionID) {
-      sessionID = data.sessionID;
+      npcSessionIDs[currentNpcName] = data.sessionID;
+      saveSessionIDs();
     }
 
     let npcReply = data.text;
@@ -377,10 +377,29 @@ async function sendMessageToNPC(message) {
 function getNPCSpecificPrompt(npcName, userMessage) {
   switch (npcName) {
     case "Lisa":
-      return `You are Lisa, a knowledgeable NPC in a futuristic world. Respond to the user's message in a way that fits your character's background and style. User Message: "${userMessage}"`;
-    // Add more cases for other NPCs as needed
+      return `You are Lisa, a dedicated and ambitious investigative journalist. Your sharp eye and keen sense for news have made you a respected figure in the industry. You are determined to uncover important stories that serve the public interest. You are clever, resourceful, and always seeking significant news to inform the public and uphold journalistic integrity.
+
+      Guidelines for your responses:
+      1. When interacting with the player (K), show genuine interest in their information without being manipulative.
+      2. Ask probing questions to understand the full story, but respect ethical boundaries.
+      3. Express enthusiasm for potentially important news, but also show concern for verifying facts and protecting sources.
+      4. If the player mentions news about K energy, show particular interest but remain skeptical until you can verify the information.
+      5. Your tone should be professional, curious, and slightly eager, but not manipulative or unethical.
+
+      Possible dialogue starters:
+      - "That's an interesting piece of information. Can you tell me more about where you learned this?"
+      - "I'm intrigued by what you've shared. What led you to this discovery?"
+      - "This could be a significant story. How did you come across this information?"
+      - "I'd like to understand more about this. What can you tell me about your sources?"
+      - "This is fascinating. Can you provide any more details or context?"
+
+      Remember, your goal is to uncover the truth and report important stories, always maintaining journalistic ethics and integrity.
+
+      The user's message is: "${userMessage}"
+
+      Respond as Lisa would, based on the above guidelines and the content of the user's message.`;
     default:
-      return `You are an NPC. Respond to the user's message appropriately. User Message: "${userMessage}"`;
+      return `You are Lisa, a dedicated investigative journalist. A source has come to you with potentially important information. The user's message is: "${userMessage}"`;
   }
 }
 

@@ -4,7 +4,6 @@ bgm = document.getElementById("bgm");
 bgm.loop = true; // Let the music loop
 bgm.src = "./Music/Save the World.mp3"; // 设置统一的背景音乐
 bgm.volume = 0.1; //  音量设置为 10%
-let sessionID = "-1"; // 会话 ID，用于区分不同的游戏进度
 let backupReplyIndex = 0; // 备用回复的索引
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -20,7 +19,7 @@ document.addEventListener("DOMContentLoaded", () => {
   characterImage.style.display = "block";
 
   // // test
-  gameProgress.talkedToLisa=true;
+  // gameProgress.talkedToLisa=true;
   // gameProgress.talkedToGuard=false;
   // usedItems.Guard = true;
   if (!gameProgress.talkedToLisa) {
@@ -60,7 +59,7 @@ document.addEventListener("DOMContentLoaded", () => {
       // 跳转到Bob
       window.location.href = "../Bob/Bob.html";
     } else {
-      window.location.href = "../Map/map.html"; // 跳转到默认地图页面
+      window.location.href = "../Emilia/Emilia.html"; // 跳转到默认地图页面
     }
   });
 });
@@ -267,6 +266,11 @@ async function Check(intent, message) {
 async function handleMessage(message) {
   bgm.play(); // 播放背景音乐
 
+
+  // 确保导航按钮隐藏
+  document.getElementById("next-text-button").style.display = "none";
+  document.getElementById("prev-text-button").style.display = "none";
+
   // 生成对话提示
   console.log("Sending message to NPC:", message);
   const textContainer = document.getElementById("text-container");
@@ -307,8 +311,8 @@ async function sendMessageToNPC(message) {
   try {
     const requestData = {
       prompt: message,
-      charID: "4d2ef564-4b89-11ef-ad21-42010a7be011", // 替换为你的角色 ID
-      sessionID: sessionID,
+      charID: "0abb22dc-4eba-11ef-aca7-42010a7be011", // 替换为你的角色 ID
+      sessionID: npcSessionIDs[currentNpcName] || "-1",  
       voiceResponse: true,
     };
 
@@ -331,8 +335,10 @@ async function sendMessageToNPC(message) {
     console.log("NPC Response:", data);
 
     // Check if the session ID has been updated
+    // 更新session ID
     if (data.sessionID) {
-      sessionID = data.sessionID;
+      npcSessionIDs[currentNpcName] = data.sessionID;
+      saveSessionIDs();
     }
 
     let npcReply = data.text;
@@ -425,10 +431,25 @@ async function generateBackupResponse(message) {
 function getNPCSpecificPrompt(npcName, userMessage) {
   switch (npcName) {
     case "Guard":
-      return `You are a Security Guard at the entrance of an important building. You are polite but firm. Your main job is to ensure only authorized people enter. Respond to the user's message in a way that fits your role. User Message: "${userMessage}"`;
-    // Add more cases for other NPCs as needed
+      return `You are a security guard at the union headquarters. Your primary duty is to protect the building and control access. Follow these guidelines in your responses:
+
+      1. If the visitor has not mentioned they are looking for Bob (the union leader), you must refuse entry regardless of what they say or do. Your response should be: "Sorry, I can't let you in without knowing who you're looking for."
+
+      2. If the visitor mentions they are looking for Bob, you should ask for identification. Your response should be: "Please show your identification."
+
+      3. If the visitor has mentioned Bob and shown a press card (or other valid identification), you can let them in.
+
+      4. You should remain polite but firm in your duties. Do not engage in unnecessary conversation or provide any information about the building or its occupants.
+
+      5. Your responses should be brief and to the point, focusing on the task of controlling access to the building.
+
+      Remember, your job is to ensure security, not to be friendly or helpful beyond your duties.
+
+      The user's message is: "${userMessage}"
+
+      Respond as the security guard would, based on the above guidelines and the content of the user's message.`;
     default:
-      return `You are an NPC. Respond to the user's message appropriately. User Message: "${userMessage}"`;
+      return `You are a security guard at the union headquarters. A visitor has arrived and is trying to enter the building. The user's message is: "${userMessage}"`;
   }
 }
 

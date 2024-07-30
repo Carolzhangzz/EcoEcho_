@@ -104,9 +104,9 @@ function startGame() {
           "KI's father's pioneering work unveiled the initial secrets of K energy, making him a legend in the scientific community.",
         ],
         zh: [
-          "KI的父亲不仅是一位杰出的科学家,还主导了人类对火星上清洁能源K的早期探索和研究。",
+          "KI的父亲不仅是一位杰出的科学家,还主导了人类对火星上清洁能源T的早期探索和研究。",
           "这种神秘能源有潜力彻底改变地球的能源结构，为人类提供可持续的能源解决方案。",
-          "KI的父亲带领团队揭开了K能源的初步奥秘,这一壮举让他成为科学界的传奇人物。",
+          "KI的父亲带领团队揭开了T能源的初步奥秘,这一壮举让他成为科学界的传奇人物。",
         ],
       },
       background: "./IntroImages/scene2.1.png",

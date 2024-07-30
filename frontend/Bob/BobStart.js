@@ -41,6 +41,9 @@ function startFirstDialogue() {
     textContainer.className = "";
     textContainer.classList.add(scene.textStyle);
 
+    // 隐藏用户输入区域，显示导航按钮
+    userInputContainer.style.display = "none";
+    
     nextButton.style.display =
       currentTextIndex === scene.text[currentLanguage].length - 1
         ? "none"

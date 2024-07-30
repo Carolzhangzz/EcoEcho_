@@ -29,15 +29,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
   startGame(lastSigner);
 
-  // 禁用返回主页按钮
   const backMainButton = document.getElementById("back-main");
-  backMainButton.style.display = "none";
+  backMainButton.addEventListener("click", () => {
+    window.location.href = MAIN_PAGE_PATH;
+  });
 
   document.addEventListener("click", (event) => {
     if (event.target.id === "scene1") {
       goToScene("../Lisa/Lisa.html");
     } else if (event.target.id === "scene2") {
       goToScene("../Bob/Bob.html");
+    } else if (event.target.id === "scene4") {
+      goToScene("../Guard/Guard.html");
+    } else if (event.target.id === "scene3") {
+      goToScene("../Jonathan/Jonathan.html");
     }
   });
 });
@@ -103,12 +108,26 @@ function startGame(lastSigner) {
       },
     ];
     updateMetEmilia(lastSigner, true);
-  } else {
+  } else if (lastSigner === "Jonathan" && !metEmilia["Jonathan"]) {
     dialogues = [
       {
-        en: ["Welcome back to the Map."],
-        zh: ["欢迎再次来到地图"],
+        en: [
+          " We are conducting the third public petition on the new energy K.",
+        ],
+        zh: ["我们正在进行关于新型能源K的第四次民意联署。"],
       },
+      {
+        en: [
+          "Based on our research, promoting sustainable energy models is crucial for the future of the Earth's environment.",
+        ],
+        zh: [
+          "根据我们的研究，推广可持续的能源模式对于未来的地球环境至关重要。",
+        ],
+      },
+    ];
+    updateMetEmilia(lastSigner, true);
+  } else {
+    dialogues = [
       {
         en: ["It's always a pleasure to see you."],
         zh: ["你好，见到你总是很愉快。"],
@@ -169,12 +188,17 @@ function startGame(lastSigner) {
     // 检查是否是最后一个场景的最后一行文本
     if (
       currentScene === scenes.length - 1 &&
-      currentTextIndex === scenes[currentScene].text[currentLanguage].length - 1
+      currentTextIndex ===
+        scenes[currentScene].text[currentLanguage].length - 1 &&
+      // 检查此时是否有签名者，如果没有，不显示签名提示 ，如果有在逻辑内判断
+      lastSigner != null &&
+      lastSigner != undefined &&
+      lastSigner != ""
     ) {
       setTimeout(() => {
         // 如果是最后一个，显示签名提示
         showSignaturePrompt();
-      }, 2000); // 延迟两秒显示提示
+      }, 3000); // 延迟两秒显示提示
     }
   };
 
@@ -232,7 +256,6 @@ function showSignaturePrompt() {
         ? "You have already signed this petition."
         : "你已经在这份联署书上签过名了。"
     );
-    setTimeout(AfterEmilia, 3000);
     return;
   }
 
@@ -252,29 +275,5 @@ function showSignaturePrompt() {
           : "我们理解您的决定。感谢您的时间。"
       );
     }
-
-    setTimeout(AfterEmilia, 1000);
   });
-}
-
-function AfterEmilia() {
-  const lastSigner = getLastSigner(); // 使用 getLastSigner() 而不是直接从 localStorage 获取
-
-  // 根据最后签名的人设置场景参数
-  let sceneParam = "";
-  if (lastSigner) {
-    sceneParam = `?lastSigner=${lastSigner}`;
-  }
-
-  console.log("Scene parameter:", sceneParam);
-
-  // 如果签名的人是 Lisa ，就不跳转，去普通地图
-  if (lastSigner === "Lisa") {
-    //直接地图找保安吧
-    console.log("Redirecting to the guard scene");
-    window.location.href = MAIN_MAP_PATH;
-  } else {
-    //跳转到地图 
-    window.location.href = MAIN_MAP_PATH;
-  }
 }

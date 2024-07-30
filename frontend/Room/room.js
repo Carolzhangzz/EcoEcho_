@@ -15,7 +15,12 @@ document.addEventListener("DOMContentLoaded", () => {
   const backMainButton = document.getElementById("back-main");
   //跳转到艾米丽
   backMainButton.addEventListener("click", () => {
-    window.location.href = "../Emilia/Emilia.html";
+    //如果 lastSigner 是 " Jonathan"，跳转到落幕页面
+    if (lastSigner === "Jonathan") {
+      window.location.href = "../End/End.html"; // 跳转到落幕页面
+    } else {
+      window.location.href = "../Emilia/Emilia.html";
+    }
   });
 });
 
@@ -71,7 +76,7 @@ function getScenes(lastSigner) {
               "However, KI seemed completely oblivious to these changes, lost in his own joy, as he quickly stepped out of the room.",
             ],
             zh: [
-              "终于, KI成功了, 阻止了K的开采, 重新回到了“传统能源的世界。",
+              "终于, KI成功了, 阻止了T的开采, 重新回到了“传统能源的世界。",
               "他看向窗外，发现那里悄然建起了工厂，巨大的烟囱不停地排放着黑色的浓烟。",
               "然而, KI似乎完全没有注意到这些变化, 他沉浸在自己的喜悦中, 快步走出房间。",
             ],

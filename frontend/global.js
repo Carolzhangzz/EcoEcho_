@@ -4,7 +4,7 @@ let gameProgress = {
   talkedToLisa: false,
   talkedToGuard: false,
   talkedToBob: false,
-  talkedToJohnathan: false, 
+  talkedToJohnathan: false,
 };
 
 let intentExpressed = {
@@ -55,8 +55,39 @@ let newSceneCompleted = {
 let bobIntentExpress = {
   comeForK: false,
   kaneRelation: false,
-  lisaSupport: false
+  lisaSupport: false,
 };
+let JohnathanIntentExpress = {
+  comeForK: false,
+  publicSupport: false,
+};
+
+let npcSessionIDs = {
+  Lisa: null,
+  Guard: null,
+  Bob: null,
+  Johnathan: null,
+};
+
+function loadSessionIDs() {
+  const savedSessionIDs = localStorage.getItem("npcSessionIDs");
+  if (savedSessionIDs) {
+    npcSessionIDs = JSON.parse(savedSessionIDs);
+  }
+}
+
+function saveSessionIDs() {
+  localStorage.setItem("npcSessionIDs", JSON.stringify(npcSessionIDs));
+}
+function resetSessionIDs() {
+  npcSessionIDs = {
+    Lisa: null,
+    Guard: null,
+    Bob: null,
+    Johnathan: null,
+  };
+  saveSessionIDs();
+}
 
 // 从 localStorage 加载数据
 const loadDataFromLocalStorage = (key, defaultValue) => {
@@ -67,7 +98,12 @@ const loadDataFromLocalStorage = (key, defaultValue) => {
       console.log(`Loaded ${key} from localStorage:`, parsedData);
 
       if (key === "gameProgress") {
-        const validKeys = ["talkedToLisa", "talkedToGuard", "talkedToBob", "talkedToJohnathan"];
+        const validKeys = [
+          "talkedToLisa",
+          "talkedToGuard",
+          "talkedToBob",
+          "talkedToJohnathan",
+        ];
         const cleanedData = {};
         for (const validKey of validKeys) {
           cleanedData[validKey] = parsedData[validKey] === true;
@@ -75,7 +111,18 @@ const loadDataFromLocalStorage = (key, defaultValue) => {
         return cleanedData;
       }
 
-      // 对于 bobIntentExpress，进行额外的格式检查 
+      //对于 Jonathan intentExpressed，进行额外的格式检查
+
+      if (key === "JohnathanIntentExpress") {
+        const validKeys = ["comeForK", "publicSupport"];
+        const cleanedData = {};
+        for (const validKey of validKeys) {
+          cleanedData[validKey] = parsedData[validKey] === true;
+        }
+        return cleanedData;
+      }
+
+      // 对于 bobIntentExpress，进行额外的格式检查
       if (key === "bobIntentExpress") {
         const validKeys = ["comeForK", "kaneRelation", "lisaSupport"];
         const cleanedData = {};
@@ -165,18 +212,53 @@ conversationCount = loadDataFromLocalStorage(
 metEmilia = loadDataFromLocalStorage("metEmilia", metEmilia);
 signatures = loadDataFromLocalStorage("signatures", signatures);
 lastSigner = loadDataFromLocalStorage("lastSigner", lastSigner);
-bobIntentExpress= loadDataFromLocalStorage("bobIntentExpress", bobIntentExpress);
+bobIntentExpress = loadDataFromLocalStorage(
+  "bobIntentExpress",
+  bobIntentExpress
+);
+npcSessionIDs = loadDataFromLocalStorage("npcSessionIDs", npcSessionIDs);
+JohnathanIntentExpress = loadDataFromLocalStorage(
+  "JohnathanIntentExpress",
+  JohnathanIntentExpress
+);
 
+//
+
+//检查 Johnathan 的所有意图是否都已表达
+function allJohnathanIntentsExpressed() {
+  return Object.values(JohnathanIntentExpress).every((intent) => intent);
+}
+
+//更新 Johnathan 的意图
+function updateJohnathanIntentExpress(key, value) {
+  JohnathanIntentExpress[key] = value;
+  localStorage.setItem(
+    "JohnathanIntentExpress",
+    JSON.stringify(JohnathanIntentExpress)
+  );
+}
+
+//重置 Johnathan 的意图
+function resetJohnathanIntentExpress() {
+  JohnathanIntentExpress = {
+    comeForK: false,
+    publicSupport: false,
+  };
+  localStorage.setItem(
+    "JohnathanIntentExpress",
+    JSON.stringify(JohnathanIntentExpress)
+  );
+}
 
 // 检查 Bob 的所有意图是否都已表达
 function allBobIntentsExpressed() {
-  return Object.values(bobIntentExpress).every(intent => intent);
+  return Object.values(bobIntentExpress).every((intent) => intent);
 }
 
 // 更新 Bob 的意图
 function updateBobIntentExpress(key, value) {
   bobIntentExpress[key] = value;
-  localStorage.setItem('bobIntentExpress', JSON.stringify(bobIntentExpress));
+  localStorage.setItem("bobIntentExpress", JSON.stringify(bobIntentExpress));
 }
 
 // 重置 Bob 的意图
@@ -184,9 +266,9 @@ function resetBobIntentExpress() {
   bobIntentExpress = {
     comeForK: false,
     kaneRelation: false,
-    lisaSupport: false
+    lisaSupport: false,
   };
-  localStorage.setItem('bobIntentExpress', JSON.stringify(bobIntentExpress));
+  localStorage.setItem("bobIntentExpress", JSON.stringify(bobIntentExpress));
 }
 
 // Count 的更新函数
@@ -312,17 +394,32 @@ function resetGame() {
   // 清除 lastSigner
   clearLastSigner();
 
-  // 重置 Bob 的意图 
+  // 重置 Bob 的意图
   resetBobIntentExpress();
+
+  // 重置 sessionIDs
+  resetSessionIDs();
+
+  // 重置 Johnathan 的意图
+  resetJohnathanIntentExpress();
 
   window.location.href = "/Main.html";
 }
-
 
 // 全局背包系统
 const inventoryIcon = document.getElementById("inventory-icon");
 const inventoryPopup = document.getElementById("inventory-popup");
 const inventoryItems = document.getElementById("inventory-items");
+
+// 物品和 NPC 的映射
+const itemNpcMapping = {
+  真相: ["Lisa"],
+  truth: ["Lisa"],
+  记者证: ["Guard"],
+  Journalist_ID: ["Guard"],
+  general_strike: ["Johnathan"],
+  大罢工: ["Johnathan"],
+};
 
 // 提示是否要分享物品，并且如果某个 NPC 已经收到过物品，则不能再次分享
 function promptShareItem(item, npcName) {
@@ -330,6 +427,13 @@ function promptShareItem(item, npcName) {
     showAlert(
       `${npcName} has already received an item and cannot be given another.`
     );
+    return;
+  }
+
+  // 检查物品是否可以分享给特定的NPC
+  const allowedNpc = itemNpcMapping[item.name];
+  if (allowedNpc && allowedNpc !== "all" && !allowedNpc.includes(npcName)) {
+    showAlert(`${item.name} cannot be shared with ${npcName}.`);
     return;
   }
 
@@ -541,7 +645,6 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
-
 // 获取翻译后的回复
 async function generateResponse(npcReply) {
   try {
@@ -569,8 +672,7 @@ async function generateResponse(npcReply) {
     });
 
     //模拟 api 请求 失败
-    throw new Error("Network response was not ok");
-
+    // throw new Error("Network response was not ok");
 
     if (!response.ok) {
       throw new Error("Network response was not ok");
@@ -591,27 +693,28 @@ function shouldTriggerAutoReply(currentNpcName) {
     Lisa: {
       noIntentNoItem: 2,
       intentNoItem: 3,
-      noIntentItem: 3 
+      noIntentItem: 3,
     },
     Guard: {
       noIntentNoItem: 2,
       intentNoItem: 2,
-      noIntentItem: 2
+      noIntentItem: 2,
     },
     Bob: {
       noIntentNoItem: 3,
       intentNoItem: 5,
-      noIntentItem: 5
+      noIntentItem: 5,
     },
     Johnathan: {
       noIntentNoItem: 4,
       intentNoItem: 6,
-      noIntentItem: 6
-    }
+      noIntentItem: 6,
+    },
     // 可以为其他 NPC 添加更多条件
   };
 
-  const npcConditions = triggerConditions[currentNpcName] || triggerConditions.Lisa; // 默认使用 Lisa 的条件
+  const npcConditions =
+    triggerConditions[currentNpcName] || triggerConditions.Lisa; // 默认使用 Lisa 的条件
 
   if (
     (conversationCount[currentNpcName] >= npcConditions.noIntentNoItem &&

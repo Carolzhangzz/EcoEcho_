@@ -4,7 +4,6 @@ bgm = document.getElementById("bgm");
 bgm.loop = true; // Let the music loop
 bgm.src = "./Music/Save the World.mp3"; // 设置统一的背景音乐
 bgm.volume = 0.1; //  音量设置为 10%
-let sessionID = "-1"; // 会话 ID，用于区分不同的游戏进度
 let backupReplyIndex = 0; // 备用回复的索引
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -31,16 +30,12 @@ document.addEventListener("DOMContentLoaded", () => {
     gameProgress.talkedToLisa &&
     gameProgress.talkedToGuard &&
     gameProgress.talkedToBob
-  ) {
-    // 如果已经与Lisa,Guard 和 Bob对话，显示新场景对话
-    startNewSceneDialogue();
-  }
+  ) 
 
-  //其余情况就是直接显示Guard的对话
   nextButton.style.display = "inline-block";
   prevButton.style.display = "none";
-  // userInputContainer.style.display = "block";
 
+  // userInputContainer.style.display =  "none";
   const userInput = document.getElementById("user-input");
   const sendMessageButton = document.getElementById("send-message");
 
@@ -62,12 +57,12 @@ document.addEventListener("DOMContentLoaded", () => {
   const backMainButton = document.getElementById("back-main");
   backMainButton.addEventListener("click", () => {
     if (allScenesCompleted.Bob && newSceneCompleted.Bob === null) {
-      // 如果所有对话都结束了，但是新对话还没有结束，说明用户直接点击了 back to main 而没有去艾米丽
+      // 如果所有对话都结束了，但是新对话还没有结束，说明用户直接点击了 back to main 而没有去 room
       // 跳转到艾米丽的页面
-      setLastSigner(currentNpcName);
-      window.location.href = "../Room/room.html";
+      setLastSigner(currentNpcName); //传递当前的npc名字 Bob
+      window.location.href = `../Room/room.html?lastSigner=${currentNpcName}`;
     } else {
-      window.location.href = "../Map/map.html"; // 跳转到默认地图页面
+      window.location.href = "../Emilia/Emilia.html"; // 跳转到默认地图页面
     }
   });
 });
@@ -76,7 +71,7 @@ const scenes = [
   {
     text: {
       en: [
-        "Okay, in that case, we will use the <span class='highlight' data-item='general strike' data-image='../items/general_strike.png'>general strike</span> to fight the government to the end.",
+        "Okay, in that case, we will use the <span class='highlight' data-item='general_strike' data-image='../items/general_strike.png'>general strike</span> to fight the government to the end.",
       ],
       zh: [
         "好的，既然如此，我们会利用<span class='highlight' data-item='大罢工' data-image='../items/general_strike.png'>大罢工</span>向政府抗争到底。",
@@ -250,7 +245,7 @@ async function Check(intent, message) {
     });
 
     //模拟 Intent 接口失败，强制抛出错误
-    throw new Error("Simulated Intent API failure");
+    // throw new Error("Simulated Intent API failure");
 
     if (!response.ok) {
       throw new Error("Network response was not ok");
@@ -307,20 +302,39 @@ async function Check(intent, message) {
     if (containsKeyword) {
       switch (intent) {
         case intentOne:
+          //如果包含关键字，更新意图
           updateBobIntentExpress("comeForK", true);
+          // 重置对话次数
+          resetConversationCount();
           break;
         case intentTwo:
+          // 如果第一个意图没有表达，不能reset
+          if (!bobIntentExpress.comeForK) {
+            updateBobIntentExpress("kaneRelation", true);
+            break;
+          }
+          // 重置对话次数
           updateBobIntentExpress("kaneRelation", true);
+          resetConversationCount();
           break;
         case intentThree:
+          // 如果前两个意图没有表达，不能reset
+          if (!bobIntentExpress.comeForK || !bobIntentExpress.kaneRelation) {
+            updateBobIntentExpress("lisaSupport", true);
+            break;
+          }
           updateBobIntentExpress("lisaSupport", true);
+          resetConversationCount();
           break;
       }
-      
+
       // 检查是否所有意图都已表达
       if (allBobIntentsExpressed()) {
         intentExpressed[currentNpcName] = true;
-        localStorage.setItem("intentExpressed", JSON.stringify(intentExpressed));
+        localStorage.setItem(
+          "intentExpressed",
+          JSON.stringify(intentExpressed)
+        );
       }
       return true;
     }
@@ -330,6 +344,11 @@ async function Check(intent, message) {
 
 async function handleMessage(message) {
   bgm.play(); // 播放背景音乐
+
+  // 确保导航按钮隐藏
+  document.getElementById("next-text-button").style.display = "none";
+  document.getElementById("prev-text-button").style.display = "none";
+
 
   // 生成对话提示
   console.log("Sending message to NPC:", message);
@@ -365,7 +384,7 @@ async function handleMessage(message) {
   if (
     bobIntentExpress.comeForK &&
     !bobIntentExpress.kaneRelation &&
-    conversationCount[currentNpcName] >= 3 
+    conversationCount[currentNpcName] >= 3
   ) {
     const fixedReply = backupIntentReplies[0];
     textContainer.innerHTML += `<p class="npc-message">Bob: ${
@@ -399,8 +418,8 @@ async function sendMessageToNPC(message) {
   try {
     const requestData = {
       prompt: message,
-      charID: "4d2ef564-4b89-11ef-ad21-42010a7be011", // 替换为你的角色 ID
-      sessionID: sessionID,
+      charID: "c048d3c0-4eb9-11ef-83a5-42010a7be011", // 替换为你的角色 ID
+      sessionID: npcSessionIDs[currentNpcName] || "-1",
       voiceResponse: true,
     };
 
@@ -422,9 +441,10 @@ async function sendMessageToNPC(message) {
     const data = await response.json();
     console.log("NPC Response:", data);
 
-    // Check if the session ID has been updated
+    // 更新session ID
     if (data.sessionID) {
-      sessionID = data.sessionID;
+      npcSessionIDs[currentNpcName] = data.sessionID;
+      saveSessionIDs();
     }
 
     let npcReply = data.text;
@@ -472,7 +492,7 @@ async function generateBackupResponse(message) {
     });
 
     // 模拟第二个 NPC 调用 接口失败，强制抛出错误
-    throw new Error("Simulated Second NPC API failure");
+    // throw new Error("Simulated Second NPC API failure");
 
     if (!response.ok) {
       throw new Error("Network response was not ok for backup response");
@@ -505,7 +525,7 @@ async function generateBackupResponse(message) {
     console.error("Error in generateBackupResponse:", error);
     const fixedReply = backupFixedReply();
     displayNPCReply(currentLanguage === "en" ? fixedReply.en : fixedReply.zh);
-    
+
     // 即使使用固定回复，也要更新对话计数
     updateConversationCount(
       currentNpcName,
@@ -516,12 +536,30 @@ async function generateBackupResponse(message) {
 
 function getNPCSpecificPrompt(npcName, userMessage) {
   switch (npcName) {
-    case "Guard":
-      return `You are Bob at the union headquarters. You are talking to the player at the union office. a humble and kind-hearted union leader. You feels anxious about the impact of the new energy source, 
-      unable to refuse a change that could revolutionize the industry,
-      yet also worried about resisting public opinion. The user responds: "${userMessage}"`;
+    case "Bob":
+      return `You are Bob, the union leader at the headquarters. You are a humble and kind-hearted person, but currently feeling anxious about the impact of the new energy source T. Follow these guidelines in your responses:
+
+      1. When the player first enters, ask them why they are there: "Welcome. What brings you here today?"
+
+      2. If the player doesn't mention T, engage in general conversation based on your persona. However, limit this to five rounds of dialogue. After the fifth round, end the conversation with: "I'm sorry, but our meeting time is over. I have work to do."
+
+      3. If the player mentions T, but hasn't revealed they're Kane's son or mentioned Kane's death, your response should always be: "I'm sorry, if it's about T, all the members have agreed. This is the trend and there is nothing we can do about it."
+
+      4. If the player reveals they're Kane's son or mentions the truth about Kane's death, respond with: "Turns out the government lied to us. However, all the people support the new energy. Unless we can get support from the public."
+
+      5. If the player mentions Lisa's support, show determination to hold a general strike: "Alright, if that's the case, we'll use a general strike to fight the government to the end!"
+
+      6. Your tone should reflect your internal conflict: you're unable to refuse a change that could revolutionize the industry, yet worried about resisting public opinion.
+
+      7. Show empathy and concern for the workers and the public, but also a sense of powerlessness against the perceived inevitability of T energy.
+
+      Remember, you're torn between your duty to the workers, the apparent benefits of K energy, and your suspicions about the government's actions.
+
+      The user's message is: "${userMessage}"
+
+      Respond as Bob would, based on the above guidelines and the content of the user's message.`;
     default:
-      return `You are Bob at the union headquarters. You are talking to the guard at the entrance. The guard asks you to identify the person you are here to visit. The user responds: "${userMessage}"`;
+      return `You are Bob, the union leader at the headquarters. A visitor has arrived to speak with you. The user's message is: "${userMessage}"`;
   }
 }
 
@@ -532,7 +570,6 @@ function displayNPCReply(reply, audioReply) {
   replyElement.className = "npc-message";
   replyElement.textContent = `${currentNpcName}: `;
   textContainer.appendChild(replyElement);
-
 
   // 确保 reply 是一个字符串
   reply = reply || "";
@@ -583,11 +620,11 @@ const backupReplies = [
   },
   {
     en: "Greetings! I'm afraid I'll need to know your business here before I can let you proceed.",
-    zh: "您好！恐怕在让您继续之前，我需要知道您来这里的目的。"
-  },  
+    zh: "您好！恐怕在让您继续之前，我需要知道您来这里的目的。",
+  },
   {
     en: "Hello, this is a restricted area. Could you please state your reason for being here?",
-    zh: "您好，这是一个管制区域。您能否说明一下您来这里的原因？"
+    zh: "您好，这是一个管制区域。您能否说明一下您来这里的原因？",
   },
   //这里可以优化，就一句话可能比较无聊
 ];
@@ -596,7 +633,7 @@ const backupReplies = [
 const backupIntentReplies = [
   {
     en: "I'm sorry, but we've already made a decision regarding K. There's nothing I can do to change it.",
-    zh: "对不起，我们已经就 K 的事情做出了决定。我无法改变它。",
+    zh: "对不起，我们已经就 T 的事情做出了决定。我无法改变它。",
   },
   {
     en: "Ah, so the government has deceived us. But, all the people support the new energy. Unless we can get the support of the people.",
@@ -626,7 +663,7 @@ function backupFixedReply() {
     return backupIntentReplies[lastExpressedIntent];
   }
 
-  // 如果没有表达任何意图，随机返回默认回复 
+  // 如果没有表达任何意图，随机返回默认回复
   const random = Math.floor(Math.random() * backupReplies.length);
   return backupReplies[random];
 }

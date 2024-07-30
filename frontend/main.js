@@ -13,7 +13,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const backMainButton = document.getElementById("back-main");
   backMainButton.addEventListener("click", () => {
-    window.location.href = "./Map/map.html"; // 
+    window.location.href = "./Emilia/Emilia.html";
   });
 
   // 检查游戏是否已经开始
@@ -34,19 +34,22 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
+
   // 初始化时更新按钮
   updateStartButton();
 
   // 修改开始游戏按钮的行为
   startGameButton.addEventListener("click", () => {
-    const gameStarted = isGameStarted();
-    console.log("Start button clicked. Game started:", gameStarted);
-    if (gameStarted) {
-      console.log("Redirecting to map page");
-      window.location.href = "./Map/map.html";
-    } else {
-      console.log("Redirecting to intro page");
+    const currentLanguage = localStorage.getItem("language") || "en";
+    const isNewGame = startGameButton.textContent === (currentLanguage === "en" ? "Start New Game" : "开始新游戏");
+
+    if (isNewGame) {
+      console.log("Starting new game, resetting and redirecting to intro page");
+      resetGame();
       window.location.href = "./Introduction/Intro.html";
+    } else {
+      console.log("Continuing game, redirecting to map page");
+      window.location.href = "./Emilia/Emilia.html";
     }
   });
 });
