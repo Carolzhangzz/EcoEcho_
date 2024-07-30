@@ -26,7 +26,7 @@ body {
     cursor: pointer;
     text-decoration: none;
 }
-#scene1, #scene2, #scene3{
+#scene1, #scene3 {
     line-height: 30px;
     text-align: center;
     width: 100px;
@@ -37,7 +37,29 @@ body {
     padding: 10px;
     background: linear-gradient(135deg, rgba(0, 128, 255, 0.8), rgba(0, 255, 128, 0.8)); /* 蓝绿渐变 */
 }
-#scene1:hover, #scene2:hover, #scene3:hover {
+#scene2{
+    line-height: 30px;
+    text-align: center;
+    width: 100px;
+    height: 30px;
+    font-size: 18px;
+    cursor: pointer;
+    border-radius: 10px;
+    padding: 10px;
+    background: linear-gradient(135deg, rgba(0, 128, 255, 0.8), rgba(0, 255, 128, 0.8)); /* 蓝绿渐变 */
+}
+#scene4{
+    line-height: 30px;
+    text-align: center;
+    width: 60px;
+    height: 50px;
+    font-size: 18px;
+    cursor: pointer;
+    border-radius: 10px;
+    padding: 10px;
+    background: linear-gradient(135deg, rgba(0, 128, 255, 0.8), rgba(0, 255, 128, 0.8)); /* 蓝绿渐变 */
+}
+#scene1:hover, #scene2:hover, #scene3:hover,#scene4:hover {
     background: linear-gradient(135deg, rgba(0, 255, 128, 0.8), rgba(0, 128, 255, 0.2)); /* 绿蓝渐变 */
     box-shadow: 0 0 15px #5af7ff;
 }
@@ -47,15 +69,20 @@ body {
     top: 66%;
     left: 20%;
 }
-/* union building */
+/* Union Office */
 #scene2{
     position: fixed;
-    top: 74%;
-    left: 48%;
- 
+    top: 20%;
+    left: 50%;
 }
 /* government building */
 #scene3{
+    position: fixed;
+    top: 74%;
+    left: 48%;
+}
+/* Union Building */
+#scene4{
     position: fixed;
     top: 30%;
     left: 55%;

@@ -293,7 +293,7 @@ async function handleMessage(message) {
   }
 
   // Check if the auto-reply should be triggered before sending the message
-  if (shouldTriggerAutoReply()) {
+  if (shouldTriggerAutoReply(currentNpcName)) {
     const fixedReply = getFixedReply();
     textContainer.innerHTML += `<p class="npc-message">Lisa: ${
       currentLanguage === "en" ? fixedReply.en : fixedReply.zh
@@ -472,12 +472,12 @@ function addToInventory(item, image) {
 // 两个接口都失败时，显示固定的回复
 const backupReplies = [
   {
-    en: "I'm sorry, I cannot understand what you are saying. Please try again.",
-    zh: "对不起，我无法理解你在说什么。请再试一次。",
+    en: "I'm looking for something more exciting, more sensational, like, hmm... the hottest topic right now—the K energy issue.",
+    zh: "我希望有一些更有趣、更轰动的新闻，比如，嗯……关于目前最火热的能源议题, K能源的。",
   },
   {
     en: "Hmm, that does sound interesting, but how can I trust you? Unless... you're an insider?",
-    zh: "嗯，听起来很有趣，但我怎么能相信你？除非...你是内部人员？",
+    zh: "“嗯，这确实很有趣，可是我怎么能相信你呢？除非……你是个内部人士？”",
   },
 ];
 
@@ -495,28 +495,28 @@ function getFixedReply() {
     !intentExpressed[currentNpcName]
   ) {
     return {
-      en: "Enough, you are talking something never be good news for the public. Maybe you should go right now. See you.",
-      zh: "够了,你说的事情对公众来说从来都不是好消息。也许你现在应该走了。再见。",
+      en: "It seems you don't have any news that interests me. Let's leave it here for today. I have other things to attend to; we'll talk next time.",
+      zh: "看来你没有我感兴趣的新闻，今天就到这吧。我还有事，我们下次再聊。",
     };
   }
   if (
-    conversationCount[currentNpcName] >= 4 &&
+    conversationCount[currentNpcName] >= 3 &&
     intentExpressed[currentNpcName] &&
     !usedItems[currentNpcName]
   ) {
     return {
-      en: "What you mentioned is interesting. Do you have something for me? I think you should leave now. Goodbye.",
-      zh: "你提到的事情很有意思。你有什么东西给我吗？我觉得你现在应该离开了。再见。",
+      en: "So, you're related to Kane, huh? That's interesting. But don't you have any big news for me?",
+      zh: "原来你是凯恩的家人，很有趣。但你没有什么大新闻可以给我吗？",
     };
   }
   if (
-    conversationCount[currentNpcName] >= 4 &&
+    conversationCount[currentNpcName] >= 3 &&
     !intentExpressed[currentNpcName] &&
     usedItems[currentNpcName]
   ) {
     return {
-      en: "Thank you for the gift. But I think you might need to sort out your thoughts. Goodbye.",
-      zh: "谢谢你的礼物。但是我觉得你可能还需要理清自己的思绪。再见。",
+      en: "The news you provided is interesting, but unfortunately, I can't verify its authenticity. That makes it useless to me. I have other things to attend to; we'll talk next time.",
+      zh: "你提供的新闻很有意思，但可惜我没办法验证它的真实性，这对我来说就没有用。我还有事，我们下次再聊。",
     };
   }
   return null;

@@ -256,8 +256,8 @@ function AfterEmilia() {
 
   // 如果签名的人是 Lisa ，就不跳转，去普通地图
   if (lastSigner === "Lisa") {
-     //到时候改成保安
-    console.log("Redirecting to main map");
+    //到时候改成保安
+    console.log("Redirecting to the guard scene");
     window.location.href = MAIN_MAP_PATH;
   } else { 
     //到时候改成保安

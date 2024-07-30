@@ -9,6 +9,7 @@ let gameProgress = {
 let intentExpressed = {
   Lisa: false,
   Bob: false,
+  Guard: false,
   Johnathan: false,
 };
 
@@ -288,12 +289,19 @@ function promptShareItem(item, npcName) {
         showAlert(`${item.name} has been shared with ${npcName}.`);
         console.log("Used items:", usedItems);
         removeFromInventory(item.name);
-        // 重置对话计数
-        conversationCount[npcName] = 0;
-        localStorage.setItem(
-          "conversationCount",
-          JSON.stringify(conversationCount)
-        );
+
+        // 特殊处理 Guard 的情况
+        if (npcName !== "Guard") {
+          // 不等于 Guard 的情况下，哪怕没有意图，也可以重置
+          updateConversationCount(npcName, conversationCount[npcName] + 1);
+        } else {
+          // 对于 Guard，只有在已经表达意图的情况下才重置对话计数
+          if (intentExpressed[npcName]) {
+            resetConversationCount(npcName);
+          }
+          // 可以在这里添加一些特殊的 Guard 逻辑，如果需要的话
+        }
+        // 如果需要，可以在这里添加其他 NPC 特定的逻辑
       }
     }
   );
@@ -521,15 +529,41 @@ async function generateResponse(npcReply) {
 }
 
 // 自动回复触发条件函数
-function shouldTriggerAutoReply() {
+function shouldTriggerAutoReply(currentNpcName) {
+  const triggerConditions = {
+    Lisa: {
+      noIntentNoItem: 2,
+      intentNoItem: 3,
+      noIntentItem: 3 
+    },
+    Guard: {
+      noIntentNoItem: 2,
+      intentNoItem: 2,
+      noIntentItem: 2
+    },
+    Bob: {
+      noIntentNoItem: 3,
+      intentNoItem: 5,
+      noIntentItem: 5
+    },
+    Johnathan: {
+      noIntentNoItem: 4,
+      intentNoItem: 6,
+      noIntentItem: 6
+    }
+    // 可以为其他 NPC 添加更多条件
+  };
+
+  const npcConditions = triggerConditions[currentNpcName] || triggerConditions.Lisa; // 默认使用 Lisa 的条件
+
   if (
-    (conversationCount[currentNpcName] >= 2 &&
+    (conversationCount[currentNpcName] >= npcConditions.noIntentNoItem &&
       !usedItems[currentNpcName] &&
       !intentExpressed[currentNpcName]) ||
-    (conversationCount[currentNpcName] >= 4 &&
+    (conversationCount[currentNpcName] >= npcConditions.intentNoItem &&
       intentExpressed[currentNpcName] &&
       !usedItems[currentNpcName]) ||
-    (conversationCount[currentNpcName] >= 4 &&
+    (conversationCount[currentNpcName] >= npcConditions.noIntentItem &&
       !intentExpressed[currentNpcName] &&
       usedItems[currentNpcName])
   ) {

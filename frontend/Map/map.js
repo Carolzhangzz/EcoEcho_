@@ -30,6 +30,8 @@ document.addEventListener("DOMContentLoaded", () => {
       goToScene("../Lisa/Lisa.html");
     } else if (event.target.id === "scene2") {
       goToScene("../Bob/Bob.html");
+    } else if (event.target.id === "scene4") {
+      goToScene("../Guard/Guard.html");
     }
   });
 });
