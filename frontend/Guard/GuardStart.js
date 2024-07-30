@@ -7,10 +7,10 @@ const newScenes = [
   {
     text: {
       en: [
-        "Hmm? Why are you sneaking around here?",
+        "Hey? What are you doing here sneaking around?",
         "This is the Union headquarters, do you have any business here?",
       ],
-      zh: ["嗯？你在这里鬼鬼祟祟的干什么呢？", "这是工会总部，你有什么事吗？"],
+      zh: ["喂？你在这里鬼鬼祟祟的干什么呢？", "这是工会总部，你有什么事吗？"],
     },
     background: "./images/Union.png",
     textStyle: "futuristic",

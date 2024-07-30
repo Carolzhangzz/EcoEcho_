@@ -19,16 +19,21 @@ document.addEventListener("DOMContentLoaded", () => {
   characterImage.src = "./npc/Guard.png";
   characterImage.style.display = "block";
 
+  // test
+  // gameProgress.talkedToLisa=true;
+  // gameProgress.talkedToGuard=false;
+  // usedItems.Guard = true;
   if (!gameProgress.talkedToLisa) {
     // 如果没有与Lisa对话，显示初始对话
     startFirstDialogue();
-  } else {
+  } else if (gameProgress.talkedToLisa && gameProgress.talkedToGuard) {
+    // 如果已经与Lisa和Guard对话，显示新场景对话 
     startNewSceneDialogue();
   }
 
+  //其余情况就是直接显示Guard的对话 
   nextButton.style.display = "inline-block";
   prevButton.style.display = "none";
-  userInputContainer.style.display = "none";
 
   const userInput = document.getElementById("user-input");
   const sendMessageButton = document.getElementById("send-message");
@@ -153,7 +158,7 @@ function startGame() {
       gameProgress.talkedToGuard = true;
       updateAllScenesCompleted("Guard", true); // 更新Security的allScenesCompleted状态
       localStorage.setItem("gameProgress", JSON.stringify(gameProgress)); // 保存到 localStorage
-      // 修改这里的逻辑
+      //修改这里的逻辑
       setTimeout(() => {
         //直接跳转到Bob页面
         window.location.href = "../Bob/Bob.html";

@@ -258,7 +258,8 @@ function AfterEmilia() {
   if (lastSigner === "Lisa") {
     //到时候改成保安
     console.log("Redirecting to the guard scene");
-    window.location.href = MAIN_MAP_PATH;
+    //还是先去地图
+    window.location.href = MAIN_MAP_PATH; 
   } else { 
     //到时候改成保安
     window.location.href = MAIN_MAP_PATH; 

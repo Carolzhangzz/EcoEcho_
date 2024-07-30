@@ -13,9 +13,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // 禁用返回主页按钮
   const backMainButton = document.getElementById("back-main");
-  backMainButton.addEventListener("click", () => {
-    window.location.href = "../Main.html"; // 确保这是正确的主页面路径
-  });
+  backMainButton.style.display = "none";
 });
 
 function getScenes(lastSigner) {
@@ -26,13 +24,13 @@ function getScenes(lastSigner) {
           text: {
             en: [
               "After returning to the real world, KI sat in his room, staring at the familiar desk and the beautiful scenery outside the window.",
-              "He thought to himself, 'Things seem to be going more smoothly than I imagined, but why do I still feel uneasy...'",
-              "'I hope I can bring back the oil soon.'",
+              "He thought to himself, things seem to be going more smoothly than I imagined, but why do I still feel uneasy...",
+              "I hope I can bring back the oil soon.",
             ],
             zh: [
               "KI回到现实世界后, 他坐在房间中, 望着熟悉的书桌和窗外美丽的环境, 陷入了沉思。",
-              "他心想：'事情似乎比我想象的要顺利，但为什么心里总有一种不安的感觉……'",
-              "'希望能尽早带回石油吧。'",
+              "他心想：事情似乎比我想象的要顺利，但为什么心里总有一种不安的感觉……",
+              "希望能尽早带回石油吧。",
             ],
           },
           background: "./RoomImages/Lisa_scene.png",
