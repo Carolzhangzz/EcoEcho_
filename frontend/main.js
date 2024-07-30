@@ -2,7 +2,7 @@
 var bgm = new Howl({
   src: ["./Immediate Music - From The Light.mp3"],
   loop: true,
-  volume: 0.5,
+  volume: 0.1,
 });
 
 // 开始播放背景音乐

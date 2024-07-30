@@ -557,6 +557,10 @@ async function generateResponse(npcReply) {
       body: JSON.stringify({ prompt }),
     });
 
+    //模拟 api 请求 失败
+    throw new Error("Network response was not ok");
+
+
     if (!response.ok) {
       throw new Error("Network response was not ok");
     }
@@ -565,7 +569,8 @@ async function generateResponse(npcReply) {
     console.log("Received translated reply:", translatedReply);
     return translatedReply;
   } catch (error) {
-    return npcReply; // 返回原始回复 
+    console.error("Translation failed, returning original reply:", error);
+    return { data: npcReply }; // 返回一个包含原始回复的对象
   }
 }
 

@@ -7,10 +7,13 @@ const newScenes = [
   {
     text: {
       en: [
-        "Hmm? We meet again.",
-        "Have you noticed anything different about me recently?",
+        "Ah, perfect timing! I was just about to break a huge story.",
+        "But... I might need a little insider information. Interested in being my anonymous source?",
       ],
-      zh: ["嗯？又见面了。", "你最近有没有发现什么不同？"],
+      zh: [
+        "啊，来得正是时候！我正要爆料一个大新闻。",
+        "不过...我可能需要一些内部消息。有兴趣做我的匿名消息源吗？",
+      ],
     },
     background: "./images/Media.png",
     textStyle: "futuristic",

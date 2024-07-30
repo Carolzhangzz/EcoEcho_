@@ -42,7 +42,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   //判断是否这个对话已经结束 如果结束了，就显示 new scene 的对话
-  if (allScenesCompleted.Lisa) {
+  if (gameProgress.talkedToLisa) {
     startNewSceneDialogue();
   }
 
@@ -233,7 +233,7 @@ async function Check(intent, message) {
       body: JSON.stringify({ prompt }),
     });
 
-    // // 模拟 ConvAI 接口失败，强制抛出错误
+    //  模拟 Intent 接口失败，强制抛出错误
     // throw new Error("Simulated Intent API failure");
 
     if (!response.ok) {
@@ -358,9 +358,14 @@ async function sendMessageToNPC(message) {
     if (currentLanguage === "en") {
       displayNPCReply(npcReply, audioReply);
     } else {
-      const translatedReply = await generateResponse(npcReply);
-      console.log("Translated Reply:", translatedReply);
-      displayNPCReply(translatedReply.data, audioReply);
+      try {
+        const translatedReply = await generateResponse(npcReply);
+        console.log("Translated Reply:", translatedReply);
+        displayNPCReply(translatedReply.data, audioReply);
+      } catch (error) {
+        console.error("Error in translation, using original reply:", error);
+        displayNPCReply(npcReply, audioReply);
+      }
     }
   } catch (error) {
     console.error("Error in sendMessageToNPC:", error);
@@ -391,6 +396,9 @@ async function generateBackupResponse(message) {
       body: JSON.stringify({ prompt }),
     });
 
+    // 模拟 第二个 NPC 调用 接口失败，强制抛出错误
+    // throw new Error("Simulated Second NPC API failure");
+
     if (!response.ok) {
       throw new Error("Network response was not ok for backup response");
     }
@@ -400,24 +408,29 @@ async function generateBackupResponse(message) {
 
     let npcReply = data.data;
 
-    // 更新对话计数
+    // 只有在成功发送消息后才会增加对话次数
     updateConversationCount(
       currentNpcName,
       conversationCount[currentNpcName] + 1
     );
 
-    // 显示回复
     if (currentLanguage === "en") {
       displayNPCReply(npcReply);
     } else {
-      const translatedReply = await generateResponse(npcReply);
-      displayNPCReply(translatedReply.data);
+      try {
+        const translatedReply = await generateResponse(npcReply);
+        console.log("Translated Backup Reply:", translatedReply);
+        displayNPCReply(translatedReply.data);
+      } catch (error) {
+        console.error("Error in translation, using original reply:", error);
+        displayNPCReply(npcReply);
+      }
     }
   } catch (error) {
     console.error("Error in generateBackupResponse:", error);
-    // 如果备用 API 也失败，使用固定回复
     const fixedReply = backupFixedReply();
     displayNPCReply(currentLanguage === "en" ? fixedReply.en : fixedReply.zh);
+    
     // 即使使用固定回复，也要更新对话计数
     updateConversationCount(
       currentNpcName,
@@ -433,6 +446,10 @@ function displayNPCReply(reply, audioReply) {
   replyElement.className = "npc-message";
   replyElement.textContent = `${currentNpcName}: `;
   textContainer.appendChild(replyElement);
+
+
+  // 确保 reply 是一个字符串
+  reply = reply || "";
 
   // Play the audio if it exists
   if (audioReply) {

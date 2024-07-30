@@ -8,9 +8,9 @@ const endScenes = [
     text: {
       en: [
         "Hmm? You're the friend of that journalist, right?",
-        "What brings you here this time?",
+        "Sorry, I was a bit nervous just now. There have been a lot of unfamiliar faces at the union headquarters recently, so we have to be extra careful.",
       ],
-      zh: ["嗯？你是那位记者的朋友吧。", "你这次来是为了什么？"],
+      zh: ["嗯？你是那位记者的朋友吧。", "抱歉刚才有点紧张。最近工会总部来了不少陌生面孔, 我们不得不多加小心。"],
     },
     background: "./images/Union.png",
     textStyle: "futuristic",
@@ -80,4 +80,6 @@ function startNewSceneDialogue() {
 
 
 
-document.getElementById("back-main").addEventListener("click", goToMap);
+document.getElementById("back-main").addEventListener("click", () => {
+  window.location.href = "../index.html";
+});

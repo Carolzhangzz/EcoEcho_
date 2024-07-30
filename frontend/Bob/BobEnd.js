@@ -7,12 +7,10 @@ const endScenes = [
   {
     text: {
       en: [
-        "oh, it's you. Sorry for being a bit tense just now. There have been a lot of unfamiliar faces at the union headquarters recently, so we have to be extra careful.",
         "Oh my god, I can't believe... the government actually... [deep breath] you're right, we can't stay silent anymore. If the public supports us, then it's time to take action.",
         "We need to organize a large-scale strike to force the government to listen to the people's voices.",
       ],
       zh: [
-        "哦, 是你啊。抱歉刚才有点紧张。最近工会总部来了不少陌生面孔, 我们不得不多加小心。",
         "天哪, 我不敢相信...政府居然...[深吸一口气]。你说得对, 我们不能再沉默了。如果公众支持我们, 那么是时候采取行动了。",
         "我们需要组织一次大规模罢工, 迫使政府听取人民的声音。",
       ],
