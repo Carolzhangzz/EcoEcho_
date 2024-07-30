@@ -4,6 +4,7 @@ let gameProgress = {
   talkedToLisa: false,
   talkedToGuard: false,
   talkedToBob: false,
+  talkedToJohnathan: false, 
 };
 
 let intentExpressed = {
@@ -64,6 +65,15 @@ const loadDataFromLocalStorage = (key, defaultValue) => {
     try {
       const parsedData = JSON.parse(savedData);
       console.log(`Loaded ${key} from localStorage:`, parsedData);
+
+      if (key === "gameProgress") {
+        const validKeys = ["talkedToLisa", "talkedToGuard", "talkedToBob", "talkedToJohnathan"];
+        const cleanedData = {};
+        for (const validKey of validKeys) {
+          cleanedData[validKey] = parsedData[validKey] === true;
+        }
+        return cleanedData;
+      }
 
       // 对于 bobIntentExpress，进行额外的格式检查 
       if (key === "bobIntentExpress") {
@@ -307,6 +317,7 @@ function resetGame() {
 
   window.location.href = "/Main.html";
 }
+
 
 // 全局背包系统
 const inventoryIcon = document.getElementById("inventory-icon");
