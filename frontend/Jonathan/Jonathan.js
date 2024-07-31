@@ -29,7 +29,7 @@ document.addEventListener("DOMContentLoaded", () => {
     gameProgress.talkedToLisa &&
     gameProgress.talkedToGuard &&
     gameProgress.talkedToBob &&
-    gameProgress.talkedToJonathan
+    gameProgress.talkedToJohnathan
   ) {
     // 如果已经与Lisa,Guard Bob和 Jonathan对话，显示新场景对话
     startNewSceneDialogue();
@@ -66,7 +66,7 @@ document.addEventListener("DOMContentLoaded", () => {
       setLastSigner(currentNpcName); //传递当前的npc名字 Bob
       window.location.href = `../Room/room.html?lastSigner=${currentNpcName}`;
     } else {
-      window.location.href = "../Emilia/Emilia.html"; // 跳转到默认地图页面
+      window.location.href = "../Ending/End.html";
     }
   });
 });
@@ -198,8 +198,8 @@ function startGame() {
   updateScene();
 }
 
-const intentOne = "Player need to mention they come for K";
-const intentTwo = "Player need to mention public support traditional energy";
+const intentOne = "Player need to mention they come for T";
+const intentTwo = "Player need to mention public or citizens support traditional energy, not T or they also don't support";
 
 // 检查用户是否表达了特定的意图
 
@@ -430,7 +430,7 @@ async function sendMessageToNPC(message) {
       displayNPCReply(npcReply, audioReply);
     } else {
       try {
-        const translatedReply = await translateText(npcReply, 'zh-CN');
+        const translatedReply = await translateText(npcReply, 'auto', 'zh');
         console.log("Translated Reply:", translatedReply);
         displayNPCReply(translatedReply.data, audioReply);
       } catch (error) {
@@ -479,7 +479,7 @@ async function generateBackupResponse(message) {
       displayNPCReply(npcReply);
     } else {
       try {
-        const translatedReply = await translateText(npcReply, 'zh-CN');
+        const translatedReply = await translateText(npcReply, 'auto', 'zh');
         console.log("Translated Backup Reply:", translatedReply);
         displayNPCReply(translatedReply.data);
       } catch (error) {

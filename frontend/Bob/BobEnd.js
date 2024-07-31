@@ -36,6 +36,7 @@ function startNewSceneDialogue() {
     textContainer.innerHTML = "";
     const currentLine = scene.text[currentLanguage][currentTextIndex];
     const paragraph = document.createElement("p");
+    const userInputContainer = document.getElementById("user-input-container");
     paragraph.innerHTML = currentLine;
     textContainer.appendChild(paragraph);
     textContainer.className = "";
@@ -84,5 +85,5 @@ function startNewSceneDialogue() {
 }
 
 document.getElementById("back-main").addEventListener("click", () => {
-  window.location.href = "../Map/map.html";
+  window.location.href = "../Emilia/Emilia.html"; // 跳转到默认地图页
 });

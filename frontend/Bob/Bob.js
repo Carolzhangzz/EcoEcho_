@@ -30,7 +30,9 @@ document.addEventListener("DOMContentLoaded", () => {
     gameProgress.talkedToLisa &&
     gameProgress.talkedToGuard &&
     gameProgress.talkedToBob
-  ) 
+  ){ 
+    startNewSceneDialogue(); // 如果所有的对话都结束了，显示新的对话
+  }
 
   nextButton.style.display = "inline-block";
   prevButton.style.display = "none";
@@ -194,9 +196,8 @@ function startGame() {
   updateScene();
 }
 
-const intentOne = "Player need to mention they come for K";
-const intentTwo =
-  "Player need to mention he is kane's son or kane is his father";
+const intentOne = "Player need to mention they come for T";
+const intentTwo =  "Player need to mention he is kane's son or kane is his father";
 const intentThree = "Player need to mention Lisa also support the strike";
 
 // 检查用户是否表达了特定的意图
@@ -204,7 +205,7 @@ const intentThree = "Player need to mention Lisa also support the strike";
 async function Check(intent, message) {
   // 为不同的意图设置不同的关键字
   const keywords = {
-    [intentOne]: ["K", "come for K", "looking for K"],
+    [intentOne]: ["T", "come for T", "looking for T", "here for T"],
     [intentTwo]: ["son", "Kane is my father", "I'm Kane's son", "father"],
     [intentThree]: [
       "Lisa supports",
@@ -464,7 +465,7 @@ async function sendMessageToNPC(message) {
       displayNPCReply(npcReply, audioReply);
     } else {
       try {
-        const translatedReply = await translateText(npcReply, 'zh-CN');
+        const translatedReply = await translateText(npcReply, 'auto', 'zh');
         console.log("Translated Reply:", translatedReply);
         displayNPCReply(translatedReply.data, audioReply);
       } catch (error) {
@@ -513,7 +514,7 @@ async function generateBackupResponse(message) {
       displayNPCReply(npcReply);
     } else {
       try {
-        const translatedReply = await translateText(npcReply, 'zh-CN');
+        const translatedReply = await translateText(npcReply, 'auto', 'zh');
         console.log("Translated Backup Reply:", translatedReply);
         displayNPCReply(translatedReply.data);
       } catch (error) {

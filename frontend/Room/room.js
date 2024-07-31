@@ -13,11 +13,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // 不禁用返回主页按钮
   const backMainButton = document.getElementById("back-main");
-  //跳转到艾米丽
   backMainButton.addEventListener("click", () => {
-    //如果 lastSigner 是 " Jonathan"，跳转到落幕页面
-    if (lastSigner === "Jonathan") {
-      window.location.href = "../End/End.html"; // 跳转到落幕页面
+    if (lastSigner === "Johnathan") {
+      window.location.href = "../Ending/End.html"; // 跳转到落幕页面
     } else {
       window.location.href = "../Emilia/Emilia.html";
     }

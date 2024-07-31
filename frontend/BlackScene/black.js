@@ -57,6 +57,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // 对话结束后，自动添加高亮物品到背包
         const highlights = dialogueElement.querySelectorAll(".highlight");
+        //并设置最后交互的"NPC"为Ki 
+        setLastSigner("Ki");
         highlights.forEach((item) => {
           addToInventory(item.dataset.item, item.dataset.image);
         });
@@ -75,11 +77,9 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function goToNextScene() {
-   
-
-    // 设置最后交互的"NPC"为Ki
-    setLastSigner("Ki");
-
+  
+    // // 设置最后交互的"NPC"为Ki
+    // setLastSigner("Ki");
     // 跳转到Emilia页面
     window.location.href = "../Emilia/Emilia.html";
   }

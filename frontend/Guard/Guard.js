@@ -255,6 +255,7 @@ async function Check(intent, message) {
     if (containsKeyword) {
       intentExpressed[currentNpcName] = true;
       localStorage.setItem("intentExpressed", JSON.stringify(intentExpressed));
+      //表达是为了 Bob 之后，重置对话次数
       resetConversationCount();
       return true;
     }
@@ -358,7 +359,7 @@ async function sendMessageToNPC(message) {
       displayNPCReply(npcReply, audioReply);
     } else {
       try {
-        const translatedReply = await translateText(npcReply, 'zh-CN');
+        const translatedReply = await translateText(npcReply, 'auto', 'zh');
         console.log("Translated Reply:", translatedReply);
         displayNPCReply(translatedReply.data, audioReply);
       } catch (error) {
@@ -407,7 +408,7 @@ async function generateBackupResponse(message) {
       displayNPCReply(npcReply);
     } else {
       try {
-        const translatedReply = await translateText(npcReply, 'zh-CN');
+        const translatedReply = await translateText(npcReply, 'auto', 'zh');
         console.log("Translated Backup Reply:", translatedReply);
         displayNPCReply(translatedReply.data);
       } catch (error) {

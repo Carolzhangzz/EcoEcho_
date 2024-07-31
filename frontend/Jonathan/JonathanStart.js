@@ -84,7 +84,7 @@ function startFirstDialogue() {
 }
 
 function goToMap() {
-  window.location.href = "../Map/map.html"; // 跳转到默认地图页
+  window.location.href = "../Emilia/Emilia.html"; // 跳转到默认地图页
 }
 
 document.getElementById("back-main").addEventListener("click", goToMap);

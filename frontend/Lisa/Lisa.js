@@ -270,9 +270,10 @@ async function Check(intent, message) {
     if (containsKeyword) {
       intentExpressed[currentNpcName] = true; // 动态设置属性
       localStorage.setItem("intentExpressed", JSON.stringify(intentExpressed));
+      // 重置对话计数
+      resetConversationCount();
       return true;
     }
-
     return false;
   }
 }

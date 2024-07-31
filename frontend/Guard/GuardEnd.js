@@ -34,6 +34,7 @@ function startNewSceneDialogue() {
     textContainer.innerHTML = "";
     const currentLine = scene.text[currentLanguage][currentTextIndex];
     const paragraph = document.createElement("p");
+    const userInputContainer = document.getElementById("user-input-container");
     paragraph.innerHTML = currentLine;
     textContainer.appendChild(paragraph);
     textContainer.className = "";
