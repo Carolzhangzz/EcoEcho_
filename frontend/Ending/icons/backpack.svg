@@ -1,0 +1,47 @@
+<svg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="spookyGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#2A2A2A;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#4A4A4A;stop-opacity:1" />
+    </linearGradient>
+    <filter id="spookyGlow">
+      <feGaussianBlur stdDeviation="0.5" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- 背包主体 -->
+  <path d="M8 12 L32 12 L34 36 H6 L8 12" fill="rgba(20,20,20,0.8)" stroke="url(#spookyGradient)" stroke-width="1" filter="url(#spookyGlow)"/>
+
+  <!-- 背包顶盖 -->
+  <path d="M8 12 C8 8, 32 8, 32 12" fill="rgba(20,20,20,0.8)" stroke="url(#spookyGradient)" stroke-width="1" filter="url(#spookyGlow)"/>
+
+  <!-- 肩带 -->
+  <path d="M12 12 C10 8, 8 4, 12 2 M28 12 C30 8, 32 4, 28 2" fill="none" stroke="url(#spookyGradient)" stroke-width="1.5" filter="url(#spookyGlow)"/>
+
+  <!-- 破损效果 -->
+  <path d="M15 20 L18 22 M25 28 L22 30" stroke="#3A3A3A" stroke-width="0.5" opacity="0.7"/>
+
+  <!-- 装饰线条 -->
+  <path d="M10 22 L30 22 M10 28 L30 28" stroke="#3A3A3A" stroke-width="0.5" opacity="0.3"/>
+
+  <!-- 侧边口袋 -->
+  <rect x="8" y="18" width="6" height="10" fill="rgba(15,15,15,0.8)" stroke="#2A2A2A" stroke-width="0.5"/>
+  <rect x="26" y="18" width="6" height="10" fill="rgba(15,15,15,0.8)" stroke="#2A2A2A" stroke-width="0.5"/>
+
+  <!-- 诡异符号 -->
+  <path d="M19 16 L21 20 L19 24 L17 20 Z" fill="none" stroke="#4A4A4A" stroke-width="0.5">
+    <animate attributeName="opacity" values="0.5;0.8;0.5" dur="3s" repeatCount="indefinite" />
+  </path>
+
+  <!-- 阴森装饰 -->
+  <path d="M14 6 L16 6 M24 6 L26 6" stroke="#3A3A3A" stroke-width="0.5" opacity="0.7"/>
+  <circle cx="10" cy="34" r="0.5" fill="#3A3A3A" opacity="0.7"/>
+  <circle cx="30" cy="34" r="0.5" fill="#3A3A3A" opacity="0.7"/>
+
+  <!-- 蜘蛛网效果 -->
+  <path d="M6 12 Q8 14, 10 12 M34 12 Q32 14, 30 12" fill="none" stroke="#4A4A4A" stroke-width="0.3" opacity="0.5"/>
+</svg>

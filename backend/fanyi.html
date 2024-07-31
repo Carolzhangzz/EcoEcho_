@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Baidu Translate Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; }
+        textarea { width: 100%; height: 100px; }
+        select, button { margin-top: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Baidu Translate Test</h1>
+    <textarea id="input" placeholder="Enter text to translate"></textarea>
+    <select id="fromLang">
+        <option value="auto">Auto Detect</option>
+        <option value="en">English</option>
+        <option value="zh">Chinese</option>
+        <option value="jp">Japanese</option>
+    </select>
+    <select id="toLang">
+        <option value="zh">Chinese</option>
+        <option value="en">English</option>
+        <option value="jp">Japanese</option>
+    </select>
+    <button id="translateBtn">Translate</button>
+    <div id="result"></div>
+
+    <script>
+        async function performTranslation() {
+            const text = document.getElementById('input').value;
+            const from = document.getElementById('fromLang').value;
+            const to = document.getElementById('toLang').value;
+
+            try {
+                const response = await fetch('/translate', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ text, from, to }),
+                });
+
+                const data = await response.json();
+                if (data.trans_result) {
+                    document.getElementById('result').innerText = data.trans_result[0].dst;
+                } else {
+                    console.error('Translation failed:', data);
+                    document.getElementById('result').innerText = 'Translation failed';
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('result').innerText = 'An error occurred';
+            }
+        }
+
+        window.onload = function() {
+            document.getElementById('translateBtn').addEventListener('click', performTranslation);
+        }
+    </script>
+</body>
+</html>

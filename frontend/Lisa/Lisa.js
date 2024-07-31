@@ -5,6 +5,8 @@ bgm.loop = true; // Let the music loop
 bgm.src = "./Music/Save the World.mp3"; // 设置统一的背景音乐
 bgm.volume = 0.1; //  音量设置为 10%
 let backupReplyIndex = 0; // 备用回复的索引
+// // import { translateText } from './translate.js';
+// const translate = require("google-translate-open-api").default;
 
 document.addEventListener("DOMContentLoaded", () => {
   const characterImage = document.getElementById("character-image");
@@ -39,6 +41,11 @@ document.addEventListener("DOMContentLoaded", () => {
       sendMessageButton.click();
     }
   });
+
+  //如果说 ki 还没签字的话，也不能和 lisa 交谈
+  if (signatures["Ki"] === null) {
+    startFirstDialogue();
+  }
 
   //判断是否这个对话已经结束 如果结束了，就显示 new scene 的对话
   if (gameProgress.talkedToLisa) {
@@ -335,7 +342,7 @@ async function sendMessageToNPC(message) {
 
     const data = await response.json();
     console.log("NPC Response:", data);
-  
+
     // 更新session ID
     if (data.sessionID) {
       npcSessionIDs[currentNpcName] = data.sessionID;
@@ -359,7 +366,9 @@ async function sendMessageToNPC(message) {
       displayNPCReply(npcReply, audioReply);
     } else {
       try {
-        const translatedReply = await generateResponse(npcReply);
+        
+        const translatedReply = await translateText(npcReply, 'auto', 'zh');
+        // const translatedReply = await translateText(npcReply, 'zh-CN');
         console.log("Translated Reply:", translatedReply);
         displayNPCReply(translatedReply.data, audioReply);
       } catch (error) {
@@ -437,7 +446,7 @@ async function generateBackupResponse(message) {
       displayNPCReply(npcReply);
     } else {
       try {
-        const translatedReply = await generateResponse(npcReply);
+        const translatedReply = await translateText(npcReply, 'auto', 'zh');
         console.log("Translated Backup Reply:", translatedReply);
         displayNPCReply(translatedReply.data);
       } catch (error) {
@@ -449,7 +458,7 @@ async function generateBackupResponse(message) {
     console.error("Error in generateBackupResponse:", error);
     const fixedReply = backupFixedReply();
     displayNPCReply(currentLanguage === "en" ? fixedReply.en : fixedReply.zh);
-    
+
     // 即使使用固定回复，也要更新对话计数
     updateConversationCount(
       currentNpcName,
@@ -465,7 +474,6 @@ function displayNPCReply(reply, audioReply) {
   replyElement.className = "npc-message";
   replyElement.textContent = `${currentNpcName}: `;
   textContainer.appendChild(replyElement);
-
 
   // 确保 reply 是一个字符串
   reply = reply || "";

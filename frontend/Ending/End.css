@@ -1,0 +1,317 @@
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden;
+  font-family: 'Times New Roman', serif;
+  background: url("./images/ruined_landscape.png") no-repeat center center fixed;
+  background-size: cover;
+}
+
+.popup-item {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.popup {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+#game-container {
+  width: 100%;
+  height: 100vh;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#text-container {
+  width: 80%;
+  max-height: 80vh;
+  overflow: none;
+  padding: 20px;
+  background-color: rgba(0, 0, 0, 0.8);
+  border: 1px solid #333;
+  border-radius: 10px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+}
+
+.dialogue {
+  text-align: center;
+  color: #ccc;
+  font-size: 18px;
+  line-height: 1.5;
+  margin-bottom: 20px;
+  text-shadow: 1px 1px 2px #000;
+}
+
+.highlight {
+  color: #aaa;
+  cursor: pointer;
+  text-decoration: underline;
+  transition: all 0.3s ease-in-out;
+}
+
+.highlight:hover {
+  color: #fff;
+}
+
+.popup {
+  position: absolute;
+  z-index: 1000;
+}
+
+.popup-item {
+  width: 50px;
+  height: 50px;
+  object-fit: contain;
+}
+
+#next-scene {
+  position: fixed;
+  bottom: 7%;
+  right: 45%;
+  display: none;
+  padding: 10px 20px;
+  font-size: 18px;
+  background: rgba(20, 20, 20, 0.8);
+  color: #bbb;
+  border: 1px solid #444;
+  border-radius: 5px;
+  cursor: pointer;
+  outline: none;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+#next-scene:hover {
+  background: rgba(40, 40, 40, 0.8);
+  color: #ddd;
+  border-color: #666;
+}
+
+#character-image {
+  position: fixed;
+  left: 310px;
+  bottom: 10%;
+  width: 200px;
+  height: auto;
+  object-fit: contain;
+}
+
+#inventory-icon {
+  background-image: url("./icons/backpack.svg");
+  width: 40px;
+  height: 40px;
+  position: fixed;
+  bottom: 20px;
+  left: 270px;
+  font-size: 30px;
+  cursor: pointer;
+}
+
+#inventory-popup {
+  position: fixed;
+  bottom: 60px;
+  left: 270px;
+  background-color: rgba(20, 20, 20, 0.9);
+  color: #bbb;
+  padding: 10px;
+  border-radius: 5px;
+  transition: opacity 0.5s ease;
+  border: 1px solid #444;
+}
+
+#inventory-popup.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+#clear-inventory {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  padding: 5px 10px;
+  font-size: 16px;
+  background: rgba(20, 20, 20, 0.8);
+  color: #bbb;
+  border: 1px solid #444;
+  border-radius: 5px;
+  cursor: pointer;
+  outline: none;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+#clear-inventory:hover {
+  background: rgba(40, 40, 40, 0.8);
+  color: #ddd;
+  border-color: #666;
+}
+
+#back-to-main {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  padding: 5px 10px;
+  font-size: 16px;
+  background: rgba(20, 20, 20, 0.8);
+  color: #bbb;
+  border: 1px solid #444;
+  border-radius: 5px;
+  cursor: pointer;
+  outline: none;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  z-index: 1000;
+}
+
+#back-to-main:hover {
+  background: rgba(40, 40, 40, 0.8);
+  color: #ddd;
+  border-color: #666;
+}
+
+#music-toggle,
+#language-toggle {
+  position: fixed;
+  top: 20px;
+  background: rgba(30, 30, 30, 0.8);
+  width: 40px;
+  height: 27px;
+  border: 1px solid #444;
+  font-size: 18px;
+  cursor: pointer;
+  color: #999;
+  border-radius: 5px;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+}
+
+#music-toggle {
+  right: 20px;
+}
+
+#language-toggle {
+  right: 70px;
+}
+
+#music-toggle:hover,
+#language-toggle:hover {
+  background: rgba(50, 50, 50, 0.8);
+  color: #bbb;
+  border-color: #666;
+}
+
+.flash {
+  animation: flash 0.5s;
+}
+
+@keyframes flash {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+  }
+}
+
+.custom-alert {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 300px;
+  padding: 20px;
+  background: rgba(20, 20, 20, 0.95);
+  color: #bbb;
+  border: 1px solid #444;
+  border-radius: 10px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  text-align: center;
+  font-family: 'Times New Roman', serif;
+  text-shadow: 1px 1px 2px #000;
+}
+
+.custom-alert p {
+  margin: 10px 0;
+  font-size: 18px;
+}
+
+.custom-alert button {
+  margin-top: 20px;
+  padding: 10px 20px;
+  background: rgba(40, 40, 40, 0.8);
+  color: #aaa;
+  border: 1px solid #555;
+  border-radius: 5px;
+  cursor: pointer;
+  outline: none;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+.custom-alert button:hover {
+  background: rgba(60, 60, 60, 0.8);
+  color: #ccc;
+  border-color: #777;
+}
+
+.father-speech {
+  font-family: 'Times New Roman', serif;
+  font-style: italic;
+  color: #ffffff; /* Dark gray for a somber tone */
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7); /* Heavier shadow for a more eerie feel */
+  padding-left: 15px;
+  margin-left: 25px;
+  position: relative;
+  background: rgba(0, 0, 0, 0.1); /* Slight background tint for contrast */
+}
+
+.father-speech::before {
+  content: '"';
+  font-size: 48px;
+  position: absolute;
+  left: -40px;
+  top: -15px;
+  color: #e9ff89; /* Matching the border for consistency */
+  opacity: 0.7;
+}
+
+.father-speech::after {
+  content: '"';
+  font-size: 48px;
+  position: absolute;
+  right: -25px;
+  bottom: -25px;
+  color: #e3ff7c; /* Matching the border for consistency */
+  opacity: 0.7;
+}
+
+/* Optional: Add a subtle pulsing animation for extra eeriness */
+@keyframes pulse {
+  0%, 100% {
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+  }
+  50% {
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.9);
+  }
+}
+
+.father-speech {
+  animation: pulse 3s infinite;
+}
+

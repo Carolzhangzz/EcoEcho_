@@ -1,3 +1,4 @@
+
 let usedItems = {};
 let currentLanguage = getLanguage() || "en";
 let gameProgress = {
@@ -68,6 +69,75 @@ let npcSessionIDs = {
   Bob: null,
   Johnathan: null,
 };
+
+// 获取翻译后的回复
+// async function generateResponse(npcReply) {
+//   try {
+//     const prompt = `Translate the following English text into Simplified Chinese:
+
+//     "${npcReply}"
+
+//     Instructions:
+//     1. Provide only the translated text, without any additional explanations or comments.
+//     2. Maintain the original meaning, tone, and nuances, including any humor if present.
+//     3. Ensure the translation sounds natural in Chinese.
+//     4. Do not use quotation marks in the translation.
+//     5. If there are any names or technical terms, transliterate them appropriately.
+
+//     Translated text:`;
+
+//     console.log("Using translation prompt:", prompt);
+
+//     const response = await fetch("/generate", {
+//       method: "POST",
+//       headers: {
+//         "Content-Type": "application/json",
+//       },
+//       body: JSON.stringify({ prompt }),
+//     });
+
+//     //模拟 api 请求 失败
+//     // throw new Error("Network response was not ok");
+
+//     if (!response.ok) {
+//       throw new Error("Network response was not ok");
+//     }
+
+//     const translatedReply = await response.json();
+//     console.log("Received translated reply:", translatedReply);
+//     return translatedReply;
+//   } catch (error) {
+//     console.error("Translation failed, returning original reply:", error);
+//     return { data: npcReply }; // 返回一个包含原始回复的对象
+//   }
+// }
+
+
+// 替换原有的translateText函数
+async function translateText(text, from, to) {
+  try {
+    const response = await fetch('/translate', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ text, from, to }),
+    });
+    // 模拟 API 请求失败
+    // throw new Error('Network response was not ok');
+    const data = await response.json();
+  
+    if (data.trans_result) {
+      return { data: data.trans_result[0].dst };
+    } else {
+      throw new Error('Translation failed');
+    }
+  } catch (error) {
+    console.error("Translation error:", error);
+    return { data: text }; // 返回一个包含原始回复的对象
+    throw error;
+  }
+}
 
 function loadSessionIDs() {
   const savedSessionIDs = localStorage.getItem("npcSessionIDs");
@@ -425,7 +495,9 @@ const itemNpcMapping = {
 function promptShareItem(item, npcName) {
   if (usedItems[npcName]) {
     showAlert(
-      `${npcName} has already received an item and cannot be given another.`
+      currentLanguage === "en"
+        ? `${npcName} has already received an item and cannot be given another.`
+        : `${npcName}已经收到过物品，不能再次给予。`
     );
     return;
   }
@@ -433,17 +505,27 @@ function promptShareItem(item, npcName) {
   // 检查物品是否可以分享给特定的NPC
   const allowedNpc = itemNpcMapping[item.name];
   if (allowedNpc && allowedNpc !== "all" && !allowedNpc.includes(npcName)) {
-    showAlert(`${item.name} cannot be shared with ${npcName}.`);
+    showAlert(
+      currentLanguage === "en"
+        ? `${item.name} cannot be shared with ${npcName}.`
+        : `${item.name}不能与${npcName}分享。`
+    );
     return;
   }
 
   showConfirm(
-    `Do you want to share this ${item.name} with ${npcName}?`,
+    currentLanguage === "en"
+      ? `Do you want to share this ${item.name} with ${npcName}?`
+      : `你想要与${npcName}分享这个${item.name}吗？`,
     (confirmed) => {
       if (confirmed) {
         usedItems[npcName] = true;
         localStorage.setItem("usedItems", JSON.stringify(usedItems));
-        showAlert(`${item.name} has been shared with ${npcName}.`);
+        showAlert(
+          currentLanguage === "en"
+            ? `${item.name} has been shared with ${npcName}.`
+            : `${item.name}已经与${npcName}分享。`
+        );
         console.log("Used items:", usedItems);
         removeFromInventory(item.name);
 
@@ -456,9 +538,7 @@ function promptShareItem(item, npcName) {
           if (intentExpressed[npcName]) {
             resetConversationCount(npcName);
           }
-          // 可以在这里添加一些特殊的 Guard 逻辑，如果需要的话
         }
-        // 如果需要，可以在这里添加其他 NPC 特定的逻辑
       }
     }
   );
@@ -470,7 +550,7 @@ function showAlert(message) {
   alertBox.className = "custom-alert";
   alertBox.innerHTML = `
     <p>${message}</p>
-    <button id="alert-ok">OK</button>
+    <button id="alert-ok">${currentLanguage === "en" ? "OK" : "确定"}</button>
   `;
   document.body.appendChild(alertBox);
   document
@@ -484,8 +564,8 @@ function showConfirm(message, callback) {
   confirmBox.className = "custom-alert";
   confirmBox.innerHTML = `
     <p>${message}</p>
-    <button id="confirm-yes">Yes</button>
-    <button id="confirm-no">No</button>
+    <button id="confirm-yes">${currentLanguage === "en" ? "Yes" : "是"}</button>
+    <button id="confirm-no">${currentLanguage === "en" ? "No" : "否"}</button>
   `;
 
   function confirm(result) {
@@ -513,14 +593,18 @@ function removeFromInventory(itemName) {
 // 清空背包
 function clearInventory() {
   showConfirm(
-    "Are you sure you want to clear your bag? This will reset your game progress.你确定你要清空背包吗? 这会重置你的游戏进度。",
+    currentLanguage === "en"
+      ? "Are you sure you want to clear your bag? This will reset your game progress."
+      : "你确定要清空背包吗？这会重置你的游戏进度。",
     (confirmed) => {
       if (confirmed) {
         localStorage.removeItem("gameInventory");
         loadInventory();
         resetGame();
         showAlert(
-          "Your bag has been cleared. You can restart the game now.你的背包被清空了, 你可以重新开始游戏。"
+          currentLanguage === "en"
+            ? "Your bag has been cleared. You can restart the game now."
+            : "你的背包已被清空。你现在可以重新开始游戏了。"
         );
       }
     }
@@ -645,47 +729,6 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
-// 获取翻译后的回复
-async function generateResponse(npcReply) {
-  try {
-    const prompt = `Translate the following English text into Simplified Chinese:
-
-    "${npcReply}"
-
-    Instructions:
-    1. Provide only the translated text, without any additional explanations or comments.
-    2. Maintain the original meaning, tone, and nuances, including any humor if present.
-    3. Ensure the translation sounds natural in Chinese.
-    4. Do not use quotation marks in the translation.
-    5. If there are any names or technical terms, transliterate them appropriately.
-
-    Translated text:`;
-
-    console.log("Using translation prompt:", prompt);
-
-    const response = await fetch("/generate", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ prompt }),
-    });
-
-    //模拟 api 请求 失败
-    // throw new Error("Network response was not ok");
-
-    if (!response.ok) {
-      throw new Error("Network response was not ok");
-    }
-
-    const translatedReply = await response.json();
-    console.log("Received translated reply:", translatedReply);
-    return translatedReply;
-  } catch (error) {
-    console.error("Translation failed, returning original reply:", error);
-    return { data: npcReply }; // 返回一个包含原始回复的对象
-  }
-}
 
 // 自动回复触发条件函数
 function shouldTriggerAutoReply(currentNpcName) {
@@ -733,7 +776,16 @@ function shouldTriggerAutoReply(currentNpcName) {
 }
 
 // 添加签名
-function addSignature(name, signed) {
-  signatures[name] = signed ? Date.now() : false;
-  localStorage.setItem("signatures", JSON.stringify(signatures));
+async function addSignature(name, signed) {
+  try {
+    signatures[name] = signed ? Date.now() : false;
+    await localStorage.setItem("signatures", JSON.stringify(signatures));
+  } catch (error) {
+    console.error("Error adding signature:", error);
+    showAlert(
+      currentLanguage === "en"
+        ? "An error occurred. Please try again."
+        : "发生错误，请重试。"
+    );
+  }
 }

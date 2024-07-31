@@ -1,9 +1,10 @@
+
 bgm = document.getElementById("bgm");
 bgm.loop = true; // Let the music loop
 bgm.src = "./Music/Save the World.mp3"; // 设置统一的背景音乐
 bgm.volume = 0.1; // 设置音量为 50%
 
-const newScenes = [
+const newEndScenes = [
   {
     text: {
       en: [
@@ -22,7 +23,6 @@ const newScenes = [
 ];
 
 function startNewSceneDialogue() {
-
   bgm.play();
 
   const textContainer = document.getElementById("text-container");
@@ -31,16 +31,20 @@ function startNewSceneDialogue() {
 
   let currentTextIndex = 0;
 
-  const scene = newScenes[0];
+  const scene = newEndScenes[0];
 
   const displayNewSceneText = () => {
     textContainer.innerHTML = "";
     const currentLine = scene.text[currentLanguage][currentTextIndex];
     const paragraph = document.createElement("p");
+    const userInputContainer = document.getElementById("user-input-container");
     paragraph.innerHTML = currentLine;
     textContainer.appendChild(paragraph);
     textContainer.className = "";
     textContainer.classList.add(scene.textStyle);
+
+    // 隐藏用户输入区域，显示导航按钮
+    userInputContainer.style.display = "none";
 
     nextButton.style.display =
       currentTextIndex === scene.text[currentLanguage].length - 1

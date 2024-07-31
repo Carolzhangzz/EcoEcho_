@@ -1,8 +1,8 @@
 let currentScene = 0;
 let currentTextIndex = 0;
-const MUSIC_PATH = "./Music/Immediate Music - From The Light.mp3";
+const MUSIC_PATH = "./Music/Living in future.mp3";
 const MAIN_PAGE_PATH = "../Main.html";
-const MAIN_MAP_PATH = "../Map/map.html";
+const MAIN_MAP_PATH = "../Emilia/Emilia.html";
 let bgm;
 
 // 初始化背景音乐
@@ -14,7 +14,7 @@ function initializeAudio() {
   }
   bgm.loop = true;
   bgm.src = MUSIC_PATH;
-  bgm.volume = 0.5;
+  bgm.volume = 0.2;
 }
 
 // 跳转到指定场景
@@ -51,23 +51,25 @@ function startGame(lastSigner) {
   const textContainer = document.getElementById("text-container");
   const nextButton = document.getElementById("next-text-button");
   const prevButton = document.getElementById("prev-text-button");
-
+  // const lastSigner = getLastSigner();
   let dialogues;
 
   if (lastSigner === "Lisa" && !metEmilia["Lisa"]) {
     dialogues = [
       {
         en: [
-          `We are conducting the second public petition on the new energy K.`,
+          "I am Emilia, a scientist dedicated to studying ethical issues in technological advancement.",
         ],
-        zh: [`我们正在进行关于新型能源K的第二次民意联署。`],
+        zh: [
+          "你好，我是 Emilia。我是一名计算机科学家, 专注于能源系统的优化和可持续发展。",
+        ],
       },
       {
         en: [
-          `Based on our research, promoting sustainable energy models is crucial for the future of the Earth's environment.`,
+          "We are conducting the second public petition on the new energy T, based on our research, promoting sustainable energy models is crucial for the future of the Earth's environment.",
         ],
         zh: [
-          `根据我们的研究, 推广可持续的能源模式对于未来的地球环境至关重要。`,
+          "我们正在进行关于新型能源T的第二次民意联署。根据我们的研究,推广可持续的能源模式对于未来的地球环境至关重要。",
         ],
       },
     ];
@@ -76,16 +78,18 @@ function startGame(lastSigner) {
     dialogues = [
       {
         en: [
-          "We are conducting the first public petition on the new energy K.",
+          "I am Emilia, a scientist dedicated to studying ethical issues in technological advancement.",
         ],
-        zh: ["我们正在进行关于新型能源K的第一次民意联署。"],
+        zh: [
+          "你好，我是 Emilia。我是一名计算机科学家, 专注于能源系统的优化和可持续发展。",
+        ],
       },
       {
         en: [
-          "Based on our research, promoting sustainable energy models is crucial for the future of the Earth's environment.",
+          "We are conducting the first public petition on the new energy T, based on our research, promoting sustainable energy models is crucial for the future of the Earth's environment.",
         ],
         zh: [
-          "根据我们的研究，推广可持续的能源模式对于未来的地球环境至关重要。",
+          "我们正在进行关于新型能源T的第一次民意联署。根据我们的研究,推广可持续的能源模式对于未来的地球环境至关重要。",
         ],
       },
     ];
@@ -94,46 +98,88 @@ function startGame(lastSigner) {
     dialogues = [
       {
         en: [
-          " We are conducting the third public petition on the new energy K.",
+          "I am Emilia, a scientist dedicated to studying ethical issues in technological advancement.",
         ],
-        zh: ["我们正在进行关于新型能源K的第三次民意联署。"],
+        zh: [
+          "你好，我是 Emilia。我是一名计算机科学家, 专注于能源系统的优化和可持续发展。",
+        ],
       },
       {
         en: [
-          "Based on our research, promoting sustainable energy models is crucial for the future of the Earth's environment.",
+          "We are conducting the third public petition on the new energy T, based on our research, promoting sustainable energy models is crucial for the future of the Earth's environment.",
         ],
         zh: [
-          "根据我们的研究，推广可持续的能源模式对于未来的地球环境至关重要。",
+          "我们正在进行关于新型能源T的第三次民意联署。根据我们的研究,推广可持续的能源模式对于未来的地球环境至关重要。",
         ],
       },
     ];
     updateMetEmilia(lastSigner, true);
-  } else if (lastSigner === "Jonathan" && !metEmilia["Jonathan"]) {
+  // } else if (lastSigner === "Jonathan" && !metEmilia["Jonathan"]) {
+  //   dialogues = [
+  //     {
+  //       en: [
+  //         "I am Emilia, a scientist dedicated to studying ethical issues in technological advancement.",
+  //       ],
+  //       zh: [
+  //         "你好，我是 Emilia。我是一名计算机科学家, 专注于能源系统的优化和可持续发展。",
+  //       ],
+  //     },
+  //     {
+  //       en: [
+  //         "We are conducting the fourth public petition on the new energy T, based on our research, promoting sustainable energy models is crucial for the future of the Earth's environment.",
+  //       ],
+  //       zh: [
+  //         "我们正在进行关于新型能源T的第四次民意联署。根据我们的研究,推广可持续的能源模式对于未来的地球环境至关重要。",
+  //       ],
+  //     },
+  //   ];
+  //   updateMetEmilia(lastSigner, true);
+  } else if (lastSigner === "null" || lastSigner === null) {
     dialogues = [
       {
         en: [
-          " We are conducting the third public petition on the new energy K.",
+          "I am Emilia, a scientist dedicated to studying ethical issues in technological advancement.",
         ],
-        zh: ["我们正在进行关于新型能源K的第四次民意联署。"],
+        zh: ["你好，我是 Emilia。我是一名计算机科学家, 专注于能源系统的优化和可持续发展。"],
       },
       {
         en: [
-          "Based on our research, promoting sustainable energy models is crucial for the future of the Earth's environment.",
+          "We are conducting a public petition on the new energy T. Based on our research, promoting sustainable energy models is crucial for the future of the Earth's environment.",
         ],
         zh: [
-          "根据我们的研究，推广可持续的能源模式对于未来的地球环境至关重要。",
+          "我们正在开发一个复杂的能源系统模拟器。它可以帮助我们预测不同能源政策的长期影响。",
+        ],
+      },
+      {
+        en: [
+          "T energy is indeed a groundbreaking technology, but we need to carefully evaluate its long-term impact. Our simulations have shown some potential issues.",
+        ],
+        zh: [
+          "T 能源确实是一项突破性技术, 但我们需要仔细评估它的长期影响。我们的模拟显示了一些潜在的问题。",
+        ],
+      },
+      {
+        en: [
+          "What are your thoughts on T energy? We need more people to engage in these important discussions. Your perspective could help shape our future.",
+        ],
+        zh: [
+          "你对T能源有什么看法? 我们需要更多人参与到这些重要的讨论中来。你的观点可能会帮助塑造我们的未来。",
         ],
       },
     ];
-    updateMetEmilia(lastSigner, true);
   } else {
     dialogues = [
       {
-        en: ["It's always a pleasure to see you."],
-        zh: ["你好，见到你总是很愉快。"],
+        en: [
+          "I am Emilia, a scientist dedicated to studying ethical issues in technological advancement.",
+        ],
+        zh: [
+          "你好，我是 Emilia。我是一名计算机科学家, 专注于能源系统的优化和可持续发展。",
+        ],
       },
       {
         en: ["Would you be willing to sign the petition right now?"],
+
         zh: ["你愿意现在在联署书上签字吗?"],
       },
     ];
@@ -146,6 +192,7 @@ function startGame(lastSigner) {
   }));
 
   const displayText = () => {
+    bgm.play();
     textContainer.innerHTML = ""; // 清除之前的文本
     const scene = scenes[currentScene];
     const textLines = scene.text[currentLanguage];
@@ -198,7 +245,7 @@ function startGame(lastSigner) {
       setTimeout(() => {
         // 如果是最后一个，显示签名提示
         showSignaturePrompt();
-      }, 3000); // 延迟两秒显示提示
+      }, 1000); // 延迟两秒显示提示
     }
   };
 
@@ -250,7 +297,7 @@ function showSignaturePrompt() {
   const lastSigner = getLastSigner();
 
   // 检查最后签名者是否已经签名
-  if (signatures[lastSigner] !== null) {
+  if (signatures[lastSigner] !== null && signatures[lastSigner] !== undefined) {
     showAlert(
       currentLanguage === "en"
         ? "You have already signed this petition."
@@ -259,8 +306,8 @@ function showSignaturePrompt() {
     return;
   }
 
-  showConfirm(message[currentLanguage], (confirmed) => {
-    addSignature(lastSigner, confirmed);
+  showConfirm(message[currentLanguage], async (confirmed) => {
+    await addSignature(lastSigner, confirmed);
 
     if (confirmed) {
       showAlert(

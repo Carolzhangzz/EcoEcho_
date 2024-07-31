@@ -464,7 +464,7 @@ async function sendMessageToNPC(message) {
       displayNPCReply(npcReply, audioReply);
     } else {
       try {
-        const translatedReply = await generateResponse(npcReply);
+        const translatedReply = await translateText(npcReply, 'zh-CN');
         console.log("Translated Reply:", translatedReply);
         displayNPCReply(translatedReply.data, audioReply);
       } catch (error) {
@@ -513,7 +513,7 @@ async function generateBackupResponse(message) {
       displayNPCReply(npcReply);
     } else {
       try {
-        const translatedReply = await generateResponse(npcReply);
+        const translatedReply = await translateText(npcReply, 'zh-CN');
         console.log("Translated Backup Reply:", translatedReply);
         displayNPCReply(translatedReply.data);
       } catch (error) {

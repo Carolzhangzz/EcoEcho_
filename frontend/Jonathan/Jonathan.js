@@ -11,7 +11,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const backgroundImage = "./images/Government.png";
   const nextButton = document.getElementById("next-text-button");
   const prevButton = document.getElementById("prev-text-button");
-  const userInputContainer = document.getElementById("user-input-container");
 
   // 设置背景图和角色图片
   document.body.style.backgroundImage = `url('${backgroundImage}')`;
@@ -431,7 +430,7 @@ async function sendMessageToNPC(message) {
       displayNPCReply(npcReply, audioReply);
     } else {
       try {
-        const translatedReply = await generateResponse(npcReply);
+        const translatedReply = await translateText(npcReply, 'zh-CN');
         console.log("Translated Reply:", translatedReply);
         displayNPCReply(translatedReply.data, audioReply);
       } catch (error) {
@@ -480,7 +479,7 @@ async function generateBackupResponse(message) {
       displayNPCReply(npcReply);
     } else {
       try {
-        const translatedReply = await generateResponse(npcReply);
+        const translatedReply = await translateText(npcReply, 'zh-CN');
         console.log("Translated Backup Reply:", translatedReply);
         displayNPCReply(translatedReply.data);
       } catch (error) {
