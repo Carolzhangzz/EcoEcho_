@@ -30,7 +30,7 @@ document.addEventListener("DOMContentLoaded", () => {
     gameProgress.talkedToLisa &&
     gameProgress.talkedToGuard &&
     gameProgress.talkedToBob
-  ){ 
+  ) {
     startNewSceneDialogue(); // 如果所有的对话都结束了，显示新的对话
   }
 
@@ -195,11 +195,14 @@ function startGame() {
   // Initial scene setup
   updateScene();
 }
+const intentOne =
+  "Player mentions T energy, sustainability, or any environmental concerns";
 
-const intentOne = "Player need to mention they come for T";
-const intentTwo =  "Player need to mention he is kane's son or kane is his father";
-const intentThree = "Player need to mention Lisa also support the strike";
+const intentTwo =
+  "Player mentions Kane, their relationship to Kane, or any information about Kane's past or death";
 
+const intentThree =
+  "Player mentions Lisa, any support for the strike, or opposition to T energy";
 // 检查用户是否表达了特定的意图
 
 async function Check(intent, message) {
@@ -350,7 +353,6 @@ async function handleMessage(message) {
   document.getElementById("next-text-button").style.display = "none";
   document.getElementById("prev-text-button").style.display = "none";
 
-
   // 生成对话提示
   console.log("Sending message to NPC:", message);
   const textContainer = document.getElementById("text-container");
@@ -381,8 +383,7 @@ async function handleMessage(message) {
       currentLanguage === "en" ? fixedReply.en : fixedReply.zh
     }</p>`;
     return;
-  }
-  if (
+  } else if (
     bobIntentExpress.comeForK &&
     !bobIntentExpress.kaneRelation &&
     conversationCount[currentNpcName] >= 3
@@ -392,8 +393,7 @@ async function handleMessage(message) {
       currentLanguage === "en" ? fixedReply.en : fixedReply.zh
     }</p>`;
     return;
-  }
-  if (
+  } else if (
     bobIntentExpress.comeForK &&
     bobIntentExpress.kaneRelation &&
     !bobIntentExpress.lisaSupport &&
@@ -451,21 +451,11 @@ async function sendMessageToNPC(message) {
     let npcReply = data.text;
     let audioReply = data.audio; // 获取音频回复
 
-    // 只有在成功获取响应后才更新对话次数
-    updateConversationCount(
-      currentNpcName,
-      conversationCount[currentNpcName] + 1
-    );
-    localStorage.setItem(
-      "conversationCount",
-      JSON.stringify(conversationCount)
-    );
-
     if (currentLanguage === "en") {
       displayNPCReply(npcReply, audioReply);
     } else {
       try {
-        const translatedReply = await translateText(npcReply, 'auto', 'zh');
+        const translatedReply = await translateText(npcReply, "auto", "zh");
         console.log("Translated Reply:", translatedReply);
         displayNPCReply(translatedReply.data, audioReply);
       } catch (error) {
@@ -504,17 +494,11 @@ async function generateBackupResponse(message) {
 
     let npcReply = data.data;
 
-    // 只有在成功发送消息后才会增加对话次数
-    updateConversationCount(
-      currentNpcName,
-      conversationCount[currentNpcName] + 1
-    );
-
     if (currentLanguage === "en") {
       displayNPCReply(npcReply);
     } else {
       try {
-        const translatedReply = await translateText(npcReply, 'auto', 'zh');
+        const translatedReply = await translateText(npcReply, "auto", "zh");
         console.log("Translated Backup Reply:", translatedReply);
         displayNPCReply(translatedReply.data);
       } catch (error) {
@@ -527,11 +511,6 @@ async function generateBackupResponse(message) {
     const fixedReply = backupFixedReply();
     displayNPCReply(currentLanguage === "en" ? fixedReply.en : fixedReply.zh);
 
-    // 即使使用固定回复，也要更新对话计数
-    updateConversationCount(
-      currentNpcName,
-      conversationCount[currentNpcName] + 1
-    );
   }
 }
 
@@ -565,6 +544,12 @@ function getNPCSpecificPrompt(npcName, userMessage) {
 }
 
 function displayNPCReply(reply, audioReply) {
+  //更新
+  updateConversationCount(
+    currentNpcName,
+    (conversationCount[currentNpcName] || 0) + 1
+  );
+
   const textContainer = document.getElementById("text-container");
   let index = 0;
   const replyElement = document.createElement("p");
@@ -642,7 +627,7 @@ const backupIntentReplies = [
   },
   {
     en: "Okay, in that case, we will use the general strike to fight the government to the end.",
-    zh: "好的，既然如此，我们会利用大罢工向政府抗争到底！",
+    zh: "Lisa也支持?, 既然如此，我们会利用大罢工向政府抗争到底！",
   },
 ];
 

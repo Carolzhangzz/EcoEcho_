@@ -345,16 +345,6 @@ async function sendMessageToNPC(message) {
     let npcReply = data.text;
     let audioReply = data.audio; // 获取音频回复
 
-    // 例如，在成功发送消息后
-    updateConversationCount(
-      currentNpcName,
-      conversationCount[currentNpcName] + 1
-    ); // 只有在成功发送消息后才会增加对话次数
-    localStorage.setItem(
-      "conversationCount",
-      JSON.stringify(conversationCount)
-    ); // 保存对话次数到 localStorage
-
     if (currentLanguage === "en") {
       displayNPCReply(npcReply, audioReply);
     } else {
@@ -398,12 +388,6 @@ async function generateBackupResponse(message) {
 
     let npcReply = data.data;
 
-    // 只有在成功发送消息后才会增加对话次数
-    updateConversationCount(
-      currentNpcName,
-      conversationCount[currentNpcName] + 1
-    );
-
     if (currentLanguage === "en") {
       displayNPCReply(npcReply);
     } else {
@@ -421,11 +405,6 @@ async function generateBackupResponse(message) {
     const fixedReply = backupFixedReply();
     displayNPCReply(currentLanguage === "en" ? fixedReply.en : fixedReply.zh);
     
-    // 即使使用固定回复，也要更新对话计数
-    updateConversationCount(
-      currentNpcName,
-      conversationCount[currentNpcName] + 1
-    );
   }
 }
 
@@ -455,6 +434,13 @@ function getNPCSpecificPrompt(npcName, userMessage) {
 }
 
 function displayNPCReply(reply, audioReply) {
+
+   // 更新对话次数
+   updateConversationCount(
+    currentNpcName,
+    (conversationCount[currentNpcName] || 0) + 1
+  );
+
   const textContainer = document.getElementById("text-container");
   let index = 0;
   const replyElement = document.createElement("p");

@@ -7,12 +7,12 @@ const newScenes = [
   {
     text: {
       en: [
-        "Traditional energy? That's a thing of the past. It's an era of innovation now, and T energy represents progress. We can't give up the entire future just because of some small risks, can we?",
         "Listen, young , politics is an art, and art is about catering to the needs of the voters. What people want now is progress, is new energy. KI is our future, and it's also the key to my winning the election.",
+        "Traditional energy? That's a thing of the past. It's an era of innovation now, and T energy represents progress. We can't give up the entire future just because of some small risks, can we?",
       ],
       zh: [
-        "传统能源? 那是过去的事了。现在是创新的时代, T能源代表着进步。我们不能因为一些小小的风险就放弃整个未来, 不是吗?",
         "听着, 年轻人, 政治是一门艺术, 而艺术就是要迎合选民的需求。现在人们想要的是进步是新能源。T 能源就是我们的未来, 也是我赢得选举的关键。",
+        "传统能源? 那是过去的事了。现在是创新的时代, T能源代表着进步。我们不能因为一些小小的风险就放弃整个未来, 不是吗?",
       ],
     },
     background: "./images/Government.png",

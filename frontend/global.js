@@ -1,5 +1,6 @@
 
 let usedItems = {};
+
 let currentLanguage = getLanguage() || "en";
 let gameProgress = {
   talkedToLisa: false,
@@ -123,8 +124,10 @@ async function translateText(text, from, to) {
       },
       body: JSON.stringify({ text, from, to }),
     });
+
     // 模拟 API 请求失败
     // throw new Error('Network response was not ok');
+    
     const data = await response.json();
   
     if (data.trans_result) {
@@ -135,9 +138,10 @@ async function translateText(text, from, to) {
   } catch (error) {
     console.error("Translation error:", error);
     return { data: text }; // 返回一个包含原始回复的对象
-    throw error;
   }
 }
+
+
 
 function loadSessionIDs() {
   const savedSessionIDs = localStorage.getItem("npcSessionIDs");

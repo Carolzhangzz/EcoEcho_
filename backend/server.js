@@ -56,13 +56,18 @@ app.post("/translate", async (req, res) => {
       "https://fanyi-api.baidu.com/api/trans/vip/translate",
       {
         params: {
-          q: encodeURIComponent(text),
+          q: text, // 这里不进行URL编码
           from,
           to,
           appid: BAIDU_APP_ID,
           salt,
           sign,
         },
+        paramsSerializer: params => {
+          return Object.keys(params)
+            .map(key => `${key}=${encodeURIComponent(params[key])}`)
+            .join('&');
+        }
       }
     );
 

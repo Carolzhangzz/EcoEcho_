@@ -10,16 +10,16 @@ document.addEventListener("DOMContentLoaded", () => {
   const initialBgm = new Audio("./Music/The lament of mankind.mp3");
   const secondBgm = new Audio("./Music/Sad.mp3");
   const kaneVoice = new Audio("./Music/KaneRecord.mp3");
-  //设置初始背景音乐
+  
+  // 设置初始背景音乐
   initialBgm.volume = 0.2;
   initialBgm.loop = true;
 
   // 设置Kane的录音
   kaneVoice.volume = 0.5;
   kaneVoice.loop = false;
-  //调整速度 
+  // 调整速度 
   kaneVoice.playbackRate = 0.9;
-
 
   // 设置第二个背景音乐
   secondBgm.volume = 0.2;
@@ -56,47 +56,47 @@ document.addEventListener("DOMContentLoaded", () => {
       textStyle: "futuristic",
       en: "Dear KI, I know you must be surprised to hear my voice. I recorded this message before I left.",
       zh: "亲爱的KI, 我知道你一定很惊讶听到我的声音。这段录音是我在出发前录制的。",
-      playKaneVoice: true, // 在这里添加一个标记
-      fatherSpeech: true, // 添加这个标记
+      playKaneVoice: true,
+      fatherSpeech: true,
     },
     {
       background: "./images/ruined_landscape.png",
       textStyle: "futuristic",
       en: "I want you to know that I went to explore the sustainable energy source T because I believe it's vital for the future of humanity.",
       zh: "我要告诉你, 我这次去探测可持续能源T, 是因为我深知这是为了全人类的未来。",
-      fatherSpeech: true, // 添加这个标记
+      fatherSpeech: true,
     },
     {
       background: "./images/ruined_landscape.png",
       textStyle: "futuristic",
       en: "Even though the mission was fraught with unknowns and dangers, I couldn't shirk this responsibility. I've always believed in the principles of sustainability; it's a way of being responsible for the future.",
       zh: "虽然任务充满了未知和危险，但我无法回避这个责任。我一直坚信可持续发展的理念，这是对未来负责的选择。",
-      fatherSpeech: true, // 添加这个标记
+      fatherSpeech: true,
     },
     {
       background: "./images/ruined_landscape.png",
       textStyle: "futuristic",
       en: "I hope you can understand the significance of this and share my beliefs. We all have a duty to protect this world and leave a beautiful home for future generations.",
       zh: "希望你能够明白这其中的意义，并且认同我的想法。我们都有责任去保护这个世界，为后代留下一个美好的家园。",
-      fatherSpeech: true, // 添加这个标记
+      fatherSpeech: true,
     },
     {
       background: "./images/ruined_landscape.png",
       textStyle: "futuristic",
       en: "No matter what the future holds, remember that you have a responsibility to humanity and the Earth.",
       zh: "无论未来怎样，请记住，你要为人类和地球负起责任。",
-      fatherSpeech: true, // 添加这个标记
+      fatherSpeech: true,
     },
     {
       background: "./images/ruined_landscape.png",
       textStyle: "futuristic",
       en: "Love you, son.",
       zh: "爱你，儿子。",
-      fatherSpeech: true, // 添加这个标记
+      fatherSpeech: true,
     },
   ];
 
-  function typeWriter(element, text, callback) {
+  function typeWriter(element, text, speed, callback) {
     let index = 0;
     const interval = setInterval(() => {
       if (index < text.length) {
@@ -112,7 +112,7 @@ document.addEventListener("DOMContentLoaded", () => {
         clearInterval(interval);
         if (callback) setTimeout(callback, 1000);
       }
-    }, 50);
+    }, speed);
   }
 
   function updateDialogue() {
@@ -134,21 +134,22 @@ document.addEventListener("DOMContentLoaded", () => {
         secondBgm
           .play()
           .then(() => {
-            // 等待一小段时间（例如2秒）后播放Kane的声音
             setTimeout(() => {
               kaneVoice
                 .play()
                 .catch((error) =>
                   console.log("Kane's voice playback failed:", error)
                 );
-            }, 3000); // 2000毫秒 = 2秒
+            }, 800);
           })
           .catch((error) => console.log("Second BGM playback failed:", error));
       }
 
-      typeWriter(dialogueElement, currentDialogueObj[currentLanguage], () => {
+      // 设置打字速度
+      const typingSpeed = currentLine === 4 ? 100 : 50; // 4表示“亲爱的KI”的对话
+      typeWriter(dialogueElement, currentDialogueObj[currentLanguage], typingSpeed, () => {
         currentLine++;
-        setTimeout(updateDialogue, 3000);
+        setTimeout(updateDialogue, 5000);
       });
     } else {
       nextSceneButton.style.display = "block";
@@ -161,6 +162,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // 跳转到Emilia页面
     window.location.href = "../Emilia/Emilia.html";
   }
+
   nextSceneButton.addEventListener("click", goToNextScene);
   nextSceneButton.style.display = "none";
 

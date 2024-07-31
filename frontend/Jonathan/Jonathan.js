@@ -20,8 +20,8 @@ document.addEventListener("DOMContentLoaded", () => {
   // test
   // gameProgress.talkedToLisa = true;
   // gameProgress.talkedToGuard = true;
-  // gameProgress.talkedToBob=true;
-  // usedItems.Bob = true;
+  // gameProgress.talkedToBob = true;
+  // Items.Bob = true;
   if (!gameProgress.talkedToBob) {
     // 如果没有与Bob对话，说明就是地图来的，直接显示默认对话
     startFirstDialogue();
@@ -66,7 +66,7 @@ document.addEventListener("DOMContentLoaded", () => {
       setLastSigner(currentNpcName); //传递当前的npc名字 Bob
       window.location.href = `../Room/room.html?lastSigner=${currentNpcName}`;
     } else {
-      window.location.href = "../Ending/End.html";
+      window.location.href = "../Emilia/Emilia.html";
     }
   });
 });
@@ -198,8 +198,10 @@ function startGame() {
   updateScene();
 }
 
-const intentOne = "Player need to mention they come for T";
-const intentTwo = "Player need to mention public or citizens support traditional energy, not T or they also don't support";
+const intentOne =
+  "Player need to mention they come for T, or they say anything about T";
+const intentTwo =
+  "Player need to mention public or citizen also don't support T or they want to do general strike or they want to fight against government";
 
 // 检查用户是否表达了特定的意图
 
@@ -325,7 +327,6 @@ async function handleMessage(message) {
   document.getElementById("next-text-button").style.display = "none";
   document.getElementById("prev-text-button").style.display = "none";
 
-
   // 生成对话提示
   console.log("Sending message to NPC:", message);
   const textContainer = document.getElementById("text-container");
@@ -342,7 +343,7 @@ async function handleMessage(message) {
   }
 
   // Check for special conditions before sending the message
-  if (allJohnathanIntentsExpressed()) {
+  if (allJohnathanIntentsExpressed() && usedItems[currentNpcName]) {
     startSceneDialogue();
     startGame();
     return;
@@ -354,17 +355,33 @@ async function handleMessage(message) {
     !JohnathanIntentExpress.comeForK &&
     conversationCount[currentNpcName] >= 3
   ) {
-    const fixedReply = backupFixedReply();
+    // 只要没有提到 k，就返回 backupReplies 中的一个回复
+    const random = Math.floor(Math.random() * backupReplies.length);
+    const fixedReply = backupReplies[random];
     textContainer.innerHTML += `<p class="npc-message">Johnathan: ${
       currentLanguage === "en" ? fixedReply.en : fixedReply.zh
     }</p>`;
     return;
-  }
-  if (
+  } else if (
+    //表达了 come for K 意图，但是没有提到大罢工
     JohnathanIntentExpress.comeForK &&
+    !JohnathanIntentExpress.publicSupport &&
     conversationCount[currentNpcName] >= 3
   ) {
-    const fixedReply = backupFixedReply();
+    const random = Math.floor(Math.random() * comeForkReplies.length);
+    const fixedReply = comeForkReplies[random];
+    textContainer.innerHTML += `<p class="npc-message">Johnathan: ${
+      currentLanguage === "en" ? fixedReply.en : fixedReply.zh
+    }</p>`;
+    return;
+  } else if (
+    //如果表达了第二个意图，但是没有给大罢工的东西
+    JohnathanIntentExpress.publicSupport &&
+    !usedItems[currentNpcName] &&
+    conversationCount[currentNpcName] >= 3
+  ) {
+    const random = Math.floor(Math.random() * noItemsReplies.length);
+    const fixedReply = noItemsReplies[random];
     textContainer.innerHTML += `<p class="npc-message">Johnathan: ${
       currentLanguage === "en" ? fixedReply.en : fixedReply.zh
     }</p>`;
@@ -378,7 +395,6 @@ async function handleMessage(message) {
     await generateBackupResponse(message);
   }
 }
-
 // 向 NPC 发送消息并获取回复
 async function sendMessageToNPC(message) {
   try {
@@ -416,21 +432,11 @@ async function sendMessageToNPC(message) {
     let npcReply = data.text;
     let audioReply = data.audio; // 获取音频回复
 
-    // 只有在成功获取响应后才更新对话次数
-    updateConversationCount(
-      currentNpcName,
-      conversationCount[currentNpcName] + 1
-    );
-    localStorage.setItem(
-      "conversationCount",
-      JSON.stringify(conversationCount)
-    );
-
     if (currentLanguage === "en") {
       displayNPCReply(npcReply, audioReply);
     } else {
       try {
-        const translatedReply = await translateText(npcReply, 'auto', 'zh');
+        const translatedReply = await translateText(npcReply, "auto", "zh");
         console.log("Translated Reply:", translatedReply);
         displayNPCReply(translatedReply.data, audioReply);
       } catch (error) {
@@ -469,17 +475,11 @@ async function generateBackupResponse(message) {
 
     let npcReply = data.data;
 
-    // 只有在成功发送消息后才会增加对话次数
-    updateConversationCount(
-      currentNpcName,
-      conversationCount[currentNpcName] + 1
-    );
-
     if (currentLanguage === "en") {
       displayNPCReply(npcReply);
     } else {
       try {
-        const translatedReply = await translateText(npcReply, 'auto', 'zh');
+        const translatedReply = await translateText(npcReply, "auto", "zh");
         console.log("Translated Backup Reply:", translatedReply);
         displayNPCReply(translatedReply.data);
       } catch (error) {
@@ -491,12 +491,6 @@ async function generateBackupResponse(message) {
     console.error("Error in generateBackupResponse:", error);
     const fixedReply = backupFixedReply();
     displayNPCReply(currentLanguage === "en" ? fixedReply.en : fixedReply.zh);
-
-    // 即使使用固定回复，也要更新对话计数
-    updateConversationCount(
-      currentNpcName,
-      conversationCount[currentNpcName] + 1
-    );
   }
 }
 
@@ -523,7 +517,16 @@ function getNPCSpecificPrompt(npcName, userMessage) {
 }
 
 function displayNPCReply(reply, audioReply) {
+   //更新
+  updateConversationCount(
+    currentNpcName,
+    (conversationCount[currentNpcName] || 0) + 1
+  );
+   
   const textContainer = document.getElementById("text-container");
+  // const thinkingMessage = document.getElementById("thinking-message");
+  //  // 隐藏思考消息
+  // thinkingMessage.style.display = "none";
   let index = 0;
   const replyElement = document.createElement("p");
   replyElement.className = "npc-message";
@@ -571,23 +574,6 @@ function addToInventory(item, image) {
   inventoryContainer.appendChild(newItem);
 }
 
-// // 两个接口都失败时，且没有表达任何的意图（关键词检测），显示固定的回复
-// const backupReplies = [
-//   {
-//     en: "I'm sorry, I don't have much time to waste on this. The people need me, goodbye.",
-//     zh: "不好意思，我没有太多时间耽误在这上面。人民需要我，再见。",
-//   },
-//   {
-//     en: "Sorry, I don't have much time to waste on this. The people need me. Goodbye.",
-//     zh: "对不起，我没有太多时间浪费在这上面。人民需要我。再见。",
-//   },
-//   {
-//     en: "I'm sorry, this is the will of the people, there's no point in discussing further. Goodbye.",
-//     zh: "不好意思，这是人民的意愿，多说无益。再见。",
-//   },
-//   //这里可以优化，就一句话可能比较无聊
-// ];
-
 // 两个接口都失败时，且没有表达任何的意图（关键词检测），显示固定的回复
 //备用的意图的方案，没有提到 k
 const backupReplies = [
@@ -616,26 +602,63 @@ const backupReplies = [
 const comeForkReplies = [
   {
     en: "I'm sorry, the people have chosen T, so as servants of the people, we must embrace K. This is the embodiment of democracy, isn't it?",
-    zh: "不好意思, 人民选择了T, 那么我们身为人民的仆人, 只能拥抱T。这是民主的体现, 不是吗? ",
+    zh: "对不起，人民选择了 T, 所以作为人民的仆从，我们必须拥抱 K。这不就是民主的体现吗?",
   },
   {
-    en: "T represents progress and hope. We must listen to the voice of the people and support the development of K.",
-    zh: "T 代表着进步和希望。我们必须倾听人民的声音，支持 T 的发展。",
+    en: "Ah, T energy is indeed the will of the people. As representatives of the people, we must fully support it. But... have you heard any... different voices?",
+    zh: "啊, T 能源确实是民意所向。作为人民的代表，我们当然要全力支持。不过...你有没有听说过任何...不同的声音？",
   },
   {
     en: "As representatives of the people, we have a responsibility to promote the use of T energy. This is the choice of the people and our mission.",
     zh: "作为人民的代表，我们有责任推动 T 能源的应用。这是人民的选择，也是我们的使命。",
   },
 ];
+const noItemsReplies = [
+  {
+    en: "I've heard some rumors, but you know, in politics, information is power. If you have any insider information, maybe we can... help each other?",
+    zh: "我听说了一些传言，但你知道，在政治圈里，信息就是力量。如果你有什么内部消息，也许我们可以...互相帮助？",
+  },
+  {
+    en: " The voice of the people is certainly important, but you know, in this position, we need to consider more. If you have any insider information, maybe we can find a... win-win solution together?",
+    zh: "人民的声音当然重要，但你知道，在这个位置上，我们需要考虑更多。如果你有什么内部消息，也许我们可以一起找到一个...双赢的解决方案？",
+  },
+  {
+    en: "A general strike? That's explosive news. If it's true, it could affect the results of the next election... Do you have any specific evidence?",
+    zh: "大罢工？这可是个爆炸性的消息。如果是真的，那可能会影响到下次选举的结果...你有什么具体的证据吗？",
+  },
+  {
+    en: "I understand your concerns, but in politics, just having concerns is not enough. I need concrete evidence to take action... Perhaps this could be beneficial for both of us?",
+    zh: "我理解你的担忧，但在政坛上，光有担忧是不够的。我需要实际的证据来采取行动...也许这对我们双方都有利？",
+  },
+  {
+    en: "If this kind of statement spreads, it could cause panic. But if we can prepare in advance... maybe we can turn danger into opportunity. Do you have any reliable sources of information?",
+    zh: "这种言论如果传开了，可能会引起恐慌。但是如果我们能提前准备...也许能转危为机。你有什么可靠的消息来源吗？",
+  },
+];
 
 function backupFixedReply() {
-  if (JohnathanIntentExpress.comeForK) {
+  //只要没有提到 k，就返回 backupReplies 中的一个回复
+  if (
+    !JohnathanIntentExpress.comeForK &&
+    conversationCount[currentNpcName] >= 3
+  ) {
+    const random = Math.floor(Math.random() * backupReplies.length);
+    return backupReplies[random];
+  } else if (
+    JohnathanIntentExpress.comeForK &&
+    !JohnathanIntentExpress.publicSupport &&
+    conversationCount[currentNpcName] >= 3
+  ) {
     // 如果表达了 comeForK 意图，随机返回 comeForkReplies 中的一个回复
     const random = Math.floor(Math.random() * comeForkReplies.length);
     return comeForkReplies[random];
-  } else {
-    // 只要没有提到 k，就返回 backupReplies 中的一个回复
-    const random = Math.floor(Math.random() * backupReplies.length);
-    return backupReplies[random];
+  } else if (
+    JohnathanIntentExpress.publicSupport &&
+    !usedItems[currentNpcName] &&
+    conversationCount[currentNpcName] >= 3
+  ) {
+    // 如果表达了 publicSupport 意图，但没有给大罢工的东西，随机返回 noItemsReplies 中的一个回复
+    const random = Math.floor(Math.random() * noItemsReplies.length);
+    return noItemsReplies[random];
   }
 }
