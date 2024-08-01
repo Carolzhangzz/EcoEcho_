@@ -29,17 +29,14 @@ PORT=3000
 4. Start the application:
 
 ```sh
-npm start
+cd backend
+```
+
+```sh
+Node server.js
 ```
 
 5. Open your browser and visit 
 
-`http://localhost:8080/main.html`
-
-## Development
-
-```sh
-- Backend server runs on `http://localhost:3000`
-- Frontend is served on `http://localhost:8080`
-```
+`http://localhost:3001`
 
