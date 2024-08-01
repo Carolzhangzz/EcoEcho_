@@ -188,7 +188,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       // 设置打字速度
-      const typingSpeed = currentLine >= 5 ? 190 : 50; // 5表示“亲爱的KI”的对话，越小越快
+      const typingSpeed = currentLine >= 5 ? 60 : 30; // 5表示“亲爱的KI”的对话，越小越快
       typeWriter(
         dialogueElement,
         currentDialogueObj[currentLanguage],

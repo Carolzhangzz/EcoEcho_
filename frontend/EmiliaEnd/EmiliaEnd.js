@@ -61,7 +61,7 @@ document.addEventListener("DOMContentLoaded", () => {
     {
       background: "./images/Space.png",
       textStyle: "futuristic",
-      en: "will you stand with us?",
+      en: "Will you stand with us?",
       zh: "你会和我们站在一起吗？",
     },
     {
@@ -160,7 +160,7 @@ document.addEventListener("DOMContentLoaded", () => {
       // }
 
       // 设置打字速度
-      const typingSpeed = currentLine >= 3 ? 100 : 50; // 5表示“亲爱的KI”的对话，越小越快
+      const typingSpeed = 40; // 5表示“亲爱的KI”的对话，越小越快
       typeWriter(
         dialogueElement,
         currentDialogueObj[currentLanguage],

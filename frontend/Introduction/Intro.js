@@ -2,7 +2,7 @@ let currentScene = 0;
 let currentTextIndex = 0;
 bgm = document.getElementById("bgm");
 bgm.loop = true; // Let the music loop
-bgm.src = "./Music/Living in future.mp3"; // 设置统一的背景音乐
+bgm.src = "./Music/bgm(start).mp3"; // 设置统一的背景音乐
 bgm.volume = 0.5; // 设置音量为 50%
 
 document.addEventListener("DOMContentLoaded", () => {

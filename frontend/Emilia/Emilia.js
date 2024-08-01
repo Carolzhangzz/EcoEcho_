@@ -225,7 +225,7 @@ function startGame(lastSigner) {
       setTimeout(() => {
         // 如果是最后一个，显示签名提示
         showSignaturePrompt();
-      }, 1000); // 延迟两秒显示提示
+      }, 200); // 延迟两秒显示提示
     }
   };
 
