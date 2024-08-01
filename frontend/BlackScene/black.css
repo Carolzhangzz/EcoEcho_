@@ -50,14 +50,14 @@ body {
 }
 
 .highlight {
-  color: #00ffff;
+  color: #ff00ff;
   cursor: pointer;
   text-shadow: 0 0 10px #00ffff;
   transition: all 0.3s ease-in-out;
 }
 
 .highlight:hover {
-  color: #ff00ff;
+  color: #fff873;
   text-shadow: 0 0 15px #ff00ff;
 }
 

@@ -22,7 +22,8 @@ document.addEventListener("DOMContentLoaded", () => {
   // gameProgress.talkedToGuard = true;
   // gameProgress.talkedToBob = true;
   // Items.Bob = true;
-  if (!gameProgress.talkedToBob) {
+  // signatures["Bob"] = 1;
+  if (!gameProgress.talkedToBob || signatures["Bob"] === null) {
     // 如果没有与Bob对话，说明就是地图来的，直接显示默认对话
     startFirstDialogue();
   } else if (
@@ -162,10 +163,7 @@ function startGame() {
       localStorage.setItem("gameProgress", JSON.stringify(gameProgress)); // 保存到 localStorage
       setLastSigner(currentNpcName); // 设置最后一个对话的 为 Jonathan
       //修改这里的逻辑
-      setTimeout(() => {
-        //回到房间
-        window.location.href = "../Room/room.html";
-      }, 2000);
+      window.location.href = "../Room/room.html";
     }
   };
 
@@ -517,12 +515,12 @@ function getNPCSpecificPrompt(npcName, userMessage) {
 }
 
 function displayNPCReply(reply, audioReply) {
-   //更新
+  //更新
   updateConversationCount(
     currentNpcName,
     (conversationCount[currentNpcName] || 0) + 1
   );
-   
+
   const textContainer = document.getElementById("text-container");
   // const thinkingMessage = document.getElementById("thinking-message");
   //  // 隐藏思考消息

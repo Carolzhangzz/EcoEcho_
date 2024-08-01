@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Last public petition</title>
+    <link rel="stylesheet" href="./EmiliaEnd.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="game-container">
+        <div id="text-container"></div>
+        <button id="next-scene">Next Scene</button>
+        <button id="back-to-main">Back to the Map</button>
+        <button id="music-toggle">🔊</button>
+        <button id="language-toggle">EN</button>
+        <div id="inventory-icon"></div>
+        <button id="clear-inventory" onclick="clearInventory()">Clear the bag</button>
+        <div id="inventory-popup" class="hidden">
+            <h3>Bag Content</h3>
+            <ul id="inventory-items"></ul>
+        </div>
+    </div>
+    <audio id="bgm" loop></audio>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.3/howler.min.js"></script>
+    <script src="./EmiliaEnd.js"></script>
+    <script src="../global.js"></script>
+</body>
+</html>

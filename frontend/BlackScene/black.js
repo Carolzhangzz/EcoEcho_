@@ -19,12 +19,13 @@ document.addEventListener("DOMContentLoaded", () => {
     {
       background: "./images/dimly_lit_room.png",
       textStyle: "futuristic",
-      en: "You have obtained <span class='highlight' data-item='truth' data-image='../items/truth.png'>the truth about the death of KI's father, Kane</span>.",
-      zh: "你得到了<span class='highlight' data-item='真相' data-image='../items/truth.png'>关于KI父亲Kane死亡的真相</span>。",
+      en: "You have obtained <span class='highlight' data-item='truth' data-image='../items/truth.png'>the truth about the death of KI's father, Kane.</span>",
+      zh: "你得到了KI的父亲<span class='highlight' data-item='真相' data-image='../items/truth.png'>“Kane”死亡的真相</span>。",
     },
   ];
 
   function typeWriter(element, text, callback) {
+    bgm.play();
     let index = 0;
     const interval = setInterval(() => {
       if (index < text.length) {
@@ -88,8 +89,8 @@ document.addEventListener("DOMContentLoaded", () => {
   nextSceneButton.style.display = "none";
 
   // Set up background music
-  bgm.src = "../Introduction/Music/Immediate Music - From The Light.mp3";
-  bgm.volume = 0.5;
+  bgm.src = "./Music/circle.mp3";
+  bgm.volume = 0.1;
 
   // Autoplay music on first click
   document.body.addEventListener(

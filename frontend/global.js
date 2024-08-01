@@ -1,4 +1,3 @@
-
 let usedItems = {};
 
 let currentLanguage = getLanguage() || "en";
@@ -113,35 +112,32 @@ let npcSessionIDs = {
 //   }
 // }
 
-
 // 替换原有的translateText函数
 async function translateText(text, from, to) {
   try {
-    const response = await fetch('/translate', {
-      method: 'POST',
+    const response = await fetch("/translate", {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({ text, from, to }),
     });
 
     // 模拟 API 请求失败
     // throw new Error('Network response was not ok');
-    
+
     const data = await response.json();
-  
+
     if (data.trans_result) {
       return { data: data.trans_result[0].dst };
     } else {
-      throw new Error('Translation failed');
+      throw new Error("Translation failed");
     }
   } catch (error) {
     console.error("Translation error:", error);
     return { data: text }; // 返回一个包含原始回复的对象
   }
 }
-
-
 
 function loadSessionIDs() {
   const savedSessionIDs = localStorage.getItem("npcSessionIDs");
@@ -493,10 +489,33 @@ const itemNpcMapping = {
   Journalist_ID: ["Guard"],
   general_strike: ["Johnathan"],
   大罢工: ["Johnathan"],
+  时光胶囊: ["Player","Johnathan","Bob","Guard","Lisa","Emilia"],
 };
 
 // 提示是否要分享物品，并且如果某个 NPC 已经收到过物品，则不能再次分享
 function promptShareItem(item, npcName) {
+  // 检查是否是时光胶囊
+  if (
+    (item.name === "Time Capsule" || item.name === "时光胶囊") 
+  ) {
+    //时光胶囊可以分享给所有的NPC
+    showConfirm(
+      currentLanguage === "en"
+        ? "Do you want to use the Time Capsule to restart the game? This will reset all your progress."
+        : "你想使用时光胶囊重新开始游戏吗？这将重置所有进度。",
+      (confirmed) => {
+        if (confirmed) {
+          usedItems[npcName] = true;
+          localStorage.setItem("usedItems", JSON.stringify(usedItems));
+          console.log("Used items:", usedItems);
+          removeFromInventory(item.name);
+          resetGame();
+        }
+      }
+    );
+    return;
+  }
+
   if (usedItems[npcName]) {
     showAlert(
       currentLanguage === "en"
@@ -732,7 +751,6 @@ document.addEventListener("DOMContentLoaded", () => {
     languageToggle.textContent = currentLanguage === "en" ? "EN" : "CH";
   });
 });
-
 
 // 自动回复触发条件函数
 function shouldTriggerAutoReply(currentNpcName) {

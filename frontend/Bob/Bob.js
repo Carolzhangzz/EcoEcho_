@@ -160,10 +160,8 @@ function startGame() {
       localStorage.setItem("gameProgress", JSON.stringify(gameProgress)); // 保存到 localStorage
       setLastSigner(currentNpcName); // 设置最后一个对话的 为 Bob
       //修改这里的逻辑
-      setTimeout(() => {
-        //回到房间
-        window.location.href = "../Room/room.html";
-      }, 2000);
+      //回到房间
+      window.location.href = "../Room/room.html";
     }
   };
 
@@ -196,7 +194,7 @@ function startGame() {
   updateScene();
 }
 const intentOne =
-  "Player mentions T energy, sustainability, or any environmental concerns";
+  "Player mentions T energy, come for T, or expresses interest in T energy or just say t or T";
 
 const intentTwo =
   "Player mentions Kane, their relationship to Kane, or any information about Kane's past or death";
@@ -510,7 +508,6 @@ async function generateBackupResponse(message) {
     console.error("Error in generateBackupResponse:", error);
     const fixedReply = backupFixedReply();
     displayNPCReply(currentLanguage === "en" ? fixedReply.en : fixedReply.zh);
-
   }
 }
 
@@ -602,7 +599,7 @@ function addToInventory(item, image) {
 const backupReplies = [
   {
     en: "Sir, what are you coming for ?",
-    zh: "先生，您来找谁？", // 这里的回复是随机的，可以根据实际情况修改
+    zh: "先生，您是为了什么而来？", // 这里的回复是随机的，可以根据实际情况修改
   },
   {
     en: "Greetings! I'm afraid I'll need to know your business here before I can let you proceed.",

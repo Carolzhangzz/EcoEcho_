@@ -91,3 +91,4 @@ function goToMap() {
 }
 
 document.getElementById("back-main").addEventListener("click", goToMap);
+// 加一个判断，如果是最后一个 scene 结束之后， updateNewSceneCompleted(name, value) 为 true

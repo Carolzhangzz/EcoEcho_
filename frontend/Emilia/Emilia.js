@@ -1,5 +1,6 @@
 let currentScene = 0;
 let currentTextIndex = 0;
+let currentNpcName = "Emilia";
 const MUSIC_PATH = "./Music/Living in future.mp3";
 const MAIN_PAGE_PATH = "../Main.html";
 const MAIN_MAP_PATH = "../Emilia/Emilia.html";
@@ -114,26 +115,6 @@ function startGame(lastSigner) {
       },
     ];
     updateMetEmilia(lastSigner, true);
-  // } else if (lastSigner === "Jonathan" && !metEmilia["Jonathan"]) {
-  //   dialogues = [
-  //     {
-  //       en: [
-  //         "I am Emilia, a scientist dedicated to studying ethical issues in technological advancement.",
-  //       ],
-  //       zh: [
-  //         "你好，我是 Emilia。我是一名计算机科学家, 专注于能源系统的优化和可持续发展。",
-  //       ],
-  //     },
-  //     {
-  //       en: [
-  //         "We are conducting the fourth public petition on the new energy T, based on our research, promoting sustainable energy models is crucial for the future of the Earth's environment.",
-  //       ],
-  //       zh: [
-  //         "我们正在进行关于新型能源T的第四次民意联署。根据我们的研究,推广可持续的能源模式对于未来的地球环境至关重要。",
-  //       ],
-  //     },
-  //   ];
-  //   updateMetEmilia(lastSigner, true);
   } else if (lastSigner === "null" || lastSigner === null) {
     dialogues = [
       {
@@ -179,7 +160,6 @@ function startGame(lastSigner) {
       },
       {
         en: ["Would you be willing to sign the petition right now?"],
-
         zh: ["你愿意现在在联署书上签字吗?"],
       },
     ];

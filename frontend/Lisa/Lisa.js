@@ -55,7 +55,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // 处理 back to the map 按钮点击事件
   const backMainButton = document.getElementById("back-main");
   backMainButton.addEventListener("click", () => {
-    if (allScenesCompleted.Lisa && newSceneCompleted.Lisa === null) {
+    if (allScenesCompleted.Lisa && !newSceneCompleted.Lisa) {
       // 如果所有对话都结束了，但是新对话还没有结束，说明用户直接点击了 back to main 而没有去艾米丽那边
       // 设置最后交互的NPC
       setLastSigner(currentNpcName);
@@ -199,7 +199,7 @@ function startGame() {
 }
 
 const intent =
-  "the user has expressed or implied the intent to the truth of Kane's Father's death";
+  "the user has expressed or implied the intent to the truth of KI's Father: Kane's death or the truth of Kane's death or anything related to Kane's death";
 
 // 检查用户是否表达了特定的意图
 async function Check(intent, message) {

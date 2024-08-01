@@ -22,14 +22,18 @@ document.addEventListener("DOMContentLoaded", () => {
   // gameProgress.talkedToLisa=true;
   // gameProgress.talkedToGuard=false;
   // usedItems.Guard = true;
-  if (!gameProgress.talkedToLisa) {
+  //  //如果说 ki 还没签字的话，也不能和 lisa 交谈
+  //  if (signatures["Ki"] === null) {
+  //   startFirstDialogue();
+  // }
+  if (!gameProgress.talkedToLisa || signatures["Lisa"] === null) {
     // 如果没有与Lisa对话，显示初始对话
     startFirstDialogue();
   } else if (gameProgress.talkedToLisa && gameProgress.talkedToGuard) {
     // 如果已经与Lisa和Guard对话，显示新场景对话
     startNewSceneDialogue();
   }
-
+  
   //其余情况就是直接显示Guard的对话
   nextButton.style.display = "inline-block";
   prevButton.style.display = "none";

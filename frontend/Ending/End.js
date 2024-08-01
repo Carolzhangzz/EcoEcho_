@@ -1,4 +1,34 @@
+let isMusicPlaying = true;
 document.addEventListener("DOMContentLoaded", () => {
+  const musicToggleButton = document.getElementById("music-toggle");
+
+  musicToggleButton.addEventListener("click", () => {
+    isMusicPlaying = !isMusicPlaying;
+    musicToggleButton.textContent = isMusicPlaying ? "🔊" : "🔇";
+
+    if (isMusicPlaying) {
+      if (currentLine < 5) {
+        initialBgm
+          .play()
+          .catch((error) => console.log("Initial BGM playback failed:", error));
+      } else {
+        secondBgm
+          .play()
+          .catch((error) => console.log("Second BGM playback failed:", error));
+      }
+      if (currentLine >= 5) {
+        kaneVoice
+          .play()
+          .catch((error) =>
+            console.log("Kane's voice playback failed:", error)
+          );
+      }
+    } else {
+      initialBgm.pause();
+      secondBgm.pause();
+      kaneVoice.pause();
+    }
+  });
   const textContainer = document.getElementById("text-container");
   const nextSceneButton = document.getElementById("next-scene");
   const backButton = document.getElementById("back-to-main");
@@ -9,8 +39,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const initialBgm = new Audio("./Music/The lament of mankind.mp3");
   const secondBgm = new Audio("./Music/Sad.mp3");
-  const kaneVoice = new Audio("./Music/KaneRecord.mp3");
-  
+  const kaneVoice = new Audio("./Music/Kane.mp3");
+
   // 设置初始背景音乐
   initialBgm.volume = 0.2;
   initialBgm.loop = true;
@@ -18,7 +48,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // 设置Kane的录音
   kaneVoice.volume = 0.5;
   kaneVoice.loop = false;
-  // 调整速度 
+  // 调整速度
   kaneVoice.playbackRate = 0.9;
 
   // 设置第二个背景音乐
@@ -36,8 +66,14 @@ document.addEventListener("DOMContentLoaded", () => {
     {
       background: "./images/ruined_landscape.png",
       textStyle: "futuristic",
-      en: "However, he was shocked to find that everything was different from his memories. The once beautiful scenes had fallen into ruin, and a pungent smell filled the air.",
-      zh: "但他惊讶地发现，一切都与记忆中不一样了。曾经美好的景象如今已变得破败不堪，空气中弥漫着刺鼻的气味。",
+      en: "However, he was shocked to find that everything was different from his memories.",
+      zh: "但他惊讶地发现，一切都与记忆中不一样了。",
+    },
+    {
+      background: "./images/ruined_landscape.png",
+      textStyle: "futuristic",
+      en: "The once beautiful scenes had fallen into ruin, and a pungent smell filled the air.",
+      zh: "曾经美好的景象如今已变得破败不堪，空气中弥漫着刺鼻的气味。",
     },
     {
       background: "./images/ruined_landscape.png",
@@ -131,26 +167,37 @@ document.addEventListener("DOMContentLoaded", () => {
       // 如果是标记的对话，切换背景音乐并播放Kane的录音
       if (currentDialogueObj.playKaneVoice) {
         initialBgm.pause();
-        secondBgm
-          .play()
-          .then(() => {
-            setTimeout(() => {
-              kaneVoice
-                .play()
-                .catch((error) =>
-                  console.log("Kane's voice playback failed:", error)
-                );
-            }, 800);
-          })
-          .catch((error) => console.log("Second BGM playback failed:", error));
+        if (isMusicPlaying) {
+          secondBgm
+            .play()
+            .then(() => {
+              setTimeout(() => {
+                if (isMusicPlaying) {
+                  kaneVoice
+                    .play()
+                    .catch((error) =>
+                      console.log("Kane's voice playback failed:", error)
+                    );
+                }
+              }, 3000);
+            })
+            .catch((error) =>
+              console.log("Second BGM playback failed:", error)
+            );
+        }
       }
 
       // 设置打字速度
-      const typingSpeed = currentLine === 4 ? 100 : 50; // 4表示“亲爱的KI”的对话
-      typeWriter(dialogueElement, currentDialogueObj[currentLanguage], typingSpeed, () => {
-        currentLine++;
-        setTimeout(updateDialogue, 5000);
-      });
+      const typingSpeed = currentLine >= 5 ? 190 : 50; // 5表示“亲爱的KI”的对话，越小越快
+      typeWriter(
+        dialogueElement,
+        currentDialogueObj[currentLanguage],
+        typingSpeed,
+        () => {
+          currentLine++;
+          setTimeout(updateDialogue, 1000);
+        }
+      );
     } else {
       nextSceneButton.style.display = "block";
     }
@@ -160,16 +207,17 @@ document.addEventListener("DOMContentLoaded", () => {
     // 设置最后交互的"NPC"为Jonathan
     setLastSigner("Jonathan");
     // 跳转到Emilia页面
-    window.location.href = "../Emilia/Emilia.html";
+    window.location.href = "../EmiliaEnd/EmiliaEnd.html";
   }
 
   nextSceneButton.addEventListener("click", goToNextScene);
   nextSceneButton.style.display = "none";
 
-  // 开始播放初始背景音乐
-  initialBgm
-    .play()
-    .catch((error) => console.log("Initial BGM playback failed:", error));
+  if (isMusicPlaying) {
+    initialBgm
+      .play()
+      .catch((error) => console.log("Initial BGM playback failed:", error));
+  }
 
   updateDialogue();
 });

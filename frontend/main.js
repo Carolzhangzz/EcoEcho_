@@ -1,14 +1,24 @@
-// 背景音乐
-var bgm = new Howl({
-  src: ["./Immediate Music - From The Light.mp3"],
-  loop: true,
-  volume: 0.1,
-});
-
-// 开始播放背景音乐
-bgm.play();
 
 document.addEventListener("DOMContentLoaded", () => {
+  const bgm = document.getElementById("bgm");
+  const musicToggle = document.getElementById("music-toggle");
+  bgm.src = "./Clean_World.mp3";
+  bgm.volume = 0.6;
+
+  document.body.addEventListener(
+    "click",
+    function playAudio() {
+      bgm
+        .play()
+        .then(() => {
+          musicToggle.textContent = "🔊";
+          document.body.removeEventListener("click", playAudio);
+        })
+        .catch((error) => console.log("Autoplay still not allowed:", error));
+    },
+    { once: true }
+  );
+
   const startGameButton = document.getElementById("startButton");
 
   const backMainButton = document.getElementById("back-main");
