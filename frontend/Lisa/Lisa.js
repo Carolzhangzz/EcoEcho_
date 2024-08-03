@@ -160,12 +160,11 @@ function startGame() {
       localStorage.setItem("gameProgress", JSON.stringify(gameProgress)); // 保存到 localStorage
 
       // 修改这里的逻辑
-      setTimeout(() => {
-        // 设置最后交互的NPC
-        setLastSigner(currentNpcName);
-        // 跳转到Room页面,并传递当前NPC作为lastSigner参数
-        window.location.href = `../Room/room.html?lastSigner=${currentNpcName}`;
-      }, 2000);
+
+      // 设置最后交互的NPC
+      setLastSigner(currentNpcName);
+      // 跳转到Room页面,并传递当前NPC作为lastSigner参数
+      window.location.href = `../Room/room.html?lastSigner=${currentNpcName}`;
     }
   };
 
