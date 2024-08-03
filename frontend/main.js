@@ -2,7 +2,7 @@
 document.addEventListener("DOMContentLoaded", () => {
   const bgm = document.getElementById("bgm");
   const musicToggle = document.getElementById("music-toggle");
-  bgm.src = "./Clean_World.mp3";
+  bgm.src = "./os.mp3";
   bgm.volume = 0.6;
 
   document.body.addEventListener(
