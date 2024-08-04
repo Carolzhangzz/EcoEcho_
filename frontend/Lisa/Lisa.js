@@ -320,7 +320,7 @@ async function sendMessageToNPC(message) {
   try {
     const requestData = {
       prompt: message,
-      charID: "1a0d3c90-4eae-11ef-abf5-42010a7be011", // 替换为你的角色 ID
+      charID: "4ed811f8-4f3e-11ef-8143-42010a7be011", // 替换为你的角色 ID
       sessionID: npcSessionIDs[currentNpcName] || "-1",
       voiceResponse: true,
     };
@@ -529,7 +529,7 @@ function backupFixedReply() {
 // 自定义自动回复逻辑，现在次数是用完才会出现自动回复，成功调用才会增加对话次数
 function getFixedReply() {
   if (
-    conversationCount[currentNpcName] >= 2 &&
+    conversationCount[currentNpcName] >= 3 &&
     !usedItems[currentNpcName] &&
     !intentExpressed[currentNpcName]
   ) {

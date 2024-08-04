@@ -1,5 +1,5 @@
-
 document.addEventListener("DOMContentLoaded", () => {
+
   const bgm = document.getElementById("bgm");
   const musicToggle = document.getElementById("music-toggle");
   bgm.src = "./os.mp3";
@@ -28,7 +28,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // 检查游戏是否已经开始
   function isGameStarted() {
-    const gameStarted = lastSigner !== null && lastSigner !== undefined && lastSigner !== '';
+    const gameStarted =
+      lastSigner !== null && lastSigner !== undefined && lastSigner !== "";
     return gameStarted;
   }
 
@@ -44,14 +45,15 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-
   // 初始化时更新按钮
   updateStartButton();
 
   // 修改开始游戏按钮的行为
   startGameButton.addEventListener("click", () => {
     const currentLanguage = localStorage.getItem("language") || "en";
-    const isNewGame = startGameButton.textContent === (currentLanguage === "en" ? "Start New Game" : "开始新游戏");
+    const isNewGame =
+      startGameButton.textContent ===
+      (currentLanguage === "en" ? "Start New Game" : "开始新游戏");
 
     if (isNewGame) {
       console.log("Starting new game, resetting and redirecting to intro page");
@@ -63,3 +65,4 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 });
+

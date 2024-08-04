@@ -4,13 +4,22 @@ const Groq = require("groq-sdk");
 const axios = require("axios");
 const path = require("path");
 const md5 = require("md5");
-
 require("dotenv").config();
 
 const app = express();
 
+// //认证相关的路由
+// app.use(session({
+//   secret: 'your secret key',
+//   resave: false,
+//   saveUninitialized: true,
+//   cookie: { secure: false } // 如果使用 HTTPS，设置为 true
+// }));
+
+
 app.use(express.static(__dirname));
 app.use(express.static(path.join(__dirname, "../frontend")));
+
 
 app.use(
   cors({
@@ -110,6 +119,7 @@ app.post("/api/convai", async (req, res) => {
       .json({ error: "An error occurred", details: error.message });
   }
 });
+
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

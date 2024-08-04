@@ -417,7 +417,7 @@ async function sendMessageToNPC(message) {
   try {
     const requestData = {
       prompt: message,
-      charID: "c048d3c0-4eb9-11ef-83a5-42010a7be011", // 替换为你的角色 ID
+      charID: "84025b20-4ce3-11ef-81bd-42010a7be011", // 替换为你的角色 ID
       sessionID: npcSessionIDs[currentNpcName] || "-1",
       voiceResponse: true,
     };
