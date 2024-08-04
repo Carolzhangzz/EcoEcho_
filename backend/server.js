@@ -16,7 +16,6 @@ const app = express();
 //   cookie: { secure: false } // 如果使用 HTTPS，设置为 true
 // }));
 
-
 app.use(express.static(__dirname));
 app.use(express.static(path.join(__dirname, "../frontend")));
 
@@ -35,9 +34,10 @@ app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "../frontend/Main.html"));
 });
 
+
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
-app.post("/generate", async (req, res) => {
+app.post("/api/generate", async (req, res) => {
   try {
     const { prompt } = req.body;
     const response = await groq.chat.completions.create({
@@ -55,7 +55,7 @@ app.post("/generate", async (req, res) => {
 const BAIDU_APP_ID = process.env.BAIDU_APP_ID;
 const BAIDU_SECRET_KEY = process.env.BAIDU_SECRET_KEY;
 
-app.post("/translate", async (req, res) => {
+app.post("/api/translate", async (req, res) => {
   const { text, from, to } = req.body;
   const salt = Date.now();
   const sign = md5(BAIDU_APP_ID + text + salt + BAIDU_SECRET_KEY);

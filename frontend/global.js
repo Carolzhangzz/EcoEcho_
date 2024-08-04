@@ -115,7 +115,7 @@ let npcSessionIDs = {
 // 替换原有的translateText函数
 async function translateText(text, from, to) {
   try {
-    const response = await fetch("/translate", {
+    const response = await fetch("/api/translate", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

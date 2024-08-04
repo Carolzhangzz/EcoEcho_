@@ -11,13 +11,13 @@ document.addEventListener("DOMContentLoaded", () => {
   let currentLine = 0;
   const dialogues = [
     {
-      background: "./images/dusty_room.png",
+      background: "./images/MediaCenter.png",
       textStyle: "futuristic",
       en: "You find a note that reveals Kane's past.",
       zh: "你得到了一个便条,上面记载着Kane的过去。",
     },
     {
-      background: "./images/dimly_lit_room.png",
+      background: "./images/MediaCenter.png",
       textStyle: "futuristic",
       en: "You have obtained <span class='highlight' data-item='truth' data-image='../Items/truth.png'>the truth about the death of KI's father, Kane.</span>",
       zh: "你得到了KI的父亲<span class='highlight' data-item='真相' data-image='../Items/truth.png'>“Kane”死亡的真相</span>。",

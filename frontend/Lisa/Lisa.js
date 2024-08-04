@@ -2,7 +2,7 @@ let bgm;
 let currentNpcName = "Lisa"; // NPC 名字
 bgm = document.getElementById("bgm");
 bgm.loop = true; // Let the music loop
-bgm.src = "./Music/The Story of Lisa.mp3"; // 设置统一的背景音乐
+bgm.src = "./Music/Save_the_World.mp3"; // 设置统一的背景音乐
 bgm.volume = 0.1; //  音量设置为 10%
 let backupReplyIndex = 0; // 备用回复的索引
 // // import { translateText } from './translate.js';
@@ -230,7 +230,7 @@ async function Check(intent, message) {
     
     Respond ONLY with "true" or "false", no other words or explanations.`;
 
-    const response = await fetch("/generate", {
+    const response = await fetch("/api/generate", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -404,7 +404,7 @@ function getNPCSpecificPrompt(npcName, userMessage) {
 async function generateBackupResponse(message) {
   const prompt = getNPCSpecificPrompt(currentNpcName, message);
   try {
-    const response = await fetch("/generate", {
+    const response = await fetch("/api/generate", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

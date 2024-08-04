@@ -219,7 +219,7 @@ async function Check(intent, message) {
     
     Respond ONLY with "true" or "false", no other words or explanations.`;
 
-    const response = await fetch("/generate", {
+    const response = await fetch("/api/generate", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

@@ -453,7 +453,7 @@ async function sendMessageToNPC(message) {
 async function generateBackupResponse(message) {
   const prompt = getNPCSpecificPrompt(currentNpcName, message);
   try {
-    const response = await fetch("/generate", {
+    const response = await fetch("/api/generate", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
