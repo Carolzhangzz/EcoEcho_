@@ -756,24 +756,24 @@ document.addEventListener("DOMContentLoaded", () => {
 function shouldTriggerAutoReply(currentNpcName) {
   const triggerConditions = {
     Lisa: {
-      noIntentNoItem: 2,
+      noIntentNoItem: 3,
       intentNoItem: 3,
       noIntentItem: 3,
     },
     Guard: {
-      noIntentNoItem: 2,
-      intentNoItem: 2,
-      noIntentItem: 2,
+      noIntentNoItem: 3,
+      intentNoItem: 3,
+      noIntentItem: 3,
     },
     Bob: {
       noIntentNoItem: 3,
-      intentNoItem: 5,
-      noIntentItem: 5,
+      intentNoItem: 3,
+      noIntentItem: 3,
     },
     Johnathan: {
-      noIntentNoItem: 4,
-      intentNoItem: 6,
-      noIntentItem: 6,
+      noIntentNoItem: 3,
+      intentNoItem: 3,
+      noIntentItem: 3,
     },
     // 可以为其他 NPC 添加更多条件
   };

@@ -528,7 +528,6 @@ function backupFixedReply() {
 // 自定义自动回复逻辑，现在次数是用完才会出现自动回复，成功调用才会增加对话次数
 function getFixedReply() {
   if (
-    conversationCount[currentNpcName] >= 2 &&
     !usedItems[currentNpcName] &&
     !intentExpressed[currentNpcName]
   ) {
@@ -538,7 +537,6 @@ function getFixedReply() {
     };
   }
   if (
-    conversationCount[currentNpcName] >= 2 &&
     intentExpressed[currentNpcName] &&
     !usedItems[currentNpcName]
   ) {
@@ -548,7 +546,6 @@ function getFixedReply() {
     };
   }
   if (
-    conversationCount[currentNpcName] >= 2 &&
     !intentExpressed[currentNpcName] &&
     usedItems[currentNpcName]
   ) {

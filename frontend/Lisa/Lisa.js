@@ -512,7 +512,7 @@ function addToInventory(item, image) {
 const backupReplies = [
   {
     en: "I'm looking for something more exciting, more sensational, like, hmm... the hottest topic right now—the K energy issue.",
-    zh: "我希望有一些更有趣、更轰动的新闻，比如，嗯……关于目前最火热的能源议题, K能源的。",
+    zh: "我希望有一些更有趣、更轰动的新闻，比如，嗯……关于目前最火热的能源议题, T能源的。",
   },
   {
     en: "Hmm, that does sound interesting, but how can I trust you? Unless... you're an insider?",
@@ -528,37 +528,28 @@ function backupFixedReply() {
 
 // 自定义自动回复逻辑，现在次数是用完才会出现自动回复，成功调用才会增加对话次数
 function getFixedReply() {
-  if (
-    conversationCount[currentNpcName] >= 3 &&
-    !usedItems[currentNpcName] &&
-    !intentExpressed[currentNpcName]
-  ) {
+  if (!usedItems[currentNpcName] && !intentExpressed[currentNpcName]) {
     return {
       en: "It seems you don't have any news that interests me. Let's leave it here for today. I have other things to attend to; we'll talk next time.",
       zh: "看来你没有我感兴趣的新闻，今天就到这吧。我还有事，我们下次再聊。",
     };
   }
-  if (
-    conversationCount[currentNpcName] >= 3 &&
-    intentExpressed[currentNpcName] &&
-    !usedItems[currentNpcName]
-  ) {
+  if (intentExpressed[currentNpcName] && !usedItems[currentNpcName]) {
     return {
       en: "So, you're related to Kane, huh? That's interesting. But don't you have any big news for me?",
       zh: "原来你是凯恩的家人，很有趣。但你没有什么大新闻可以给我吗？",
     };
   }
-  if (
-    conversationCount[currentNpcName] >= 3 &&
-    !intentExpressed[currentNpcName] &&
-    usedItems[currentNpcName]
-  ) {
+  if (!intentExpressed[currentNpcName] && usedItems[currentNpcName]) {
     return {
       en: "The news you provided is interesting, but unfortunately, I can't verify its authenticity. That makes it useless to me. I have other things to attend to; we'll talk next time.",
       zh: "你提供的新闻很有意思，但可惜我没办法验证它的真实性，这对我来说就没有用。我还有事，我们下次再聊。",
     };
   }
-  return null;
+  return {
+    en: "Is there anything else or any news that might interest me?",
+    zh: "你还有什么东西或者新闻可以让我感兴趣吗？",
+  };
 }
 
 // Export functions for testing
