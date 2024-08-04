@@ -19,8 +19,8 @@ document.addEventListener("DOMContentLoaded", () => {
     {
       background: "./images/dimly_lit_room.png",
       textStyle: "futuristic",
-      en: "You have obtained <span class='highlight' data-item='truth' data-image='../items/truth.png'>the truth about the death of KI's father, Kane.</span>",
-      zh: "你得到了KI的父亲<span class='highlight' data-item='真相' data-image='../items/truth.png'>“Kane”死亡的真相</span>。",
+      en: "You have obtained <span class='highlight' data-item='truth' data-image='../Items/truth.png'>the truth about the death of KI's father, Kane.</span>",
+      zh: "你得到了KI的父亲<span class='highlight' data-item='真相' data-image='../Items/truth.png'>“Kane”死亡的真相</span>。",
     },
   ];
 

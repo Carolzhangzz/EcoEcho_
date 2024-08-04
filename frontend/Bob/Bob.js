@@ -73,10 +73,10 @@ const scenes = [
   {
     text: {
       en: [
-        "Okay, in that case, we will use the <span class='highlight' data-item='general_strike' data-image='../items/general_strike.png'>general strike</span> to fight the government to the end.",
+        "Okay, in that case, we will use the <span class='highlight' data-item='general_strike' data-image='../Items/general_strike.png'>general strike</span> to fight the government to the end.",
       ],
       zh: [
-        "好的，既然如此，我们会利用<span class='highlight' data-item='大罢工' data-image='../items/general_strike.png'>大罢工</span>向政府抗争到底。",
+        "好的，既然如此，我们会利用<span class='highlight' data-item='大罢工' data-image='../Items/general_strike.png'>大罢工</span>向政府抗争到底。",
       ],
     },
     background: "./images/Office.png",

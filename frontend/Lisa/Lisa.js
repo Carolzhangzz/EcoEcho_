@@ -71,11 +71,11 @@ const scenes = [
   {
     text: {
       en: [
-        "Oh, so you're Kane's son. That makes sense now. If I were you, I'd head to the Guild Hall and find <span class='highlight' data-item='Journalist_ID' data-image='../items/Journalist_ID.png'>Bob</span>.",
+        "Oh, so you're Kane's son. That makes sense now. If I were you, I'd head to the Guild Hall and find <span class='highlight' data-item='Journalist_ID' data-image='../Items/Journalist_ID.png'>Bob</span>.",
         "They're having a heated debate about K, and your arrival could make things a lot more interesting. I will support you.",
       ],
       zh: [
-        "哦,原来你是凯恩的儿子,这就有道理了。如果我是你,我会去工会大楼找<span class='highlight' data-item='记者证' data-image='../items/Journalist_ID.png'>鲍勃</span>。",
+        "哦,原来你是凯恩的儿子,这就有道理了。如果我是你,我会去工会大楼找<span class='highlight' data-item='记者证' data-image='../Items/Journalist_ID.png'>鲍勃</span>。",
         "他们正为K的事吵得不可开交,你的出现可能会让事情变得更有趣。我会支持你的。",
       ],
     },
