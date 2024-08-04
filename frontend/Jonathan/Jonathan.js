@@ -197,17 +197,38 @@ function startGame() {
 }
 
 const intentOne =
-  "Player need to mention they come for T, or they say anything about T";
+  "Player mentions T energy, come for T, or expresses interest in T energy or just say t or T";
 const intentTwo =
-  "Player need to mention public or citizen also don't support T or they want to do general strike or they want to fight against government";
+  "Player need to mention public or citizen also don't support T or they want to do general strike or they want to fight against government or anything about the strike or public support";
 
 // 检查用户是否表达了特定的意图
 
 async function Check(intent, message) {
   // 为不同的意图设置不同的关键字
   const keywords = {
-    [intentOne]: ["T", "come for T", "looking for T"],
-    [intentTwo]: ["son", "support", "public", "public support"],
+    [intentOne]: [
+      "T",
+      "come for T",
+      "looking for T",
+      "stop T",
+      "T energy",
+      "here for T",
+      "energy",
+      "T energy",
+      "t",
+      "T",
+    ],
+    [intentTwo]: [
+      "support",
+      "public",
+      "public support",
+      "general strike",
+      "fight against government",
+      "strike",
+      "大罢工",
+      "罢工",
+      "反对政府",
+    ],
   };
 
   // 获取对应意图的关键字

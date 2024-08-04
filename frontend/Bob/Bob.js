@@ -200,15 +200,46 @@ const intentTwo =
   "Player mentions Kane, their relationship to Kane, or any information about Kane's past or death";
 
 const intentThree =
-  "Player mentions Lisa, any support for the strike, or opposition to T energy";
+  "Player mentions Lisa, any support from others or just say Lisa";
 // 检查用户是否表达了特定的意图
 
 async function Check(intent, message) {
   // 为不同的意图设置不同的关键字
   const keywords = {
-    [intentOne]: ["T", "come for T", "looking for T", "here for T"],
-    [intentTwo]: ["son", "Kane is my father", "I'm Kane's son", "father"],
+    [intentOne]: [
+      "T",
+      "come for T",
+      "looking for T",
+      "here for T",
+      "energy",
+      "T energy",
+      "t",
+    ],
+    [intentTwo]: [
+      "son",
+      "Kane is my father",
+      "I'm Kane's son",
+      "father",
+      "Kane",
+      "death",
+      "Kane's death",
+      "Kane's past",
+      "儿子",
+      "凯恩是我父亲",
+      "我是凯恩的儿子",
+      "父亲",
+      "凯恩",
+      "死亡",
+      "凯恩的死亡",
+      "凯恩的过去",
+    ],
     [intentThree]: [
+      "Lisa supports the strike",
+      "Lisa is on our side",
+      "Lisa is with us",
+      "lisa",
+      "利萨",
+      "利萨站在我们这边",
       "Lisa supports",
       "Lisa also supports",
       "Lisa agrees",
@@ -417,7 +448,7 @@ async function sendMessageToNPC(message) {
   try {
     const requestData = {
       prompt: message,
-      charID: "84025b20-4ce3-11ef-81bd-42010a7be011", // 替换为你的角色 ID
+      charID: "34dfc8c8-4ce5-11ef-81bd-42010a7be011", // 替换为你的角色 ID
       sessionID: npcSessionIDs[currentNpcName] || "-1",
       voiceResponse: true,
     };
@@ -599,7 +630,7 @@ function addToInventory(item, image) {
 const backupReplies = [
   {
     en: "Sir, what are you coming for ?",
-    zh: "先生，您是为了什么而来？", // 这里的回复是随机的，可以根据实际情况修改
+    zh: "先生，您是为了什么而来？",
   },
   {
     en: "Greetings! I'm afraid I'll need to know your business here before I can let you proceed.",
@@ -615,16 +646,16 @@ const backupReplies = [
 //备用的意图的方案
 const backupIntentReplies = [
   {
-    en: "I'm sorry, but we've already made a decision regarding K. There's nothing I can do to change it.",
-    zh: "对不起，我们已经就 T 的事情做出了决定。我无法改变它。",
+    en: "I'm sorry, but we've already made a decision regarding K. I can't change it. Do you know any other government secrets?",
+    zh: "对不起，我们已经就 T 的事情做出了决定。我无法改变它。你还知道什么政府隐瞒的真相吗？",
   },
   {
-    en: "Ah, so the government has deceived us. But, all the people support the new energy. Unless we can get the support of the people.",
-    zh: "原来政府欺骗了我们。可是，所有人民都支持新能源了。除非我们能够得到了民意的支持。",
+    en: "Ah, so the government has deceived us. But, all the people support the new energy. Unless we can get public support, who sent you to me?",
+    zh: "原来政府欺骗了我们。可是，所有人民都支持新能源了。除非我们能够得到了民意的支持。是谁让你来找我的？",
   },
   {
-    en: "Okay, in that case, we will use the general strike to fight the government to the end.",
-    zh: "Lisa也支持?, 既然如此，我们会利用大罢工向政府抗争到底！",
+    en: "Okay, in that case, we will use the general strike to fight the government to the end! But why are you doing this? What else do you know?",
+    zh: "Lisa也支持?, 既然如此，我们会利用大罢工向政府抗争到底！但是你为什么要这样做？你还知道什么？",
   },
 ];
 

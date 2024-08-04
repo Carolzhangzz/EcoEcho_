@@ -516,7 +516,7 @@ const backupReplies = [
   },
   {
     en: "Hmm, that does sound interesting, but how can I trust you? Unless... you're an insider?",
-    zh: "“嗯，这确实很有趣，可是我怎么能相信你呢？除非……你是个内部人士？”",
+    zh: "嗯，这确实很有趣，可是我怎么能相信你呢？除非……你是个内部人士？",
   },
 ];
 
