@@ -1,11 +1,12 @@
 let isMusicPlaying = true;
-
+let currentNpcName = "Jonathan";
 
 const initialBgm = new Audio("./Music/The lament of mankind.mp3");
 const emiliaVoice = new Audio("./Music/EmiliaR.mp3");
 const nextSceneButton = document.getElementById("next-scene");
 //最后点击物品时光胶囊，可以重启游戏
 document.addEventListener("DOMContentLoaded", () => {
+  emiliaVoice.volume = 0.3;
   const musicToggleButton = document.getElementById("music-toggle");
 
   musicToggleButton.addEventListener("click", () => {
@@ -28,7 +29,7 @@ document.addEventListener("DOMContentLoaded", () => {
     window.location.href = "../Emilia/Emilia.html";
   });
   // 设置初始背景音乐
-  initialBgm.volume = 0.2;
+  initialBgm.volume = 0.3;
   initialBgm.loop = true;
 
   let currentLine = 0;
@@ -38,13 +39,13 @@ document.addEventListener("DOMContentLoaded", () => {
       textStyle: "futuristic",
       en: "We have come this far, making countless sacrifices and overcoming numerous challenges. ",
       zh: "我们走到这一步...付出了许多牺牲，克服了诸多挑战。",
-      playEmiliaVoice: true,
     },
     {
       background: "./images/Space.png",
       textStyle: "futuristic",
       en: "Your father's legacy, the protests, and our research have all converged to bring us to this moment.",
       zh: "你父亲的遗志，那些抗议，我们的研究...所有这些都让我们来到了这一刻。",
+      playEmiliaVoice: true,
     },
     {
       background: "./images/Space.png",
@@ -191,6 +192,47 @@ function goToNextScene() {
 
 nextSceneButton.addEventListener("click", goToNextScene);
 nextSceneButton.style.display = "none";
+
+function showSignaturePrompt() {
+  const message = {
+    en: "Would you be willing to sign the petition right now?",
+    zh: "你愿意现在在联署书上签字吗?",
+  };
+
+  const lastSigner = getLastSigner();
+
+  if (signatures[lastSigner] !== null && signatures[lastSigner] !== undefined) {
+    showAlert(
+      currentLanguage === "en"
+        ? "You have already signed this petition."
+        : "你已经在这份联署书上签过名了。"
+    );
+    addItemToInventoryAndFinish();
+    return;
+  }
+  showConfirm(message[currentLanguage], async (confirmed) => {
+    await addSignature(lastSigner, confirmed);
+
+    if (confirmed) {
+      showAlert(
+        currentLanguage === "en"
+          ? "Thank you for your support!"
+          : "感谢您的支持！"
+      );
+    } else {
+      showAlert(
+        currentLanguage === "en"
+          ? "We understand your decision. Thank you for your time."
+          : "我们理解您的决定。感谢您的时间。"
+      );
+    }
+    bgm.play().catch((error) => console.log("BGM playback failed:", error));
+    isMusicPlaying = true;
+    document.getElementById("music-toggle").textContent = "🔊";
+    addItemToInventoryAndFinish();
+  });
+  updateMetEmilia(lastSigner, true);
+}
 
 function addItemToInventoryAndFinish() {
   // 添加物品到背包

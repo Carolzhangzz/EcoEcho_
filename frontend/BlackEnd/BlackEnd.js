@@ -21,8 +21,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function generateSignatureSummary() {
     const signatures = JSON.parse(localStorage.getItem("signatures")) || {};
-    const validKeys = ["Ki", "Lisa", "Bob", "Johnathan"];
-    
+    const validKeys = ["Ki", "Lisa", "Bob", "Jonathan"];
+
     return validKeys.map((key, index) => {
       const value = signatures[key];
       let status;
@@ -37,13 +37,13 @@ document.addEventListener("DOMContentLoaded", () => {
       }
       const ordinal = {
         en: ["First", "Second", "Third", "Fourth"][index],
-        zh: ["第一次", "第二次", "第三次", "第四次"][index]
+        zh: ["第一次", "第二次", "第三次", "第四次"][index],
       };
       return {
         background: "./images/summary_background.png",
         textStyle: "futuristic",
         en: `${ordinal.en}: ${status.en}`,
-        zh: `${ordinal.zh}: ${status.zh}`
+        zh: `${ordinal.zh}: ${status.zh}`,
       };
     });
   }
@@ -89,7 +89,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       typeWriter(dialogueElement, currentDialogueObj[currentLanguage], () => {
         const highlights = dialogueElement.querySelectorAll(".highlight");
-        setLastSigner("Ki");
+        setLastSigner(currentNpcName);
         highlights.forEach((item) => {
           addToInventory(item.dataset.item, item.dataset.image);
         });
