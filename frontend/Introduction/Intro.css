@@ -42,7 +42,7 @@ body {
 
 #text-container {
     width: 70%;
-    text-align: left;
+    text-align:center;
     background-color: rgba(0, 0, 0, 0.5); /* 半透明的黑色背景 */
     padding: 10px;
     border-radius: 10px;

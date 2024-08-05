@@ -26,6 +26,7 @@ body {
     cursor: pointer;
     text-decoration: none;
 }
+
 #scene1, #scene2, #scene3, #scene4 {
     line-height: 30px;
     text-align: center;
@@ -144,10 +145,11 @@ body {
 }
 
 .futuristic {
-    font-weight: bolder;
+    font-weight: bold;
     font-family: 'Orbitron', sans-serif;
-    color: #00FFFF;
-    text-shadow: 0 0 10px #00FFFF;
+    color: #FFD700; /* 改为金黄色 */
+    text-shadow: 0 0 10px #FFA500; /* 橙色阴影，增加光晕效果 */
+    letter-spacing: 2px; /* 增加字母间距 */
 }
 
 .vintage {

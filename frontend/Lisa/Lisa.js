@@ -8,6 +8,17 @@ let backupReplyIndex = 0; // 备用回复的索引
 // // import { translateText } from './translate.js';
 // const translate = require("google-translate-open-api").default;
 
+function displayInitialMessage() {
+  const initialMessage = {
+    en: "Hello there! I'm Lisa, an investigative journalist. I'm always on the lookout for exciting news stories. Do you have any interesting information to share?",
+    zh: "你好！我是Lisa，一名调查记者。我一直在寻找令人兴奋的新闻故事。你有什么有趣的信息要分享吗？",
+  };
+
+  const message =
+    currentLanguage === "en" ? initialMessage.en : initialMessage.zh;
+  displayNPCReply(message);
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   const characterImage = document.getElementById("character-image");
   const backgroundImage = "./images/Media.png"; // 设置一个默认的背景图
@@ -42,9 +53,14 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
+  //模拟 ki 签完字以及
+  signatures["Ki"] = true;
   //如果说 ki 还没签字的话，也不能和 lisa 交谈
   if (signatures["Ki"] === null) {
     startFirstDialogue();
+  } else {
+    // 如果还没有和Lisa交谈过，显示初始消息
+    displayInitialMessage();
   }
 
   //判断是否这个对话已经结束 如果结束了，就显示 new scene 的对话
@@ -86,6 +102,7 @@ const scenes = [
 ];
 
 function startGame() {
+  bgm.play();
   const textContainer = document.getElementById("text-container");
   const nextButton = document.getElementById("next-text-button");
   const prevButton = document.getElementById("prev-text-button");
@@ -154,17 +171,14 @@ function startGame() {
       currentScene === scenes.length - 1 &&
       currentTextIndex === scene.text[currentLanguage].length - 1
     ) {
-      //设定 talkToLisa 为 true
-      gameProgress.talkedToLisa = true;
-      updateAllScenesCompleted("Lisa", true); // 更新Lisa的allScenesCompleted状态
-      localStorage.setItem("gameProgress", JSON.stringify(gameProgress)); // 保存到 localStorage
-
-      // 修改这里的逻辑
-
-      // 设置最后交互的NPC
-      setLastSigner(currentNpcName);
-      // 跳转到Room页面,并传递当前NPC作为lastSigner参数
-      window.location.href = `../Room/room.html?lastSigner=${currentNpcName}`;
+      // 延迟执行跳转逻辑，给足够时间显示最后一行文本
+      setTimeout(() => {
+        gameProgress.talkedToLisa = true;
+        updateAllScenesCompleted("Lisa", true);
+        localStorage.setItem("gameProgress", JSON.stringify(gameProgress));
+        setLastSigner(currentNpcName);
+        window.location.href = `../Room/room.html?lastSigner=${currentNpcName}`;
+      }, 1000); // 3秒延迟，可以根据需要调整
     }
   };
 
@@ -198,14 +212,16 @@ function startGame() {
 }
 
 const intent =
-  "the user has expressed or implied the intent to the truth of KI's Father: Kane's death or the truth of Kane's death or anything related to Kane's death";
+  " the user is Ki, so that the user should expressed that his father is Kane or any relationship with Kane or any information about his father: Kane";
 
 // 检查用户是否表达了特定的意图
 async function Check(intent, message) {
   const keywords = [
     "truth",
+    "father death",
+    "truth of Kane's death",
     "father's death",
-    "Kane",
+    "Kane is my father", // 用于检查玩家是否表达了与 Kane 有关的信息
     "真相",
     "死",
     "父亲去世",

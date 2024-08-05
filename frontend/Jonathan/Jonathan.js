@@ -6,6 +6,17 @@ bgm.src = "./Music/Save the World.mp3"; // 设置统一的背景音乐
 bgm.volume = 0.1; //  音量设置为 10%
 let backupReplyIndex = 0; // 备用回复的索引
 
+function displayInitialMessage() {
+  const initialMessage = {
+    en: "Welcome, esteemed citizen! I'm Jonathan, your dedicated public servant. I'm always eager to hear the voice of the people. What brings you to my office today? How can I assist you in making our community better?",
+    zh: "欢迎，尊敬的市民！我是Johnathan，您忠诚的公仆。我一直渴望听到人民的声音。今天是什么风把您吹到我办公室来的？我怎样才能帮助您让我们的社区变得更好呢？",
+  };
+
+  const message =
+    currentLanguage === "en" ? initialMessage.en : initialMessage.zh;
+  displayNPCReply(message);
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   const characterImage = document.getElementById("character-image");
   const backgroundImage = "./images/Government.png";
@@ -34,6 +45,9 @@ document.addEventListener("DOMContentLoaded", () => {
   ) {
     // 如果已经与Lisa,Guard Bob和 Jonathan对话，显示新场景对话
     startNewSceneDialogue();
+  } else if (gameProgress.talkedToBob && !gameProgress.talkedToJohnathan) {
+    // 如果已经与Bob对话，但是没有与Jonathan对话，显示Jonathan的对话
+    displayInitialMessage();
   }
 
   nextButton.style.display = "inline-block";
@@ -80,6 +94,19 @@ const scenes = [
       ],
       zh: [
         "真的吗！原来人民的意愿这样轻易改变。好吧，为了选票，我是说人民的意愿，我会推动政府停止开发。",
+      ],
+    },
+    background: "./images/Government.png",
+    textStyle: "futuristic",
+    character: "./npc/Jonathan.png",
+  },
+  {
+    text: {
+      en: [
+        "Well, well... It seems the winds of change are blowing. Rest assured, I always stand with the people—wherever they may stand. Now, if you'll excuse me, I have some... urgent calls to make.",
+      ],
+      zh: [
+        "嗯，看来变革之风正在吹拂。请放心，我永远站在人民这边——无论他们站在哪里。现在，如果您不介意的话，我有一些...紧急的电话要打。",
       ],
     },
     background: "./images/Government.png",
@@ -157,13 +184,14 @@ function startGame() {
       currentScene === scenes.length - 1 &&
       currentTextIndex === scene.text[currentLanguage].length - 1
     ) {
-      //设定 talkToGuard 为 true
       gameProgress.talkedToJohnathan = true;
       updateAllScenesCompleted("Johnathan", true); // 更新Security的allScenesCompleted状态
       localStorage.setItem("gameProgress", JSON.stringify(gameProgress)); // 保存到 localStorage
       setLastSigner(currentNpcName); // 设置最后一个对话的 为 Jonathan
-      //修改这里的逻辑
-      window.location.href = "../Room/room.html";
+      // 延迟执行跳转逻辑，给足够时间显示最后一行文本
+      setTimeout(() => {
+        window.location.href = "../Room/room.html";
+      }, 1000); // 3秒延迟，可以根据需要调整
     }
   };
 
@@ -372,7 +400,7 @@ async function handleMessage(message) {
 
   if (
     !JohnathanIntentExpress.comeForK &&
-    conversationCount[currentNpcName] >= 3
+    conversationCount[currentNpcName] >= 4
   ) {
     // 只要没有提到 k，就返回 backupReplies 中的一个回复
     const random = Math.floor(Math.random() * backupReplies.length);
@@ -385,7 +413,7 @@ async function handleMessage(message) {
     //表达了 come for K 意图，但是没有提到大罢工
     JohnathanIntentExpress.comeForK &&
     !JohnathanIntentExpress.publicSupport &&
-    conversationCount[currentNpcName] >= 3
+    conversationCount[currentNpcName] >= 4
   ) {
     const random = Math.floor(Math.random() * comeForkReplies.length);
     const fixedReply = comeForkReplies[random];
@@ -397,7 +425,7 @@ async function handleMessage(message) {
     //如果表达了第二个意图，但是没有给大罢工的东西
     JohnathanIntentExpress.publicSupport &&
     !usedItems[currentNpcName] &&
-    conversationCount[currentNpcName] >= 3
+    conversationCount[currentNpcName] >= 4
   ) {
     const random = Math.floor(Math.random() * noItemsReplies.length);
     const fixedReply = noItemsReplies[random];
@@ -419,7 +447,7 @@ async function sendMessageToNPC(message) {
   try {
     const requestData = {
       prompt: message,
-      charID: "cc3a3132-4f37-11ef-b86e-42010a7be011", // 替换为你的角色 ID
+      charID: "842899fc-4eb9-11ef-8143-42010a7be011", // 替换为你的角色 ID
       sessionID: npcSessionIDs[currentNpcName] || "-1",
       voiceResponse: true,
     };
@@ -659,14 +687,14 @@ function backupFixedReply() {
   //只要没有提到 k，就返回 backupReplies 中的一个回复
   if (
     !JohnathanIntentExpress.comeForK &&
-    conversationCount[currentNpcName] >= 3
+    conversationCount[currentNpcName] >= 4
   ) {
     const random = Math.floor(Math.random() * backupReplies.length);
     return backupReplies[random];
   } else if (
     JohnathanIntentExpress.comeForK &&
     !JohnathanIntentExpress.publicSupport &&
-    conversationCount[currentNpcName] >= 3
+    conversationCount[currentNpcName] >= 4
   ) {
     // 如果表达了 comeForK 意图，随机返回 comeForkReplies 中的一个回复
     const random = Math.floor(Math.random() * comeForkReplies.length);
@@ -674,7 +702,7 @@ function backupFixedReply() {
   } else if (
     JohnathanIntentExpress.publicSupport &&
     !usedItems[currentNpcName] &&
-    conversationCount[currentNpcName] >= 3
+    conversationCount[currentNpcName] >= 4
   ) {
     // 如果表达了 publicSupport 意图，但没有给大罢工的东西，随机返回 noItemsReplies 中的一个回复
     const random = Math.floor(Math.random() * noItemsReplies.length);

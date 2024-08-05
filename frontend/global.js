@@ -489,15 +489,13 @@ const itemNpcMapping = {
   Journalist_ID: ["Guard"],
   general_strike: ["Johnathan"],
   大罢工: ["Johnathan"],
-  时光胶囊: ["Player","Johnathan","Bob","Guard","Lisa","Emilia"],
+  时光胶囊: ["Player", "Johnathan", "Bob", "Guard", "Lisa", "Emilia"],
 };
 
 // 提示是否要分享物品，并且如果某个 NPC 已经收到过物品，则不能再次分享
 function promptShareItem(item, npcName) {
   // 检查是否是时光胶囊
-  if (
-    (item.name === "Time Capsule" || item.name === "时光胶囊") 
-  ) {
+  if (item.name === "Time Capsule" || item.name === "时光胶囊") {
     //时光胶囊可以分享给所有的NPC
     showConfirm(
       currentLanguage === "en"
@@ -507,20 +505,13 @@ function promptShareItem(item, npcName) {
         if (confirmed) {
           usedItems[npcName] = true;
           localStorage.setItem("usedItems", JSON.stringify(usedItems));
+          // //物品使用的标志
+          // itemJustShared = true; // 设置标志
           console.log("Used items:", usedItems);
           removeFromInventory(item.name);
           resetGame();
         }
       }
-    );
-    return;
-  }
-
-  if (usedItems[npcName]) {
-    showAlert(
-      currentLanguage === "en"
-        ? `${npcName} has already received an item and cannot be given another.`
-        : `${npcName}已经收到过物品，不能再次给予。`
     );
     return;
   }
@@ -546,8 +537,8 @@ function promptShareItem(item, npcName) {
         localStorage.setItem("usedItems", JSON.stringify(usedItems));
         showAlert(
           currentLanguage === "en"
-            ? `${item.name} has been shared with ${npcName}.`
-            : `${item.name}已经与${npcName}分享。`
+            ? `Ki shared the ${item.name} with ${npcName}.`
+            : `Ki 与${npcName}分享了${item.name}。`
         );
         console.log("Used items:", usedItems);
         removeFromInventory(item.name);
@@ -756,14 +747,14 @@ document.addEventListener("DOMContentLoaded", () => {
 function shouldTriggerAutoReply(currentNpcName) {
   const triggerConditions = {
     Lisa: {
-      noIntentNoItem: 3,
-      intentNoItem: 3,
-      noIntentItem: 3,
+      noIntentNoItem: 4,
+      intentNoItem: 4,
+      noIntentItem: 4,
     },
     Guard: {
-      noIntentNoItem: 3,
-      intentNoItem: 3,
-      noIntentItem: 3,
+      noIntentNoItem: 4,
+      intentNoItem: 4,
+      noIntentItem: 4,
     },
     Bob: {
       noIntentNoItem: 3,

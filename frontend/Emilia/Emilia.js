@@ -6,6 +6,21 @@ const MAIN_PAGE_PATH = "../Main.html";
 const MAIN_MAP_PATH = "../Emilia/Emilia.html";
 let bgm;
 
+
+// 允许所有场景
+  function enableAllScenes() {
+    ["scene1", "scene2", "scene3", "scene4"].forEach((sceneId) => {
+      const sceneButton = document.getElementById(sceneId);
+      if (sceneButton) {
+        sceneButton.style.pointerEvents = "auto";
+        sceneButton.style.opacity = "1";
+        sceneButton.style.backgroundColor = "";
+        sceneButton.style.color = "";
+      }
+    });
+  }
+
+
 // 初始化背景音乐
 function initializeAudio() {
   bgm = document.getElementById("bgm");
@@ -35,17 +50,17 @@ document.addEventListener("DOMContentLoaded", () => {
     window.location.href = MAIN_PAGE_PATH;
   });
 
-  document.addEventListener("click", (event) => {
-    if (event.target.id === "scene1") {
-      goToScene("../Lisa/Lisa.html");
-    } else if (event.target.id === "scene2") {
-      goToScene("../Bob/Bob.html");
-    } else if (event.target.id === "scene4") {
-      goToScene("../Guard/Guard.html");
-    } else if (event.target.id === "scene3") {
-      goToScene("../Jonathan/Jonathan.html");
-    }
-  });
+  // document.addEventListener("click", (event) => {
+  //   if (event.target.id === "scene1") {
+  //     goToScene("../Lisa/Lisa.html");
+  //   } else if (event.target.id === "scene2") {
+  //     goToScene("../Bob/Bob.html");
+  //   } else if (event.target.id === "scene4") {
+  //     goToScene("../Guard/Guard.html");
+  //   } else if (event.target.id === "scene3") {
+  //     goToScene("../Jonathan/Jonathan.html");
+  //   }
+  // });
 });
 
 function startGame(lastSigner) {
@@ -54,6 +69,58 @@ function startGame(lastSigner) {
   const prevButton = document.getElementById("prev-text-button");
   // const lastSigner = getLastSigner();
   let dialogues;
+
+  // 修改禁用场景的函数
+  function disableScenes(scenesToDisable) {
+    scenesToDisable.forEach((sceneId) => {
+      const sceneButton = document.getElementById(sceneId);
+      if (sceneButton) {
+        sceneButton.style.pointerEvents = "none";
+        sceneButton.style.opacity = "0.7"; // 适度降低不透明度
+        sceneButton.style.backgroundColor = "rgba(0, 0, 0, 0.8)"; // 深色背景，带透明度
+        sceneButton.style.color = "rgba(255, 255, 255, 0.7)"; // 文字颜色
+
+        // 添加渐变背景和阴影
+        sceneButton.style.border = "2px solid rgba(255, 255, 255, 0.3)";
+        sceneButton.style.borderRadius = "8px"; // 圆角
+        sceneButton.style.boxShadow = "0 4px 10px rgba(0, 0, 0, 0.5)"; // 阴影效果
+        sceneButton.style.transition = "all 0.3s ease"; // 添加过渡效果
+      }
+    });
+  }
+
+  // 检查签名状态并禁用/启用相应场景
+  if ( signatures[lastSigner]!= null && signatures[lastSigner] != undefined) {
+    enableAllScenes();
+  } else if (lastSigner === "Ki") {
+    disableScenes(["scene1", "scene2", "scene3", "scene4"]);
+  } else if (lastSigner === "Lisa") {
+    disableScenes(["scene2", "scene3", "scene4"]);
+  } else if (lastSigner === "Guard") {
+    disableScenes(["scene2", "scene3"]);
+  } else if (lastSigner === "Bob") {
+    disableScenes(["scene3"]);
+  } else {
+    enableAllScenes(); // 如果没有 lastSigner 或者是其他情况，启用所有场景
+  }
+
+  let petitionNumber;
+  switch (lastSigner) {
+    case "Ki":
+      petitionNumber = "first";
+      break;
+    case "Lisa":
+      petitionNumber = "second";
+      break;
+    case "Bob":
+      petitionNumber = "third";
+      break;
+    case "Johnathan":
+      petitionNumber = "fourth";
+      break;
+    default:
+      petitionNumber = "current";
+  }
 
   if (lastSigner === "Lisa" && !metEmilia["Lisa"]) {
     dialogues = [
@@ -121,7 +188,9 @@ function startGame(lastSigner) {
         en: [
           "I am Emilia, a scientist dedicated to studying ethical issues in technological advancement.",
         ],
-        zh: ["你好，我是 Emilia。我是一名计算机科学家, 专注于能源系统的优化和可持续发展。"],
+        zh: [
+          "你好，我是 Emilia。我是一名计算机科学家, 专注于能源系统的优化和可持续发展。",
+        ],
       },
       {
         en: [
@@ -159,11 +228,26 @@ function startGame(lastSigner) {
         ],
       },
       {
-        en: ["Would you be willing to sign the petition right now?"],
-        zh: ["你愿意现在在联署书上签字吗?"],
+        en: [
+          `We are conducting the ${petitionNumber} public petition on the new energy T. Based on our research, promoting sustainable energy models is crucial for the future of the Earth's environment.`,
+        ],
+        zh: [
+          `我们正在进行关于新型能源T的第${
+            petitionNumber === "first"
+              ? "一"
+              : petitionNumber === "second"
+              ? "二"
+              : petitionNumber === "third"
+              ? "三"
+              : petitionNumber === "fourth"
+              ? "四"
+              : ""
+          }次民意联署。根据我们的研究,推广可持续的能源模式对于未来的地球环境至关重要。`,
+        ],
       },
     ];
   }
+
   const scenes = dialogues.map((dialogue) => ({
     text: dialogue,
     background: "./map.png",
@@ -264,6 +348,25 @@ function startGame(lastSigner) {
     updateScene();
   });
 
+  // 修改事件监听器
+  document.querySelectorAll(".footer > div").forEach((button) => {
+    button.addEventListener("click", (event) => {
+      const sceneId = event.target.id;
+      if (event.target.style.pointerEvents !== "none") {
+        // 只有未被禁用的按钮才能点击
+        if (sceneId === "scene1") {
+          goToScene("../Lisa/Lisa.html");
+        } else if (sceneId === "scene2") {
+          goToScene("../Bob/Bob.html");
+        } else if (sceneId === "scene4") {
+          goToScene("../Guard/Guard.html");
+        } else if (sceneId === "scene3") {
+          goToScene("../Jonathan/Jonathan.html");
+        }
+      }
+    });
+  });
+
   // 初始场景设置
   updateScene();
 }
@@ -278,16 +381,18 @@ function showSignaturePrompt() {
 
   // 检查最后签名者是否已经签名
   if (signatures[lastSigner] !== null && signatures[lastSigner] !== undefined) {
-    showAlert(
-      currentLanguage === "en"
-        ? "You have already signed this petition."
-        : "你已经在这份联署书上签过名了。"
-    );
+    // 如果已经签名，直接返回，不显示任何提示
     return;
+    // showAlert(
+    //   currentLanguage === "en"
+    //     ? "You have already signed this petition."
+    //     : "你已经在这份联署书上签过名了。"
+    // );
+    // return;
   }
 
   showConfirm(message[currentLanguage], async (confirmed) => {
-    await addSignature(lastSigner, confirmed);
+    await Signature(lastSigner, confirmed);
 
     if (confirmed) {
       showAlert(
@@ -304,3 +409,29 @@ function showSignaturePrompt() {
     }
   });
 }
+
+async function Signature(name, signed) {
+  try {
+    signatures[name] = signed ? Date.now() : false;
+    await localStorage.setItem("signatures", JSON.stringify(signatures));
+    if (signed) {
+      // 只有在实际签名时才刷新页面
+      window.location.reload();
+    } else {
+      // 如果拒绝签名，只更新当前页面的状态，不刷新整个页面
+      enableAllScenes();
+    }
+  } catch (error) {
+    console.error("Error adding signature:", error);
+    showAlert(
+      currentLanguage === "en"
+        ? "An error occurred. Please try again."
+        : "发生错误，请重试。"
+    );
+  }
+}
+// 在页面加载时调用 startGame
+document.addEventListener("DOMContentLoaded", () => {
+  const lastSigner = getLastSigner();
+  startGame(lastSigner);
+});

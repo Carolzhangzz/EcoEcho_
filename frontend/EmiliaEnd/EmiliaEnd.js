@@ -1,5 +1,5 @@
 let isMusicPlaying = true;
-let currentNpcName = "Jonathan";
+let currentNpcName = "Johnathan";
 
 const initialBgm = new Audio("./Music/The lament of mankind.mp3");
 const emiliaVoice = new Audio("./Music/EmiliaR.mp3");
@@ -136,6 +136,7 @@ document.addEventListener("DOMContentLoaded", () => {
         setTimeout(() => {
           showSignaturePrompt();
         }, 1000); // 延迟两秒显示提示
+        return; // 停止继续显示对话
       }
       // // 如果是标记的对话，切换背景音乐并播放Kane的录音
       // if (currentDialogueObj.playKaneVoice) {
@@ -208,6 +209,7 @@ function showSignaturePrompt() {
         : "你已经在这份联署书上签过名了。"
     );
     addItemToInventoryAndFinish();
+    showNextSceneButton();
     return;
   }
   showConfirm(message[currentLanguage], async (confirmed) => {
@@ -230,8 +232,13 @@ function showSignaturePrompt() {
     isMusicPlaying = true;
     document.getElementById("music-toggle").textContent = "🔊";
     addItemToInventoryAndFinish();
+    showNextSceneButton();
   });
   updateMetEmilia(lastSigner, true);
+}
+
+function showNextSceneButton() {
+  nextSceneButton.style.display = "block";
 }
 
 function addItemToInventoryAndFinish() {

@@ -40,16 +40,18 @@ body {
 .start-button {
     padding: 15px 30px;
     font-size: 24px;
-    background-color: rgba(255,255,255,0.1);
+    background: linear-gradient(135deg, rgba(0, 255, 128, 0.8), rgba(0, 128, 255, 0.8));
+    box-shadow: 0 0 15px #5af7ff;
     border: 1px solid white;
     color: white;
-    cursor: pointer;
-    transition: all 0.3s;
+    transition: all 0.3s ease;
 }
 
 .start-button:hover {
-    background: linear-gradient(135deg, rgba(0, 255, 128, 0.8), rgba(0, 128, 255, 0.8));
-    box-shadow: 0 0 15px #5af7ff;
+    background: linear-gradient(135deg, rgba(0, 255, 128, 0.5), rgba(0, 128, 255, 0.5));
+    box-shadow: 0 0 20px #5af7ff;
+    color: white;
+    cursor: pointer;
 }
 
 #music-toggle, #language-toggle {

@@ -6,6 +6,17 @@ bgm.src = "./Music/Save the World.mp3"; // 设置统一的背景音乐
 bgm.volume = 0.1; //  音量设置为 10%
 let backupReplyIndex = 0; // 备用回复的索引
 
+function displayInitialMessage() {
+  const initialMessage = {
+    en: "Ah, a visitor. I'm Bob, the union leader. We don't get many outsiders these days. What's on your mind, friend?",
+    zh: "啊，有访客啊。我是Bob，工会领袖。这些日子我们很少见到外人。朋友，你有什么心事吗？",
+  };
+
+  const message =
+    currentLanguage === "en" ? initialMessage.en : initialMessage.zh;
+  displayNPCReply(message);
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   const characterImage = document.getElementById("character-image");
   const backgroundImage = "./images/Office.png";
@@ -32,6 +43,9 @@ document.addEventListener("DOMContentLoaded", () => {
     gameProgress.talkedToBob
   ) {
     startNewSceneDialogue(); // 如果所有的对话都结束了，显示新的对话
+  } else if (gameProgress.talkedToGuard && !gameProgress.talkedToBob) {
+    // 如果已经与Guard对话，但是没有与Bob对话，说明是从Guard页面来的
+    displayInitialMessage();
   }
 
   nextButton.style.display = "inline-block";
@@ -77,6 +91,19 @@ const scenes = [
       ],
       zh: [
         "好的，既然如此，我们会利用<span class='highlight' data-item='大罢工' data-image='../Items/general_strike.png'>大罢工</span>向政府抗争到底。",
+      ],
+    },
+    background: "./images/Office.png",
+    textStyle: "futuristic",
+    character: "./npc/Bob.png",
+  },
+  {
+    text: {
+      en: [
+        "General strike... it's risky, but it might be our only shot at fighting back. But I need to know, why are you involved in this? What's your stake in all of this?",
+      ],
+      zh: [
+        "大罢工...这是个艰难的决定，但有时正确的道路并不是最容易的。我们将团结一致，为了我们的未来，为了真相。让我们希望这能让政府认清现实。"
       ],
     },
     background: "./images/Office.png",
@@ -161,7 +188,9 @@ function startGame() {
       setLastSigner(currentNpcName); // 设置最后一个对话的 为 Bob
       //修改这里的逻辑
       //回到房间
-      window.location.href = "../Room/room.html";
+      setTimeout(() => {
+        window.location.href = "../Room/room.html";
+      }, 1000); // 3秒延迟，可以根据需要调整
     }
   };
 
@@ -406,7 +435,7 @@ async function handleMessage(message) {
 
   console.log("Bob Intents expressed:", bobIntentExpress);
 
-  if (!bobIntentExpress.comeForK && conversationCount[currentNpcName] >= 3) {
+  if (!bobIntentExpress.comeForK && conversationCount[currentNpcName] >= 4) {
     const fixedReply = backupReplies[0];
     textContainer.innerHTML += `<p class="npc-message">Bob: ${
       currentLanguage === "en" ? fixedReply.en : fixedReply.zh
@@ -415,7 +444,7 @@ async function handleMessage(message) {
   } else if (
     bobIntentExpress.comeForK &&
     !bobIntentExpress.kaneRelation &&
-    conversationCount[currentNpcName] >= 3
+    conversationCount[currentNpcName] >= 4
   ) {
     const fixedReply = backupIntentReplies[0];
     textContainer.innerHTML += `<p class="npc-message">Bob: ${
@@ -426,7 +455,7 @@ async function handleMessage(message) {
     bobIntentExpress.comeForK &&
     bobIntentExpress.kaneRelation &&
     !bobIntentExpress.lisaSupport &&
-    conversationCount[currentNpcName] >= 3
+    conversationCount[currentNpcName] >= 4
   ) {
     const fixedReply = backupIntentReplies[1];
     textContainer.innerHTML += `<p class="npc-message">Bob: ${
@@ -448,7 +477,7 @@ async function sendMessageToNPC(message) {
   try {
     const requestData = {
       prompt: message,
-      charID: "34dfc8c8-4ce5-11ef-81bd-42010a7be011", // 替换为你的角色 ID
+      charID: "c048d3c0-4eb9-11ef-83a5-42010a7be011", // 替换为你的角色 ID
       sessionID: npcSessionIDs[currentNpcName] || "-1",
       voiceResponse: true,
     };
@@ -646,16 +675,16 @@ const backupReplies = [
 //备用的意图的方案
 const backupIntentReplies = [
   {
-    en: "I'm sorry, but we've already made a decision regarding K. I can't change it. Do you know any other government secrets?",
-    zh: "对不起，我们已经就 T 的事情做出了决定。我无法改变它。你还知道什么政府隐瞒的真相吗？",
+    en: "Listen, we've been through this T energy debate countless times. The union's stance... it's not easily changed. But you seem to know things. What else have you heard? Anything that could help our workers?",
+    zh: "听着，我们已经无数次讨论过T能源的问题了。工会的立场...不是轻易就能改变的。但你似乎知道一些内情。你还听说了什么？有什么能帮助我们工人的消息吗？",
   },
   {
-    en: "Ah, so the government has deceived us. But, all the people support the new energy. Unless we can get public support, who sent you to me?",
-    zh: "原来政府欺骗了我们。可是，所有人民都支持新能源了。除非我们能够得到了民意的支持。是谁让你来找我的？",
+    en: "Kane's death... there's more to it? God, I knew something wasn't right. The government lied to us all. But the public, they're all for this new energy. Unless... unless we can show them the truth. Tell me, who else knows about this?",
+    zh: "Kane的死...还有隐情？天哪，我就知道有什么不对劲。政府欺骗了我们所有人。但是公众，他们都支持这种新能源。除非...除非我们能向他们揭示真相。告诉我，还有谁知道这件事？",
   },
   {
-    en: "Okay, in that case, we will use the general strike to fight the government to the end! But why are you doing this? What else do you know?",
-    zh: "Lisa也支持?, 既然如此，我们会利用大罢工向政府抗争到底！但是你为什么要这样做？你还知道什么？",
+    en: "Lisa sent you? Well, that changes things. A general strike... it's risky, but it might be our only shot at fighting back. But I need to know, why are you involved in this? What's your stake in all of this?",
+    zh: "Lisa派你来的？好吧，这就不一样了。大罢工...风险很大，但可能是我们反击的唯一机会。但我需要知道，你为什么要参与其中？在这件事上，你有什么利害关系？",
   },
 ];
 

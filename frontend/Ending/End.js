@@ -188,7 +188,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       // 设置打字速度
-      const typingSpeed = currentLine >= 5 ? 60 : 30; // 5表示“亲爱的KI”的对话，越小越快
+      const typingSpeed = currentLine >= 5 ? 150 : 60; // 5表示“亲爱的KI”的对话，越小越快
       typeWriter(
         dialogueElement,
         currentDialogueObj[currentLanguage],
@@ -204,8 +204,8 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function goToNextScene() {
-    // 设置最后交互的"NPC"为Jonathan
-    setLastSigner("Jonathan");
+    // 设置最后交互的"NPC"为Johnathan
+    setLastSigner("Johnathan");
     // 跳转到Emilia页面
     window.location.href = "../EmiliaEnd/EmiliaEnd.html";
   }

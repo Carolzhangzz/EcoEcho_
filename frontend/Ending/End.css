@@ -270,38 +270,48 @@ body {
   border-color: #777;
 }
 
+
+
+/* 非父亲对话的样式 */
+.dialogue:not(.father-speech) {
+  font-family: 'Roboto', sans-serif; /* 现代感的无衬线字体 */
+  color: #b0b0b0; /* 稍暗的颜色，区分于父亲的话 */
+}
+
 .father-speech {
   font-family: 'Times New Roman', serif;
   font-style: italic;
-  color: #ffffff; /* Dark gray for a somber tone */
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7); /* Heavier shadow for a more eerie feel */
-  padding-left: 15px;
-  margin-left: 25px;
+  color: #e0e0e0; /* 稍微调亮一点 */
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+  padding: 10px 15px; /* 减小内边距 */
+  margin: 10px 0; /* 减小外边距 */
   position: relative;
-  background: rgba(0, 0, 0, 0.1); /* Slight background tint for contrast */
+  background: rgba(0, 0, 0, 0.3); /* 稍微增加背景透明度 */
+  border-left: 4px solid #4a4a4a; /* 保留左边框 */
+  letter-spacing: 0.5px;
+  line-height: 1.4; /* 调整行高 */
+  animation: pulse 3s infinite;
 }
 
-.father-speech::before {
-  content: '"';
-  font-size: 48px;
-  position: absolute;
-  left: -40px;
-  top: -15px;
-  color: #e9ff89; /* Matching the border for consistency */
-  opacity: 0.7;
-}
-
+.father-speech::before,
 .father-speech::after {
   content: '"';
   font-size: 48px;
   position: absolute;
-  right: -25px;
-  bottom: -25px;
-  color: #e3ff7c; /* Matching the border for consistency */
-  opacity: 0.7;
+  color: #e3ff7c;
+  opacity: 0.5;
 }
 
-/* Optional: Add a subtle pulsing animation for extra eeriness */
+.father-speech::before {
+  left: -20px;
+  top: -15px;
+}
+
+.father-speech::after {
+  right: -20px;
+  bottom: -35px;
+}
+
 @keyframes pulse {
   0%, 100% {
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
@@ -310,8 +320,3 @@ body {
     text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.9);
   }
 }
-
-.father-speech {
-  animation: pulse 3s infinite;
-}
-

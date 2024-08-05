@@ -111,6 +111,7 @@ app.post("/api/convai", async (req, res) => {
         },
       }
     );
+    console.log(`Successfully called Convai API with key: ${apiKey}`); // 打印成功的 API 密钥
     res.json(response.data);
   } catch (error) {
     console.error("Error in /api/convai:", error);

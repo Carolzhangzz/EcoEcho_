@@ -6,6 +6,17 @@ bgm.src = "./Music/Save the World.mp3"; // 设置统一的背景音乐
 bgm.volume = 0.1; //  音量设置为 10%
 let backupReplyIndex = 0; // 备用回复的索引
 
+function displayInitialMessage() {
+  const initialMessage = {
+    en: "Stop right there. This is a restricted area. State your business or leave immediately.",
+    zh: "站住。这里是禁区。说明你的来意，否则请立即离开。",
+  };
+
+  const message =
+    currentLanguage === "en" ? initialMessage.en : initialMessage.zh;
+  displayNPCReply(message);
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   const characterImage = document.getElementById("character-image");
   const backgroundImage = "./images/Union.png";
@@ -32,8 +43,10 @@ document.addEventListener("DOMContentLoaded", () => {
   } else if (gameProgress.talkedToLisa && gameProgress.talkedToGuard) {
     // 如果已经与Lisa和Guard对话，显示新场景对话
     startNewSceneDialogue();
+  } else if (gameProgress.talkedToLisa && !gameProgress.talkedToGuard) {
+    displayInitialMessage();
   }
-  
+
   //其余情况就是直接显示Guard的对话
   nextButton.style.display = "inline-block";
   prevButton.style.display = "none";
@@ -271,7 +284,6 @@ async function Check(intent, message) {
 async function handleMessage(message) {
   bgm.play(); // 播放背景音乐
 
-
   // 确保导航按钮隐藏
   document.getElementById("next-text-button").style.display = "none";
   document.getElementById("prev-text-button").style.display = "none";
@@ -317,7 +329,7 @@ async function sendMessageToNPC(message) {
     const requestData = {
       prompt: message,
       charID: "0abb22dc-4eba-11ef-aca7-42010a7be011", // 替换为你的角色 ID
-      sessionID: npcSessionIDs[currentNpcName] || "-1",  
+      sessionID: npcSessionIDs[currentNpcName] || "-1",
       voiceResponse: true,
     };
 
@@ -353,7 +365,7 @@ async function sendMessageToNPC(message) {
       displayNPCReply(npcReply, audioReply);
     } else {
       try {
-        const translatedReply = await translateText(npcReply, 'auto', 'zh');
+        const translatedReply = await translateText(npcReply, "auto", "zh");
         console.log("Translated Reply:", translatedReply);
         displayNPCReply(translatedReply.data, audioReply);
       } catch (error) {
@@ -396,7 +408,7 @@ async function generateBackupResponse(message) {
       displayNPCReply(npcReply);
     } else {
       try {
-        const translatedReply = await translateText(npcReply, 'auto', 'zh');
+        const translatedReply = await translateText(npcReply, "auto", "zh");
         console.log("Translated Backup Reply:", translatedReply);
         displayNPCReply(translatedReply.data);
       } catch (error) {
@@ -408,7 +420,6 @@ async function generateBackupResponse(message) {
     console.error("Error in generateBackupResponse:", error);
     const fixedReply = backupFixedReply();
     displayNPCReply(currentLanguage === "en" ? fixedReply.en : fixedReply.zh);
-    
   }
 }
 
@@ -438,9 +449,8 @@ function getNPCSpecificPrompt(npcName, userMessage) {
 }
 
 function displayNPCReply(reply, audioReply) {
-
-   // 更新对话次数
-   updateConversationCount(
+  // 更新对话次数
+  updateConversationCount(
     currentNpcName,
     (conversationCount[currentNpcName] || 0) + 1
   );
@@ -527,28 +537,19 @@ function backupFixedReply() {
 
 // 自定义自动回复逻辑，现在次数是用完才会出现自动回复，成功调用才会增加对话次数
 function getFixedReply() {
-  if (
-    !usedItems[currentNpcName] &&
-    !intentExpressed[currentNpcName]
-  ) {
+  if (!usedItems[currentNpcName] && !intentExpressed[currentNpcName]) {
     return {
       en: "Sorry, I can't let unauthorized people in.",
       zh: "不好意思，我不能让闲杂人等进去。",
     };
   }
-  if (
-    intentExpressed[currentNpcName] &&
-    !usedItems[currentNpcName]
-  ) {
+  if (intentExpressed[currentNpcName] && !usedItems[currentNpcName]) {
     return {
       en: "There are many people who want to meet the guild president every day. How can I verify your identity?",
       zh: "每天都有很多人想要见工会主席，我该如何验证你的身份呢？",
     };
   }
-  if (
-    !intentExpressed[currentNpcName] &&
-    usedItems[currentNpcName]
-  ) {
+  if (!intentExpressed[currentNpcName] && usedItems[currentNpcName]) {
     return {
       en: "My journalist friend, if you don't have a specific person you're looking for, I can't let you in.",
       zh: "记者朋友，如果你没有要找的具体人，我是不能让你进去的。",

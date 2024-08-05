@@ -21,7 +21,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function generateSignatureSummary() {
     const signatures = JSON.parse(localStorage.getItem("signatures")) || {};
-    const validKeys = ["Ki", "Lisa", "Bob", "Jonathan"];
+    const validKeys = ["Ki", "Lisa", "Bob", "Johnathan"];
 
     return validKeys.map((key, index) => {
       const value = signatures[key];

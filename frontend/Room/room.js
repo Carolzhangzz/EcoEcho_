@@ -131,22 +131,6 @@ function startGame(lastSigner) {
     document.body.style.backgroundImage = `url('${scene.background}')`;
     displayText();
 
-    // // 检查是否是最后一个场景的最后一行文本
-    // if (
-    //   currentScene === scenes.length - 1 &&
-    //   currentTextIndex === scene.text[currentLanguage].length - 1
-    // ) {
-    //   // 添加一个延迟，给用户一些时间阅读最后的文本
-    //   setTimeout(() => {
-    //     console.log(
-    //       "`lastSigner at Room and MetEmilia`:",
-    //       lastSigner,
-    //       metEmilia[lastSigner]
-    //     );
-    //     window.location.href = "../Emilia/Emilia.html"; // 跳转到艾米丽的页面
-    //   }, 5000); // 2秒后执行
-    // }
-
     bgm.play();
   };
 
