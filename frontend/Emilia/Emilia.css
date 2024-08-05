@@ -145,11 +145,9 @@ body {
 }
 
 .futuristic {
-    font-weight: bold;
-    font-family: 'Orbitron', sans-serif;
-    color: #FFD700; /* 改为金黄色 */
-    text-shadow: 0 0 10px #FFA500; /* 橙色阴影，增加光晕效果 */
-    letter-spacing: 2px; /* 增加字母间距 */
+    font-family: "Courier New", monospace;
+  color: #ffd700;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 .vintage {

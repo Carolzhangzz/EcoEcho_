@@ -2,7 +2,7 @@ let bgm;
 let currentNpcName = "Lisa"; // NPC 名字
 bgm = document.getElementById("bgm");
 bgm.loop = true; // Let the music loop
-bgm.src = "./Music/Save_the_World.mp3"; // 设置统一的背景音乐
+bgm.src = "./Music/Save the World.mp3"; // 设置统一的背景音乐
 bgm.volume = 0.1; //  音量设置为 10%
 let backupReplyIndex = 0; // 备用回复的索引
 // // import { translateText } from './translate.js';
@@ -53,8 +53,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  //模拟 ki 签完字以及
-  signatures["Ki"] = true;
   //如果说 ki 还没签字的话，也不能和 lisa 交谈
   if (signatures["Ki"] === null) {
     startFirstDialogue();
