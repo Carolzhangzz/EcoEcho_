@@ -403,11 +403,11 @@ function getNPCSpecificPrompt(npcName, userMessage) {
         7. If the player mentions the truth about Kane’s death or any information about his death and mentions that Kane is their father, you need to show surprise and excitement. For example, "So Kane was your father? His death has always been a mystery. Do you have anything to substantiate this truth?"
 
         Possible dialogue starters:
-        - "That's an interesting piece of information. Can you tell me more about where you learned this?"
-        - "I'm intrigued by what you've shared. What led you to this discovery?"
-        - "This could be a significant story. How did you come across this information?"
-        - "I'd like to understand more about this. What can you tell me about your sources?"
-        - "This is fascinating. Can you provide any more details or context?"
+        That's an interesting piece of information. Can you tell me more about where you learned this?
+        I'm intrigued by what you've shared. What led you to this discovery?
+        This could be a significant story. How did you come across this information?
+        I'd like to understand more about this. What can you tell me about your sources?
+        This is fascinating. Can you provide any more details or context?
 
         Each judgment should be based on all your remembered interactions with the user. 
 
