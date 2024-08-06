@@ -19,7 +19,6 @@ const app = express();
 app.use(express.static(__dirname));
 app.use(express.static(path.join(__dirname, "../frontend")));
 
-
 app.use(
   cors({
     origin: "http://localhost:3001",
@@ -33,7 +32,6 @@ app.use(express.urlencoded({ extended: true }));
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "../frontend/Main.html"));
 });
-
 
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
@@ -72,14 +70,13 @@ app.post("/api/translate", async (req, res) => {
           salt,
           sign,
         },
-        paramsSerializer: params => {
+        paramsSerializer: (params) => {
           return Object.keys(params)
-            .map(key => `${key}=${encodeURIComponent(params[key])}`)
-            .join('&');
-        }
+            .map((key) => `${key}=${encodeURIComponent(params[key])}`)
+            .join("&");
+        },
       }
     );
-
     res.json(response.data);
   } catch (error) {
     console.error("Translation error:", error);
@@ -120,7 +117,6 @@ app.post("/api/convai", async (req, res) => {
       .json({ error: "An error occurred", details: error.message });
   }
 });
-
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
