@@ -13,14 +13,14 @@ document.addEventListener("DOMContentLoaded", () => {
     {
       background: "./images/MediaCenter.png",
       textStyle: "futuristic",
-      en: "You find a note that reveals Kane's past.",
-      zh: "你得到了一个便条,上面记载着Kane的过去。",
+      en: "You find a note detailing your father's past.",
+      zh: "你得到了一个便条, 上面记载着父亲的过去。",
     },
     {
       background: "./images/MediaCenter.png",
       textStyle: "futuristic",
-      en: "You have obtained <span class='highlight' data-item='truth' data-image='../Items/truth.png'>the truth about the death of KI's father, Kane.</span>",
-      zh: "你得到了KI的父亲<span class='highlight' data-item='真相' data-image='../Items/truth.png'>“Kane”死亡的真相</span>。",
+      en: "You find out the <span class='highlight' data-item='truth' data-image='../Items/truth.png'>truth</span> of your father's death.",
+      zh: "你得到了你的父亲<span class='highlight' data-item='真相' data-image='../Items/truth.png'>“Kane”死亡的真相</span>。",
     },
   ];
 

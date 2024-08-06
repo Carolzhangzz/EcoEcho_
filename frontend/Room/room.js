@@ -29,14 +29,14 @@ function getScenes(lastSigner) {
         {
           text: {
             en: [
-              "After returning to the real world, KI sat in his room, staring at the familiar desk and the beautiful scenery outside the window.",
-              "He thought to himself, things seem to be going more smoothly than I imagined, but why do I still feel uneasy...",
-              "I hope I can bring back the oil soon.",
+              "After returning to the <span class='high'>real world</span>, you sit in the room, looking at the familiar desk and the beautiful environment outside the window, lost in thought.",
+              "You think to yourself: Things seem to be smoother than I imagined, but why do I always have a sense of unease...",
+              "I hope to bring back the oil as soon as possible.",
             ],
             zh: [
-              "KI回到现实世界后, 他坐在房间中, 望着熟悉的书桌和窗外美丽的环境, 陷入了沉思。",
-              "他心想：事情似乎比我想象的要顺利，但为什么心里总有一种不安的感觉…… ",
-              "希望能尽早带回石油吧。",
+              "你回到<span class='high'>现实世界</span>后, 你坐在房间中, 望着熟悉的书桌和窗外美丽的环境, 陷入了沉思。",
+              "你心想：事情似乎比我想象的要顺利，但为什么心里总有一种不安的感觉…… ",
+              "希望能尽早带回<span class='high'>石油</span>吧。",
             ],
           },
           background: "./RoomImages/Lisa_scene.png",
@@ -48,16 +48,16 @@ function getScenes(lastSigner) {
         {
           text: {
             en: [
-              "Returning to the present after another journey to the past, KI felt an overwhelming sense of exhaustion.",
-              "At least the plan was about to succeed, giving him some comfort.",
-              "Sitting in his room, he opened the window, only to be shocked to see that the dense forest outside had disappeared, and there was an indescribable smell in the air.",
-              "He muttered to himself, Maybe I haven't had a good rest in a while... ",
+              "After returning from the past journey, you feel endless fatigue.",
+              "Fortunately, the plan is about to <span class='high'>succeed</span>, which gives you some comfort.",
+              "Sitting in the room, you open the window and are surprised to find that the dense forest outside the window has <span class='high'>disappeared</span>, and there seems to be an indescribable smell in the air.",
+              "You whisper to yourself: Maybe I haven't had a good rest for a long time...",
             ],
             zh: [
-              "再次结束了过去的旅程回到现在, KI感到无尽的疲惫。",
-              "好在计划即将成功，他感到些许安慰。",
-              "坐在房间中，他推开窗户，却惊讶地发现窗前那片茂密的森林消失了，空气中似乎弥漫着一种说不上来的味道。",
-              "他低声自语道: 可能是我好久没有好好休息了…… ",
+              "再次结束了过去的旅程回到现在, 你感到无尽的疲惫。",
+              "好在计划即将 <span class='high'>成功</span>，你感到些许安慰。",
+              "坐在房间中，你推开窗户，却惊讶地发现窗前那片茂密的森林<span class='high'>消失了</span>，空气中似乎弥漫着一种说不上来的味道。",
+              "你低声自语道: 可能是我好久没有好好休息了…… ",
             ],
           },
           background: "./RoomImages/Bob_scene.png",
@@ -69,14 +69,14 @@ function getScenes(lastSigner) {
         {
           text: {
             en: [
-              "Finally, KI succeeded in stopping the extraction of K and returned to a world powered by 'traditional energy.'",
-              "He glanced outside the window and noticed that factories had quietly sprung up, with huge chimneys emitting thick black smoke.",
-              "However, KI seemed completely oblivious to these changes, lost in his own joy, as he quickly stepped out of the room.",
+              "Finally, you succeeded in stopping the mining of T and returned to the world of 'traditional energy'.",
+              "Looking out of the window, factories have been quietly built there, and huge chimneys are constantly emitting black <span class='high'>smoke</span>.",
+              "However, you seem to have completely ignored these changes, immersed in your own joy, and walked out of the room quickly.",
             ],
             zh: [
-              "终于, KI成功了, 阻止了T的开采, 重新回到了“传统能源的世界。",
-              "他看向窗外，发现那里悄然建起了工厂，巨大的烟囱不停地排放着黑色的浓烟。",
-              "然而, KI似乎完全没有注意到这些变化, 他沉浸在自己的喜悦中, 快步走出房间。",
+              "终于, 你成功了, 阻止了T的开采, 重新回到了“传统能源的世界。",
+              "看向窗外，那里悄然建起了工厂，巨大的烟囱不停地排放着黑色的 <span class='high'>浓烟</span>。",
+              "然而, 你似乎完全没有注意到这些变化, 沉浸在自己的喜悦中, 快步走出房间。",
             ],
           },
           background: "./RoomImages/Johnathan_scene.png",
@@ -110,8 +110,14 @@ function startGame(lastSigner) {
     const textLines = scene.text[currentLanguage];
     const currentLine = textLines[currentTextIndex];
     const paragraph = document.createElement("p");
-    paragraph.textContent = currentLine;
+    paragraph.innerHTML = currentLine; // 使用 innerHTML 而不是 textContent
     textContainer.appendChild(paragraph);
+
+    // 给所有 highlight 类的元素添加效果
+    const highlights = paragraph.querySelectorAll(".high");
+    highlights.forEach((el) => {
+      el.classList.add("highlight-effect");
+    });
 
     textContainer.className = "";
     textContainer.classList.add(scene.textStyle);

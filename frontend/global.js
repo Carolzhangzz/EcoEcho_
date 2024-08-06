@@ -268,6 +268,7 @@ allScenesCompleted = loadDataFromLocalStorage(
   "allScenesCompleted",
   allScenesCompleted
 );
+
 newSceneCompleted = loadDataFromLocalStorage(
   "newSceneCompleted",
   newSceneCompleted
@@ -747,9 +748,9 @@ document.addEventListener("DOMContentLoaded", () => {
 function shouldTriggerAutoReply(currentNpcName) {
   const triggerConditions = {
     Lisa: {
-      noIntentNoItem: 4,
-      intentNoItem: 4,
-      noIntentItem: 4,
+      noIntentNoItem: 5,
+      intentNoItem: 5,
+      noIntentItem: 5,
     },
     Guard: {
       noIntentNoItem: 4,

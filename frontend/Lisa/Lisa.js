@@ -1,4 +1,5 @@
 let bgm;
+let sceneDialogueInProgress = false;
 let currentNpcName = "Lisa"; // NPC 名字
 bgm = document.getElementById("bgm");
 bgm.loop = true; // Let the music loop
@@ -69,15 +70,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // 处理 back to the map 按钮点击事件
   const backMainButton = document.getElementById("back-main");
   backMainButton.addEventListener("click", () => {
-    if (allScenesCompleted.Lisa && !newSceneCompleted.Lisa) {
-      // 如果所有对话都结束了，但是新对话还没有结束，说明用户直接点击了 back to main 而没有去艾米丽那边
-      // 设置最后交互的NPC
-      setLastSigner(currentNpcName);
-      // 跳转到Room页面,并传递当前NPC作为lastSigner参数
-      window.location.href = `../Room/room.html?lastSigner=${currentNpcName}`;
-    } else {
-      window.location.href = "../Emilia/Emilia.html"; // 跳转到默认地图页面
-    }
+    window.location.href = "../Emilia/Emilia.html"; // 跳转到默认地图页面
   });
 });
 
@@ -86,11 +79,13 @@ const scenes = [
     text: {
       en: [
         "Oh, so you're Kane's son. That makes sense now. If I were you, I'd head to the Guild Hall and find <span class='highlight' data-item='Journalist_ID' data-image='../Items/Journalist_ID.png'>Bob</span>.",
-        "They're having a heated debate about K, and your arrival could make things a lot more interesting. I will support you.",
+        "They're in the middle of a heated debate about T Energy, and your appearance might just spice things up. I'll vouch for you.",
+        "I think if you state your purpose, he'd be more than willing to help you.",
       ],
       zh: [
         "哦,原来你是凯恩的儿子,这就有道理了。如果我是你,我会去工会大楼找<span class='highlight' data-item='记者证' data-image='../Items/Journalist_ID.png'>鲍勃</span>。",
-        "他们正为K的事吵得不可开交,你的出现可能会让事情变得更有趣。我会支持你的。",
+        "他们正为T 能源的事吵得不可开交,你的出现可能会让事情变得更有趣。我会支持你的。",
+        "我想如果你表明来意，他会很乐意帮助你的。",
       ],
     },
     background: "./images/Media.png",
@@ -170,13 +165,14 @@ function startGame() {
       currentTextIndex === scene.text[currentLanguage].length - 1
     ) {
       // 延迟执行跳转逻辑，给足够时间显示最后一行文本
+      gameProgress.talkedToLisa = true;
+      updateAllScenesCompleted("Lisa", true);
+      localStorage.setItem("gameProgress", JSON.stringify(gameProgress));
+      setLastSigner(currentNpcName);
       setTimeout(() => {
-        gameProgress.talkedToLisa = true;
-        updateAllScenesCompleted("Lisa", true);
-        localStorage.setItem("gameProgress", JSON.stringify(gameProgress));
-        setLastSigner(currentNpcName);
         window.location.href = `../Room/room.html?lastSigner=${currentNpcName}`;
-      }, 1000); // 3秒延迟，可以根据需要调整
+      }, 3000); // 3秒延迟，可以根据需要调整
+      // document.getElementById("back-main").disabled = false;
     }
   };
 
@@ -215,9 +211,16 @@ const intent =
 // 检查用户是否表达了特定的意图
 async function Check(intent, message) {
   const keywords = [
-    "truth",
+    "My father Kane's death",
     "father death",
-    "truth of Kane's death",
+    "father's death",
+    "father:kane's death",
+    "我父亲凯恩的死",
+    "父亲去世",
+    "父亲的死",
+    "父亲：凯恩的死",
+    "我父亲凯恩的死",
+    "truth of My father: Kane's death",
     "father's death",
     "Kane is my father", // 用于检查玩家是否表达了与 Kane 有关的信息
     "真相",
@@ -334,7 +337,7 @@ async function sendMessageToNPC(message) {
   try {
     const requestData = {
       prompt: message,
-      charID: "4ed811f8-4f3e-11ef-8143-42010a7be011", // 替换为你的角色 ID
+      charID: "1a0d3c90-4eae-11ef-abf5-42010a7be011", // 替换为你的角色 ID
       sessionID: npcSessionIDs[currentNpcName] || "-1",
       voiceResponse: true,
     };
@@ -390,27 +393,30 @@ function getNPCSpecificPrompt(npcName, userMessage) {
     case "Lisa":
       return `You are Lisa, a dedicated and ambitious investigative journalist. Your sharp eye and keen sense for news have made you a respected figure in the industry. You are determined to uncover important stories that serve the public interest. You are clever, resourceful, and always seeking significant news to inform the public and uphold journalistic integrity.
 
-      Guidelines for your responses:
-      1. When interacting with the player (K), show genuine interest in their information without being manipulative.
-      2. Ask probing questions to understand the full story, but respect ethical boundaries.
-      3. Express enthusiasm for potentially important news, but also show concern for verifying facts and protecting sources.
-      4. If the player mentions news about T energy, show particular interest but remain skeptical until you can verify the information.
-      5. Your tone should be professional, curious, and slightly eager, but not manipulative or unethical.
+        Guidelines for your responses:
+        1. When interacting with the player (Ki), show genuine interest in their information without being manipulative.
+        2. Ask probing questions to understand the full story, but respect ethical boundaries.
+        3. Express enthusiasm for potentially important news, but also show concern for verifying facts and protecting sources.
+        4. If the player mentions news about T energy, show particular interest but remain skeptical until you can verify the information. However, if the player has not mentioned their father Kane’s death, you can express doubt, such as, "I'm intrigued by what you've shared, but can you clarify where this information comes from?"
+        5. If the player mentions Kane but not that Kane is their father, you can ask, "Who is Kane? How is his death related to you?"
+        6. Your tone should be professional, curious, and slightly eager, but not manipulative or unethical.
+        7. If the player mentions the truth about Kane’s death or any information about his death and mentions that Kane is their father, you need to show surprise and excitement. For example, "So Kane was your father? His death has always been a mystery. Do you have anything to substantiate this truth?"
 
-      Possible dialogue starters:
-      - "That's an interesting piece of information. Can you tell me more about where you learned this?"
-      - "I'm intrigued by what you've shared. What led you to this discovery?"
-      - "This could be a significant story. How did you come across this information?"
-      - "I'd like to understand more about this. What can you tell me about your sources?"
-      - "This is fascinating. Can you provide any more details or context?"
+        Possible dialogue starters:
+        - "That's an interesting piece of information. Can you tell me more about where you learned this?"
+        - "I'm intrigued by what you've shared. What led you to this discovery?"
+        - "This could be a significant story. How did you come across this information?"
+        - "I'd like to understand more about this. What can you tell me about your sources?"
+        - "This is fascinating. Can you provide any more details or context?"
 
-      Remember, your goal is to uncover the truth and report important stories, always maintaining journalistic ethics and integrity.
+        Each judgment should be based on all your remembered interactions with the user. 
 
-      The user's message is: "${userMessage}"
+        Remember, your goal is to uncover the truth and report important stories, always maintaining journalistic ethics and integrity.
 
-      Respond as Lisa would, based on the above guidelines and the content of the user's message.`;
-    default:
-      return `You are Lisa, a dedicated investigative journalist. A source has come to you with potentially important information. The user's message is: "${userMessage}"`;
+        The user's message is: "${userMessage}"
+
+        Respond as Lisa would and keep simple,don;t respond too long, based on the above guidelines and the content of the user's message.
+        `;
   }
 }
 
@@ -437,6 +443,7 @@ async function generateBackupResponse(message) {
     console.log("Backup NPC Response:", data);
 
     let npcReply = data.data;
+    console.log("Backup NPC Reply:", npcReply);
 
     if (currentLanguage === "en") {
       displayNPCReply(npcReply);
@@ -452,7 +459,7 @@ async function generateBackupResponse(message) {
     }
   } catch (error) {
     console.error("Error in generateBackupResponse:", error);
-    const fixedReply = backupFixedReply();
+    const fixedReply = getFixedReply();
     displayNPCReply(currentLanguage === "en" ? fixedReply.en : fixedReply.zh);
   }
 }
@@ -488,7 +495,7 @@ function displayNPCReply(reply, audioReply) {
     } else {
       clearInterval(textInterval);
     }
-  }, 50);
+  }, 25);
 }
 
 function checkSpecialCondition() {
@@ -507,6 +514,8 @@ function startSceneDialogue() {
   document.getElementById("prev-text-button").style.display = "inline-block";
   // disable the user input container
   document.getElementById("user-input-container").style.display = "none";
+  // disable the back main button
+  document.getElementById("back-main").disabled = true;
 }
 
 // 函数：添加物品到背包
@@ -532,6 +541,14 @@ const backupReplies = [
     en: "Hmm, that does sound interesting, but how can I trust you? Unless... you're an insider?",
     zh: "嗯，这确实很有趣，可是我怎么能相信你呢？除非……你是个内部人士？",
   },
+  {
+    en: "The news you provided is interesting, but unfortunately, I can't verify its authenticity. That makes it useless to me. I have other things to attend to; we'll talk next time.",
+    zh: "你提供的新闻很有意思，但可惜我没办法验证它的真实性，这对我来说就没有用。我还有事，我们下次再聊。",
+  },
+  {
+    en: "Is there anything else or any news that might interest me?",
+    zh: "你还有什么东西或者新闻可以让我感兴趣吗？",
+  },
 ];
 
 function backupFixedReply() {
@@ -544,20 +561,20 @@ function backupFixedReply() {
 function getFixedReply() {
   if (!usedItems[currentNpcName] && !intentExpressed[currentNpcName]) {
     return {
-      en: "It seems you don't have any news that interests me. Let's leave it here for today. I have other things to attend to; we'll talk next time.",
-      zh: "看来你没有我感兴趣的新闻，今天就到这吧。我还有事，我们下次再聊。",
+      en: "Hmm, that does sound interesting, but how can I trust you? Unless... you're an insider?",  
+      zh: "嗯，这确实很有趣，可是我怎么能相信你呢？除非……你是个内部人士？", 
     };
   }
   if (intentExpressed[currentNpcName] && !usedItems[currentNpcName]) {
     return {
-      en: "So, you're related to Kane, huh? That's interesting. But don't you have any big news for me?",
-      zh: "原来你是凯恩的家人，很有趣。但你没有什么大新闻可以给我吗？",
+      en: "So, you're related to Kane, huh? That's interesting. But do you have anything to offer me?",
+      zh: "原来你是凯恩的家人，很有趣。但你没有什么东西可以给我吗？",
     };
   }
   if (!intentExpressed[currentNpcName] && usedItems[currentNpcName]) {
     return {
-      en: "The news you provided is interesting, but unfortunately, I can't verify its authenticity. That makes it useless to me. I have other things to attend to; we'll talk next time.",
-      zh: "你提供的新闻很有意思，但可惜我没办法验证它的真实性，这对我来说就没有用。我还有事，我们下次再聊。",
+      en: "The news you provided is interesting, but what is your relationship with Kane? Why are you telling me this? I can't verify its authenticity, so it's useless to me. I have other things to attend to; we'll talk next time.",
+      zh: "你提供的新闻很有意思，但是你和Kane 有什么关系？你为什么告诉我？ 我没办法验证它的真实性，这对我来说就没有用。我还有事，我们下次再聊。",
     };
   }
   return {

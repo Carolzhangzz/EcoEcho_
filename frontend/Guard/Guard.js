@@ -71,13 +71,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // 处理 back to the map 按钮点击事件
   const backMainButton = document.getElementById("back-main");
   backMainButton.addEventListener("click", () => {
-    if (allScenesCompleted.Guard && newSceneCompleted.Guard === null) {
-      // 如果所有对话都结束了，但是新对话还没有结束，说明用户直接点击了 back to main 而没有去Bob那里
-      // 跳转到Bob
-      window.location.href = "../Bob/Bob.html";
-    } else {
-      window.location.href = "../Emilia/Emilia.html"; // 跳转到默认地图页面
-    }
+    window.location.href = "../Emilia/Emilia.html"; // 跳转到默认地图页面
   });
 });
 
@@ -174,6 +168,7 @@ function startGame() {
         //直接跳转到Bob页面
         window.location.href = "../Bob/Bob.html";
       }, 2000);
+      // document.getElementById("back-main").disabled = false;
     }
   };
 
@@ -442,7 +437,7 @@ function getNPCSpecificPrompt(npcName, userMessage) {
 
       The user's message is: "${userMessage}"
 
-      Respond as the security guard would, based on the above guidelines and the content of the user's message.`;
+      Respond as the security guard would and keep simple,don;t respond too long,based on the above guidelines and the content of the user's message.`;
     default:
       return `You are a security guard at the union headquarters. A visitor has arrived and is trying to enter the building. The user's message is: "${userMessage}"`;
   }
@@ -480,7 +475,7 @@ function displayNPCReply(reply, audioReply) {
     } else {
       clearInterval(textInterval);
     }
-  }, 50);
+  }, 20);
 }
 
 function checkSpecialCondition() {
@@ -499,6 +494,8 @@ function startSceneDialogue() {
   document.getElementById("prev-text-button").style.display = "inline-block";
   // disable the user input container
   document.getElementById("user-input-container").style.display = "none";
+
+  document.getElementById("back-main").disabled = true;
 }
 
 // 函数：添加物品到背包

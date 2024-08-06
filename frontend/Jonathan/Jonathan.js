@@ -75,14 +75,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // 处理 back to the map 按钮点击事件
   const backMainButton = document.getElementById("back-main");
   backMainButton.addEventListener("click", () => {
-    if (allScenesCompleted.Johnathan && newSceneCompleted.Johnathan === null) {
-      // 如果所有对话都结束了，但是新对话还没有结束，说明用户直接点击了 back to main 而没有去 room
-      // 跳转到艾米丽的页面
-      setLastSigner(currentNpcName); //传递当前的npc名字 Bob
-      window.location.href = `../Room/room.html?lastSigner=${currentNpcName}`;
-    } else {
-      window.location.href = "../Emilia/Emilia.html";
-    }
+    window.location.href = "../Emilia/Emilia.html";
   });
 });
 
@@ -191,7 +184,8 @@ function startGame() {
       // 延迟执行跳转逻辑，给足够时间显示最后一行文本
       setTimeout(() => {
         window.location.href = "../Room/room.html";
-      }, 1000); // 3秒延迟，可以根据需要调整
+      }, 3000); // 3秒延迟，可以根据需要调整
+      // document.getElementById("back-main").disabled = false;
     }
   };
 
@@ -227,7 +221,7 @@ function startGame() {
 const intentOne =
   "Player mentions T energy, come for T, or expresses interest in T energy or just say t or T";
 const intentTwo =
-  "Player need to mention public or citizen also don't support T or they want to do general strike or they want to fight against government or anything about the strike or public support";
+  "Player need to mention anything about the general strike or public or citizen also don't support or they want to do general strike or they want to fight against government.";
 
 // 检查用户是否表达了特定的意图
 
@@ -248,8 +242,10 @@ async function Check(intent, message) {
     ],
     [intentTwo]: [
       "support",
-      "public",
-      "public support",
+      "人们也不支持",
+      "citizen don;t support",
+      "citizens don't support",
+      "public don't support",
       "general strike",
       "fight against government",
       "strike",
@@ -398,40 +394,14 @@ async function handleMessage(message) {
 
   console.log("Johnathan Intents expressed:", JohnathanIntentExpress);
 
-  if (
-    !JohnathanIntentExpress.comeForK &&
-    conversationCount[currentNpcName] >= 4
-  ) {
-    // 只要没有提到 k，就返回 backupReplies 中的一个回复
-    const random = Math.floor(Math.random() * backupReplies.length);
-    const fixedReply = backupReplies[random];
+  //判断是否要启用备用的回复
+  if (conversationCount >= 4) {
+    const fixedReply = backupFixedReply();
     textContainer.innerHTML += `<p class="npc-message">Johnathan: ${
       currentLanguage === "en" ? fixedReply.en : fixedReply.zh
     }</p>`;
-    return;
-  } else if (
-    //表达了 come for K 意图，但是没有提到大罢工
-    JohnathanIntentExpress.comeForK &&
-    !JohnathanIntentExpress.publicSupport &&
-    conversationCount[currentNpcName] >= 4
-  ) {
-    const random = Math.floor(Math.random() * comeForkReplies.length);
-    const fixedReply = comeForkReplies[random];
-    textContainer.innerHTML += `<p class="npc-message">Johnathan: ${
-      currentLanguage === "en" ? fixedReply.en : fixedReply.zh
-    }</p>`;
-    return;
-  } else if (
-    //如果表达了第二个意图，但是没有给大罢工的东西
-    JohnathanIntentExpress.publicSupport &&
-    !usedItems[currentNpcName] &&
-    conversationCount[currentNpcName] >= 4
-  ) {
-    const random = Math.floor(Math.random() * noItemsReplies.length);
-    const fixedReply = noItemsReplies[random];
-    textContainer.innerHTML += `<p class="npc-message">Johnathan: ${
-      currentLanguage === "en" ? fixedReply.en : fixedReply.zh
-    }</p>`;
+    // 重置对话次数
+    resetConversationCount();
     return;
   }
 
@@ -546,20 +516,18 @@ function getNPCSpecificPrompt(npcName, userMessage) {
     case "Jonathan":
       return `You are Jonathan, a highly opportunistic politician whose primary concern is his political career. You are currently in your office, speaking with a visitor. Your responses should reflect the following traits:
 
-      1. You initially greet visitors warmly, asking about the "voice of the people".
-      2. If the topic of T energy isn't mentioned, you respond with vague, empty political slogans and platitudes, regardless of what the visitor says.
-      3. If K energy is mentioned, you strongly support it, claiming it's the people's choice and must be embraced.
-      4. If a general strike against T energy is mentioned, you quickly change your stance, prioritizing votes over consistent policy.
-      5. Your language should always be political, focusing on "the will of the people", "democracy", and "public opinion".
-      6. You avoid direct answers or commitments, preferring to speak in generalities unless forced to take a stand.
+      1. Initially greet visitors warmly, asking about the "voice of the people."
+      2. If the player does not mention T energy, public opposition to T energy, public opposition to new energy, or a general strike, respond with vague, empty political slogans and clichés, regardless of what the visitor says.
+      3. If the player mentions T energy but does not mention public opposition to T energy, public opposition to new energy, or a general strike, you can reply with something like, "Sorry, the people have chosen T, so as servants of the people, we must embrace it. Isn't this the embodiment of democracy?" You will strongly support it, claiming it is the people's choice and must be accepted.
+      4. If the player mentions T energy and public opposition to T energy, public opposition to new energy, or a general strike, you will quickly change your stance, prioritizing votes over consistent policy. You will hint that you may need to reconsider T energy because people oppose it, but you must ask the player how to verify the authenticity of the strike or similar questions.
+      5. If the player mentions public opposition to T energy, public opposition to new energy, or a general strike but does not mention T energy, you will ask, "You mentioned a general strike, but what is it specifically targeting? There have been so many recent events, and such statements, if spread, could cause panic." Your language should always be political, focusing on "the will of the people," "democracy," and "public opinion."
+      6. Avoid direct answers or commitments unless forced to take a stand; prefer to speak in generalities. When speaking in generalities, be careful not to say too much or overwhelm with too much content at once.
 
-      Remember, your ultimate goal is to secure votes and advance your political career, not to solve actual problems or stick to principles.
+      Each judgment should be based on all your remembered interactions with the user. Remember, your ultimate goal is to secure votes and advance your political career, not to solve actual problems or stick to principles.
 
       The user's message is: "${userMessage}"
 
-      Respond as Jonathan would, based on the above characteristics and the content of the user's message.`;
-    default:
-      return `You are Jonathan, a politician in your office. A visitor has arrived to speak with you. The user's message is: "${userMessage}"`;
+      Respond as Jonathan would and keep simple,don;t respond too long, based on the above characteristics and the content of the user's message.`;
   }
 }
 
@@ -597,7 +565,7 @@ function displayNPCReply(reply, audioReply) {
     } else {
       clearInterval(textInterval);
     }
-  }, 50);
+  }, 20);
 }
 
 function startSceneDialogue() {
@@ -606,6 +574,8 @@ function startSceneDialogue() {
   document.getElementById("prev-text-button").style.display = "inline-block";
   // disable the user input container
   document.getElementById("user-input-container").style.display = "none";
+
+  document.getElementById("back-main").disabled = true;
 }
 
 // 函数：添加物品到背包
@@ -622,34 +592,24 @@ function addToInventory(item, image) {
 }
 
 // 两个接口都失败时，且没有表达任何的意图（关键词检测），显示固定的回复
-//备用的意图的方案，没有提到 k
+//备用的意图的方案
+
+//没有提到 k
 const backupReplies = [
-  {
-    en: "I'm sorry, I don't have much time to waste on this. The people need me, goodbye.",
-    zh: "不好意思，我没有太多时间耽误在这上面。人民需要我，再见。",
-  },
-  {
-    en: "Serve the people is my lifelong mission.",
-    zh: "为人民服务是我的终身使命。",
-  },
   {
     en: "Ah, another young person who wants to 'change the world'. Listen, kid, politics is no child's play. It's about reality, about compromise, and most importantly, about survival.",
     zh: "啊，又一个想要'改变世界'的年轻人。听着，孩子，政治不是儿戏。它关乎现实，关乎妥协，更关乎生存。",
   },
   {
-    en: "What do you want from me? You better say it quickly, my time is very precious. Every minute could affect the results of the next public opinion poll. ",
-    zh: "你来找我有什么事？最好快点说，我的时间可是很宝贵的。每一分钟都可能影响到下一次的民意调查结果。",
-  },
-  {
-    en: "Ah, I see. The power of the people is indeed infinite.",
-    zh: "啊，我明白了。人民的力量确实是无穷无尽的。",
+    en: "I'm sorry, but we must embrace whatever the people choose. My time is precious, every minute could affect the next poll results.",
+    zh: "对不起，人民选择什么，我们就应该拥抱什么。我的时间很宝贵, 每一分钟都可能影响到下一次的民意调查结果。",
   },
 ];
 
 const comeForkReplies = [
   {
     en: "I'm sorry, the people have chosen T, so as servants of the people, we must embrace K. This is the embodiment of democracy, isn't it?",
-    zh: "对不起，人民选择了 T, 所以作为人民的仆从，我们必须拥抱 K。这不就是民主的体现吗?",
+    zh: "对不起，人民选择了 T, 所以作为人民的仆从，我们必须拥抱 T。这不就是民主的体现吗?",
   },
   {
     en: "Ah, T energy is indeed the will of the people. As representatives of the people, we must fully support it. But... have you heard any... different voices?",
@@ -660,6 +620,7 @@ const comeForkReplies = [
     zh: "作为人民的代表，我们有责任推动 T 能源的应用。这是人民的选择，也是我们的使命。",
   },
 ];
+
 const noItemsReplies = [
   {
     en: "I've heard some rumors, but you know, in politics, information is power. If you have any insider information, maybe we can... help each other?",
@@ -677,9 +638,12 @@ const noItemsReplies = [
     en: "I understand your concerns, but in politics, just having concerns is not enough. I need concrete evidence to take action... Perhaps this could be beneficial for both of us?",
     zh: "我理解你的担忧，但在政坛上，光有担忧是不够的。我需要实际的证据来采取行动...也许这对我们双方都有利？",
   },
+];
+
+const noComeForKReplies = [
   {
-    en: "If this kind of statement spreads, it could cause panic. But if we can prepare in advance... maybe we can turn danger into opportunity. Do you have any reliable sources of information?",
-    zh: "这种言论如果传开了，可能会引起恐慌。但是如果我们能提前准备...也许能转危为机。你有什么可靠的消息来源吗？",
+    en: "General strike?  Recently, there have been too many things happening... Which specific policy are you referring to? If we can prepare in advance... maybe we can turn this crisis into an opportunity. Do you have any reliable sources of information?",
+    zh: "大罢工？ 最近发生的事情太多了...你是指具体哪个政策？如果我们能提前准备...也许能转危为机。你有什么可靠的消息来源吗？",
   },
 ];
 
@@ -687,25 +651,36 @@ function backupFixedReply() {
   //只要没有提到 k，就返回 backupReplies 中的一个回复
   if (
     !JohnathanIntentExpress.comeForK &&
-    conversationCount[currentNpcName] >= 4
+    !JohnathanIntentExpress.publicSupport
   ) {
     const random = Math.floor(Math.random() * backupReplies.length);
     return backupReplies[random];
   } else if (
     JohnathanIntentExpress.comeForK &&
-    !JohnathanIntentExpress.publicSupport &&
-    conversationCount[currentNpcName] >= 4
+    !JohnathanIntentExpress.publicSupport
   ) {
     // 如果表达了 comeForK 意图，随机返回 comeForkReplies 中的一个回复
     const random = Math.floor(Math.random() * comeForkReplies.length);
     return comeForkReplies[random];
   } else if (
     JohnathanIntentExpress.publicSupport &&
-    !usedItems[currentNpcName] &&
-    conversationCount[currentNpcName] >= 4
+    JohnathanIntentExpress.comeForK &&
+    !usedItems[currentNpcName]
   ) {
     // 如果表达了 publicSupport 意图，但没有给大罢工的东西，随机返回 noItemsReplies 中的一个回复
     const random = Math.floor(Math.random() * noItemsReplies.length);
     return noItemsReplies[random];
+  } else if (
+    JohnathanIntentExpress.publicSupport &&
+    !JohnathanIntentExpress.comeForK &&
+    usedItems[currentNpcName]
+  ) {
+    const random = Math.floor(Math.random() * noComeForKReplies.length);
+    return noComeForKReplies[random];
+  } else {
+    return {
+      en: "I'm sorry, I don't have much time to waste on this. The people need me, goodbye.",
+      zh: "不好意思，我没有太多时间耽误在这上面。人民需要我，再见。",
+    };
   }
 }

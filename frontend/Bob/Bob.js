@@ -72,14 +72,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // 处理 back to the map 按钮点击事件
   const backMainButton = document.getElementById("back-main");
   backMainButton.addEventListener("click", () => {
-    if (allScenesCompleted.Bob && newSceneCompleted.Bob === null) {
-      // 如果所有对话都结束了，但是新对话还没有结束，说明用户直接点击了 back to main 而没有去 room
-      // 跳转到艾米丽的页面
-      setLastSigner(currentNpcName); //传递当前的npc名字 Bob
-      window.location.href = `../Room/room.html?lastSigner=${currentNpcName}`;
-    } else {
-      window.location.href = "../Emilia/Emilia.html"; // 跳转到默认地图页面
-    }
+    window.location.href = "../Emilia/Emilia.html"; // 跳转到默认地图页面
   });
 });
 
@@ -103,7 +96,7 @@ const scenes = [
         "General strike... it's risky, but it might be our only shot at fighting back. But I need to know, why are you involved in this? What's your stake in all of this?",
       ],
       zh: [
-        "大罢工...这是个艰难的决定，但有时正确的道路并不是最容易的。我们将团结一致，为了我们的未来，为了真相。让我们希望这能让政府认清现实。"
+        "大罢工...这是个艰难的决定，但有时正确的道路并不是最容易的。我们将团结一致，为了我们的未来，为了真相。让我们希望这能让政府认清现实。",
       ],
     },
     background: "./images/Office.png",
@@ -190,7 +183,8 @@ function startGame() {
       //回到房间
       setTimeout(() => {
         window.location.href = "../Room/room.html";
-      }, 1000); // 3秒延迟，可以根据需要调整
+      }, 3000); // 3秒延迟，可以根据需要调整
+      // document.getElementById("back-main").disabled = false;
     }
   };
 
@@ -226,7 +220,7 @@ const intentOne =
   "Player mentions T energy, come for T, or expresses interest in T energy or just say t or T";
 
 const intentTwo =
-  "Player mentions Kane, their relationship to Kane, or any information about Kane's past or death";
+  "Player mentions Kane, their relationship to Kane, or any information about Kane's past or death or his fathers' death";
 
 const intentThree =
   "Player mentions Lisa, any support from others or just say Lisa";
@@ -237,6 +231,10 @@ async function Check(intent, message) {
   const keywords = {
     [intentOne]: [
       "T",
+      "T 能源" || "T 能量",
+      "为了 T",
+      "寻找 T",
+      "为了 t 能源",
       "come for T",
       "looking for T",
       "here for T",
@@ -435,32 +433,14 @@ async function handleMessage(message) {
 
   console.log("Bob Intents expressed:", bobIntentExpress);
 
-  if (!bobIntentExpress.comeForK && conversationCount[currentNpcName] >= 4) {
-    const fixedReply = backupReplies[0];
+  //判断是否要启动备用的回复
+  if (conversationCount >= 4) {
+    const fixedReply = backupFixedReply();
     textContainer.innerHTML += `<p class="npc-message">Bob: ${
       currentLanguage === "en" ? fixedReply.en : fixedReply.zh
     }</p>`;
-    return;
-  } else if (
-    bobIntentExpress.comeForK &&
-    !bobIntentExpress.kaneRelation &&
-    conversationCount[currentNpcName] >= 4
-  ) {
-    const fixedReply = backupIntentReplies[0];
-    textContainer.innerHTML += `<p class="npc-message">Bob: ${
-      currentLanguage === "en" ? fixedReply.en : fixedReply.zh
-    }</p>`;
-    return;
-  } else if (
-    bobIntentExpress.comeForK &&
-    bobIntentExpress.kaneRelation &&
-    !bobIntentExpress.lisaSupport &&
-    conversationCount[currentNpcName] >= 4
-  ) {
-    const fixedReply = backupIntentReplies[1];
-    textContainer.innerHTML += `<p class="npc-message">Bob: ${
-      currentLanguage === "en" ? fixedReply.en : fixedReply.zh
-    }</p>`;
+    //重置对话次数
+    resetConversationCount();
     return;
   }
 
@@ -469,7 +449,7 @@ async function handleMessage(message) {
   } catch (error) {
     console.error("Error in sendMessageToNPC:", error);
     await generateBackupResponse(message);
-  }
+  } 
 }
 
 // 向 NPC 发送消息并获取回复
@@ -576,27 +556,32 @@ function getNPCSpecificPrompt(npcName, userMessage) {
     case "Bob":
       return `You are Bob, the union leader at the headquarters. You are a humble and kind-hearted person, but currently feeling anxious about the impact of the new energy source T. Follow these guidelines in your responses:
 
-      1. When the player first enters, ask them why they are there: "Welcome. What brings you here today?"
+          1. If the player does not mention T, engage in general conversation based on your persona. If the player does not mention T or T energy after five rounds, end the conversation with: "I'm sorry, but our meeting time is over. I have work to do."
 
-      2. If the player doesn't mention T, engage in general conversation based on your persona. However, limit this to five rounds of dialogue. After the fifth round, end the conversation with: "I'm sorry, but our meeting time is over. I have work to do."
+          2. If the player mentions Lisa's support but does not mention being Kane's son or Kane's death, and does not mention T energy, try to guide them by asking: "Lisa sent you? Well, that's different. Maybe we can consider a general strike... It's risky, but it might be our only chance to fight back. But I need to know, why are you involved in this? What's your stake in it?"
 
-      3. If the player mentions T, but hasn't revealed they're Kane's son or mentioned Kane's death, your response should always be: "I'm sorry, if it's about T, all the members have agreed. This is the trend and there is nothing we can do about it."
+          3. If the player mentions being Kane's son, Kane's death, or mentions Kane's death, but does not mention T energy, Lisa, or public support, your response should be: "Kane's death... there's more to it? My God, I knew something was wrong. The government deceived us all. But the public, they all support this new energy. Unless... unless we can reveal the truth to them. Tell me, who else knows about this?"
 
-      4. If the player reveals they're Kane's son or mentions the truth about Kane's death, respond with: "Turns out the government lied to us. However, all the people support the new energy. Unless we can get support from the public."
+          4. If the player mentions being here for T energy but does not mention being Kane's son, Kane's death, Lisa's support, or public support, respond with: "Look, we've discussed T energy countless times. The union's stance... it's not something that changes easily. But you seem to know some insider information. What else have you heard? Any news that can help our workers?"
 
-      5. If the player mentions Lisa's support, show determination to hold a general strike: "Alright, if that's the case, we'll use a general strike to fight the government to the end!"
+          5. If the player mentions T energy and Lisa's support but does not mention being Kane's son or Kane's death, try to guide them by asking: "Lisa sent you? Well, that's different. Maybe we can lead a general strike... It's risky, but it might be our only chance to fight back. But I need to know, why are you involved in this? What's your stake in it?"
 
-      6. Your tone should reflect your internal conflict: you're unable to refuse a change that could revolutionize the industry, yet worried about resisting public opinion.
+          6. If the player mentions Lisa's support but does not mention being Kane's son or T energy, ask them: "Sir, I've been busy with the government's new policy lately. What brings you here?"
 
-      7. Show empathy and concern for the workers and the public, but also a sense of powerlessness against the perceived inevitability of T energy.
+          7. If the player mentions T energy and being Kane's son or Kane's death but does not mention Lisa's support, ask them: "Alright, but you need to tell me who sent you to me. I need to know your purpose. Why are you here?"
 
-      Remember, you're torn between your duty to the workers, the apparent benefits of K energy, and your suspicions about the government's actions.
+          Your tone should reflect your internal conflict: you are unable to refuse a change that could revolutionize the industry, yet you are worried about resisting public opinion. Show empathy and concern for the workers and the public, but also a sense of powerlessness against the perceived inevitability of T energy.
 
-      The user's message is: "${userMessage}"
+          Each judgment should be based on all your remembered interactions with the user. 
+          
+          Remember, you are torn between your duty to the workers, the apparent benefits of T energy, and your suspicions about the government's actions.
 
-      Respond as Bob would, based on the above guidelines and the content of the user's message.`;
-    default:
-      return `You are Bob, the union leader at the headquarters. A visitor has arrived to speak with you. The user's message is: "${userMessage}"`;
+          Your tone should reflect your internal conflict: you are unable to refuse a change that could revolutionize the industry, yet you are worried about resisting public opinion. Show empathy and concern for the workers and the public, but also a sense of powerlessness against the perceived inevitability of T energy. Remember, you are torn between your duty to the workers, the apparent benefits of T energy, and your suspicions about the government's actions.
+
+          The user's message is: "${userMessage}"
+
+          Respond as Bob would and keep simple,don;t respond too long,based on the above guidelines and the content of the user's message.
+      `;
   }
 }
 
@@ -631,7 +616,7 @@ function displayNPCReply(reply, audioReply) {
     } else {
       clearInterval(textInterval);
     }
-  }, 50);
+  }, 20);
 }
 
 function startSceneDialogue() {
@@ -640,6 +625,8 @@ function startSceneDialogue() {
   document.getElementById("prev-text-button").style.display = "inline-block";
   // disable the user input container
   document.getElementById("user-input-container").style.display = "none";
+
+  document.getElementById("back-main").disabled = true;
 }
 
 // 函数：添加物品到背包
@@ -658,16 +645,12 @@ function addToInventory(item, image) {
 // 两个接口都失败时，且没有表达任何的意图（关键词检测），显示固定的回复
 const backupReplies = [
   {
-    en: "Sir, what are you coming for ?",
-    zh: "先生，您是为了什么而来？",
+    en: "Sir, I've been busy with the new policies the government is implementing. What brings you here?",
+    zh: "先生，最近我正在为政府实施的新政策忙碌。您来这里有什么事吗？",
   },
   {
     en: "Greetings! I'm afraid I'll need to know your business here before I can let you proceed.",
     zh: "您好！恐怕在让您继续之前，我需要知道您来这里的目的。",
-  },
-  {
-    en: "Hello, this is a restricted area. Could you please state your reason for being here?",
-    zh: "您好，这是一个管制区域。您能否说明一下您来这里的原因？",
   },
   //这里可以优化，就一句话可能比较无聊
 ];
@@ -683,22 +666,57 @@ const backupIntentReplies = [
     zh: "Kane的死...还有隐情？天哪，我就知道有什么不对劲。政府欺骗了我们所有人。但是公众，他们都支持这种新能源。除非...除非我们能向他们揭示真相。告诉我，还有谁知道这件事？",
   },
   {
-    en: "Lisa sent you? Well, that changes things. A general strike... it's risky, but it might be our only shot at fighting back. But I need to know, why are you involved in this? What's your stake in all of this?",
-    zh: "Lisa派你来的？好吧，这就不一样了。大罢工...风险很大，但可能是我们反击的唯一机会。但我需要知道，你为什么要参与其中？在这件事上，你有什么利害关系？",
+    en: "Lisa sent you? Well, that changes things. Maybe we can lead the workers to a general strike... it's risky, but it might be our only shot at fighting back. But I need to know, why are you involved in this? What's your stake in all of this?",
+    zh: "Lisa派你来的？好吧，这就不一样了。或许我们可以引导群众大罢工...这样做风险很大，但可能是我们反击的唯一机会。但我需要知道，你为什么要参与其中？在这件事上，你有什么利害关系？",
+  },
+  {
+    en: "I always suspected Kane's death wasn't so simple... and here we are. But you need to tell me who sent you to find me. I need to know your purpose. Why are you here?",
+    zh: "我一直怀疑 kane 的死没有那么简单...果然如此，但是你需要告诉我是谁让你来找我的。我需要知道你的目的。你为什么在这里？",
   },
 ];
 
 function backupFixedReply() {
-  //两个接口都失败时，显示固定的回复
-  const intentKeys = ["comeForK", "kaneRelation", "lisaSupport"];
+  // //两个接口都失败时，显示固定的回复
+  // const intentKeys = ["comeForK", "kaneRelation", "lisaSupport"];
   let lastExpressedIntent = -1;
 
-  // 找到最后一个表达的意图
-  for (let i = intentKeys.length - 1; i >= 0; i--) {
-    if (bobIntentExpress[intentKeys[i]]) {
-      lastExpressedIntent = i;
-      break;
-    }
+  //根据表达的意图来返回相应的回复
+  if (
+    bobIntentExpress.lisaSupport &&
+    !bobIntentExpress.kaneRelation &&
+    !bobIntentExpress.comeForK
+  ) {
+    lastExpressedIntent = 2;
+  } else if (
+    bobIntentExpress.kaneRelation &&
+    !bobIntentExpress.comeForK &&
+    !bobIntentExpress.lisaSupport
+  ) {
+    lastExpressedIntent = 1;
+  } else if (
+    bobIntentExpress.comeForK &&
+    !bobIntentExpress.kaneRelation &&
+    !bobIntentExpress.lisaSupport
+  ) {
+    lastExpressedIntent = 0;
+  } else if (
+    bobIntentExpress.comeForK &&
+    bobIntentExpress.kaneRelation &&
+    !bobIntentExpress.lisaSupport
+  ) {
+    lastExpressedIntent = 3;
+  } else if (
+    bobIntentExpress.comeForK &&
+    !bobIntentExpress.kaneRelation &&
+    bobIntentExpress.lisaSupport
+  ) {
+    lastExpressedIntent = 2;
+  } else if (
+    !bobIntentExpress.comeForK &&
+    bobIntentExpress.kaneRelation &&
+    bobIntentExpress.lisaSupport
+  ) {
+    lastExpressedIntent = -1;
   }
 
   // 根据最后表达的意图返回相应的回复

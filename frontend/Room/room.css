@@ -97,10 +97,13 @@ body {
 }
 
 .futuristic {
-    font-weight: bolder;
-    font-family: 'Orbitron', sans-serif;
-    color: #00FFFF;
-    text-shadow: 0 0 10px #00FFFF;
+    font-weight: normal;
+    font-family: 'Cormorant Garamond', serif;
+    color: #E0E0E0;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+    line-height: 1.6;
+    letter-spacing: 0.5px;
+    font-size: 18px;
 }
 
 .vintage {
@@ -161,6 +164,8 @@ body {
 #language-toggle {
   right: 70px;
 }
+
+
 
 #music-toggle:hover,
 #language-toggle:hover {
@@ -234,3 +239,18 @@ body {
     0%, 100% { opacity: 1; }
     50% { opacity: 0.5; }
 }
+
+.high {
+    color: #fff;
+    text-shadow: 0 0 5px rgba(0,255,255,0.7), 0 0 10px rgba(0,255,255,0.5), 0 0 15px rgba(0,255,255,0.3);
+    animation: hologram 2s ease-in-out infinite alternate;
+  }
+  
+  @keyframes hologram {
+    from {
+      text-shadow: 0 0 5px rgba(0,255,255,0.7), 0 0 10px rgba(0,255,255,0.5), 0 0 15px rgba(0,255,255,0.3);
+    }
+    to {
+      text-shadow: 0 0 10px rgba(255,0,255,0.7), 0 0 20px rgba(255,0,255,0.5), 0 0 30px rgba(255,0,255,0.3);
+    }
+  }
