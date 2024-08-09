@@ -46,6 +46,13 @@ let allScenesCompleted = {
   Johnathan: false,
 };
 
+let specialDialogueStarted = {
+  Lisa: false,
+  Guard: false,
+  Bob: false,
+  Johnathan: false,
+};
+
 let newSceneCompleted = {
   Lisa: false,
   Guard: false,
@@ -70,47 +77,22 @@ let npcSessionIDs = {
   Johnathan: null,
 };
 
-// 获取翻译后的回复
-// async function generateResponse(npcReply) {
-//   try {
-//     const prompt = `Translate the following English text into Simplified Chinese:
+function updateTaskBar() {
+  const taskBar = document.getElementById("task-bar");
+  const task =
+    currentLanguage === "en"
+      ? "Main Task: Return to the past to hinder clean energy policies"
+      : "主要任务：回到过去阻碍清洁能源政策";
+  taskBar.textContent = task;
+}
 
-//     "${npcReply}"
+// 在页面加载时更新任务栏
+document.addEventListener("DOMContentLoaded", updateTaskBar);
 
-//     Instructions:
-//     1. Provide only the translated text, without any additional explanations or comments.
-//     2. Maintain the original meaning, tone, and nuances, including any humor if present.
-//     3. Ensure the translation sounds natural in Chinese.
-//     4. Do not use quotation marks in the translation.
-//     5. If there are any names or technical terms, transliterate them appropriately.
-
-//     Translated text:`;
-
-//     console.log("Using translation prompt:", prompt);
-
-//     const response = await fetch("/generate", {
-//       method: "POST",
-//       headers: {
-//         "Content-Type": "application/json",
-//       },
-//       body: JSON.stringify({ prompt }),
-//     });
-
-//     //模拟 api 请求 失败
-//     // throw new Error("Network response was not ok");
-
-//     if (!response.ok) {
-//       throw new Error("Network response was not ok");
-//     }
-
-//     const translatedReply = await response.json();
-//     console.log("Received translated reply:", translatedReply);
-//     return translatedReply;
-//   } catch (error) {
-//     console.error("Translation failed, returning original reply:", error);
-//     return { data: npcReply }; // 返回一个包含原始回复的对象
-//   }
-// }
+// 在语言切换时更新任务栏
+document
+  .getElementById("language-toggle")
+  .addEventListener("click", updateTaskBar);
 
 // 替换原有的translateText函数
 async function translateText(text, from, to) {
@@ -214,7 +196,11 @@ const loadDataFromLocalStorage = (key, defaultValue) => {
       }
 
       // 对于 allScenesCompleted 和 newSceneCompleted，进行额外的格式检查
-      if (key === "allScenesCompleted" || key === "newSceneCompleted") {
+      if (
+        key === "allScenesCompleted" ||
+        key === "newSceneCompleted" ||
+        key === "specialDialogueStarted"
+      ) {
         const validKeys = ["Lisa", "Guard", "Bob", "Johnathan"];
         const cleanedData = {};
         for (const validKey of validKeys) {
@@ -267,6 +253,11 @@ const loadDataFromLocalStorage = (key, defaultValue) => {
 allScenesCompleted = loadDataFromLocalStorage(
   "allScenesCompleted",
   allScenesCompleted
+);
+
+specialDialogueStarted = loadDataFromLocalStorage(
+  "specialDialogueStarted",
+  specialDialogueStarted
 );
 
 newSceneCompleted = loadDataFromLocalStorage(
@@ -360,6 +351,16 @@ function updateAllScenesCompleted(name, value) {
     JSON.stringify(allScenesCompleted)
   );
 }
+
+// specialDialogueStarted 的更新函数
+function updateSpecialDialogueStarted(name, value) {
+  specialDialogueStarted[name] = value;
+  localStorage.setItem(
+    "specialDialogueStarted",
+    JSON.stringify(specialDialogueStarted)
+  );
+}
+
 function updateNewSceneCompleted(name, value) {
   newSceneCompleted[name] = value;
   localStorage.setItem("newSceneCompleted", JSON.stringify(newSceneCompleted));
@@ -457,6 +458,14 @@ function resetGame() {
     "allScenesCompleted",
     JSON.stringify(allScenesCompleted)
   );
+
+  //重置 specialDialogueStarted
+  resetObject(specialDialogueStarted, false);
+  localStorage.setItem(
+    "specialDialogueStarted",
+    JSON.stringify(specialDialogueStarted)
+  );
+ 
 
   // 重置 newSceneCompleted
   resetObject(newSceneCompleted, false);

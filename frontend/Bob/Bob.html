@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,6 +9,7 @@
     <link rel="stylesheet" href="../global.css">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron&display=swap" rel="stylesheet">
 </head>
+
 <body>
     <div class="game-container">
         <button id="back-main">Back to the Map</button>
@@ -20,15 +22,18 @@
         <div id="button-container">
             <button id="prev-text-button">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M15 19L8 12L15 5" stroke="#5af7ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M15 19L8 12L15 5" stroke="#5af7ff" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round" />
                 </svg>
             </button>
             <button id="next-text-button">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M9 5L16 12L9 19" stroke="#5af7ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M9 5L16 12L9 19" stroke="#5af7ff" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round" />
                 </svg>
             </button>
         </div>
+        <div id="task-bar"></div>
         <button id="clear-inventory" onclick="clearInventory()">Clear the bag</button>
         <div id="inventory-icon"></div>
         <div id="inventory-popup" class="hidden">
@@ -40,8 +45,9 @@
     <button id="music-toggle">🔊</button>
     <button id="language-toggle">EN</button>
     <script src="./Bob.js"></script>
-    <script src ="../global.js"></script>
+    <script src="../global.js"></script>
     <script src="./BobEnd.js"></script>
     <script src="./BobStart.js"></script>
 </body>
+
 </html>

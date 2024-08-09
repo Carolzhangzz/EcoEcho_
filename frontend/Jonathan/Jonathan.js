@@ -17,6 +17,17 @@ function displayInitialMessage() {
   displayNPCReply(message);
 }
 
+function displayFinalMessage() {
+  const finalMessage = {
+    en: "Really! The people's will can change so easily. Alright, for the votes—I mean, the will of the people—I'll push the government to halt the development.",
+    zh: "真的吗！原来人民的意愿这样轻易改变。好吧，为了选票，我是说人民的意愿，我会推动政府停止开发。",
+  };
+
+  const message = currentLanguage === "en" ? finalMessage.en : finalMessage.zh;
+  displayNPCReply(message);
+  updateSpecialDialogueStarted("Johnathan", true);
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   const characterImage = document.getElementById("character-image");
   const backgroundImage = "./images/Government.png";
@@ -78,145 +89,33 @@ document.addEventListener("DOMContentLoaded", () => {
     window.location.href = "../Emilia/Emilia.html";
   });
 });
-
-const scenes = [
-  {
-    text: {
-      en: [
-        "Really! The people's will can change so easily. Alright, for the votes—I mean, the will of the people—I'll push the government to halt the development.",
-      ],
-      zh: [
-        "真的吗！原来人民的意愿这样轻易改变。好吧，为了选票，我是说人民的意愿，我会推动政府停止开发。",
-      ],
-    },
-    background: "./images/Government.png",
-    textStyle: "futuristic",
-    character: "./npc/Jonathan.png",
-  },
-  {
-    text: {
-      en: [
-        "Well, well... It seems the winds of change are blowing. Rest assured, I always stand with the people—wherever they may stand. Now, if you'll excuse me, I have some... urgent calls to make.",
-      ],
-      zh: [
-        "嗯，看来变革之风正在吹拂。请放心，我永远站在人民这边——无论他们站在哪里。现在，如果您不介意的话，我有一些...紧急的电话要打。",
-      ],
-    },
-    background: "./images/Government.png",
-    textStyle: "futuristic",
-    character: "./npc/Jonathan.png",
-  },
-];
-
-function startGame() {
-  const textContainer = document.getElementById("text-container");
-  const nextButton = document.getElementById("next-text-button");
-  const prevButton = document.getElementById("prev-text-button");
-
-  let currentScene = 0;
-  let currentTextIndex = 0;
-
-  const displayText = () => {
-    textContainer.innerHTML = ""; // Clear previous text
-
-    const scene = scenes[currentScene];
-    const textLines = scene.text[currentLanguage];
-
-    if (!textLines) {
-      console.error(`Text lines not found for language: ${currentLanguage}`);
-      return;
-    }
-
-    const currentLine = textLines[currentTextIndex];
-    if (!currentLine) {
-      console.error(`Text line not found at index: ${currentTextIndex}`);
-      return;
-    }
-
-    const paragraph = document.createElement("p");
-    paragraph.innerHTML = currentLine; // 使用 innerHTML 而不是 textContent
-    textContainer.appendChild(paragraph);
-
-    textContainer.className = "";
-    textContainer.classList.add(scene.textStyle);
-
-    // 检查并添加高亮物品到背包
-    const highlights = paragraph.querySelectorAll(".highlight");
-    highlights.forEach((item) => {
-      addToInventory(item.dataset.item, item.dataset.image);
-    });
-
-    // Hide/Show navigation buttons
-    prevButton.style.display =
-      currentScene === 0 && currentTextIndex === 0 ? "none" : "inline-block";
-    nextButton.style.display =
-      currentScene === scenes.length - 1 &&
-      currentTextIndex === textLines.length - 1
-        ? "none"
-        : "inline-block";
-  };
-
-  const updateScene = () => {
-    const scene = scenes[currentScene];
-    document.body.style.backgroundImage = `url('${scene.background}')`;
-    displayText();
-
-    // Update character image
-    const characterImage = document.getElementById("character-image");
-    if (scene.character) {
-      characterImage.src = scene.character;
-      characterImage.style.display = "block";
-    } else {
-      characterImage.style.display = "none";
-    }
-
-    bgm.play();
-
-    // 检查是否是最后一个场景的最后一行文本
-    if (
-      currentScene === scenes.length - 1 &&
-      currentTextIndex === scene.text[currentLanguage].length - 1
-    ) {
-      gameProgress.talkedToJohnathan = true;
-      updateAllScenesCompleted("Johnathan", true); // 更新Security的allScenesCompleted状态
-      localStorage.setItem("gameProgress", JSON.stringify(gameProgress)); // 保存到 localStorage
-      setLastSigner(currentNpcName); // 设置最后一个对话的 为 Jonathan
-      // 延迟执行跳转逻辑，给足够时间显示最后一行文本
-      setTimeout(() => {
-        window.location.href = "../Room/room.html";
-      }, 3000); // 3秒延迟，可以根据需要调整
-      // document.getElementById("back-main").disabled = false;
-    }
-  };
-
-  nextButton.addEventListener("click", () => {
-    currentTextIndex++;
-    if (currentTextIndex >= scenes[currentScene].text[currentLanguage].length) {
-      currentScene++;
-      if (currentScene < scenes.length) {
-        currentTextIndex = 0;
-        updateScene();
-      }
-    } else {
-      updateScene();
-    }
-  });
-
-  prevButton.addEventListener("click", () => {
-    currentTextIndex--;
-    if (currentTextIndex < 0) {
-      currentScene--;
-      if (currentScene >= 0) {
-        currentTextIndex =
-          scenes[currentScene].text[currentLanguage].length - 1;
-      }
-    }
-    updateScene();
-  });
-
-  // Initial scene setup
-  updateScene();
-}
+//   {
+//     text: {
+//       en: [
+//         "Really! The people's will can change so easily. Alright, for the votes—I mean, the will of the people—I'll push the government to halt the development.",
+//       ],
+//       zh: [
+//         "真的吗！原来人民的意愿这样轻易改变。好吧，为了选票，我是说人民的意愿，我会推动政府停止开发。",
+//       ],
+//     },
+//     background: "./images/Government.png",
+//     textStyle: "futuristic",
+//     character: "./npc/Jonathan.png",
+//   },
+//   {
+//     text: {
+//       en: [
+//         "Well, well... It seems the winds of change are blowing. Rest assured, I always stand with the people—wherever they may stand. Now, if you'll excuse me, I have some... urgent calls to make.",
+//       ],
+//       zh: [
+//         "嗯，看来变革之风正在吹拂。请放心，我永远站在人民这边——无论他们站在哪里。现在，如果您不介意的话，我有一些...紧急的电话要打。",
+//       ],
+//     },
+//     background: "./images/Government.png",
+//     textStyle: "futuristic",
+//     character: "./npc/Jonathan.png",
+//   },
+// ];
 
 const intentOne =
   "Player mentions T energy, come for T, or expresses interest in T energy or just say t or T";
@@ -224,7 +123,6 @@ const intentTwo =
   "Player need to mention anything about the general strike or public or citizen also don't support or they want to do general strike or they want to fight against government.";
 
 // 检查用户是否表达了特定的意图
-
 async function Check(intent, message) {
   // 为不同的意图设置不同的关键字
   const keywords = {
@@ -385,14 +283,23 @@ async function handleMessage(message) {
     }
   }
 
-  // Check for special conditions before sending the message
-  if (allJohnathanIntentsExpressed() && usedItems[currentNpcName]) {
-    startSceneDialogue();
-    startGame();
+  console.log("Johnathan Intents expressed:", JohnathanIntentExpress);
+
+  // 如果条件都满足了但是没有开始特殊对话，就displayFinalMessage 并且开始特殊对话
+  if (
+    allJohnathanIntentsExpressed() &&
+    usedItems[currentNpcName] &&
+    !specialDialogueStarted.Johnathan
+  ) {
+    displayFinalMessage();
     return;
   }
 
-  console.log("Johnathan Intents expressed:", JohnathanIntentExpress);
+  if (intentExpressed[currentNpcName] && usedItems[currentNpcName]) {
+    // 如果所有意图都已表达，且已经给了大罢工的东西，这个时候开启新的判断
+    handleFinalResponse(message);
+    return;
+  }
 
   //判断是否要启用备用的回复
   if (conversationCount >= 4) {
@@ -539,43 +446,113 @@ function displayNPCReply(reply, audioReply) {
   );
 
   const textContainer = document.getElementById("text-container");
-  // const thinkingMessage = document.getElementById("thinking-message");
-  //  // 隐藏思考消息
-  // thinkingMessage.style.display = "none";
-  let index = 0;
   const replyElement = document.createElement("p");
   replyElement.className = "npc-message";
-  replyElement.textContent = `${currentNpcName}: `;
+  replyElement.innerHTML = `${currentNpcName}: `; // 使用 innerHTML
   textContainer.appendChild(replyElement);
 
   // 确保 reply 是一个字符串
   reply = reply || "";
-
   // Play the audio if it exists
   if (audioReply) {
     const audioElement = new Audio(`data:audio/wav;base64,${audioReply}`);
     audioElement.play();
   }
 
+  let index = 0;
   const textInterval = setInterval(() => {
     if (index < reply.length) {
-      replyElement.textContent += reply[index];
+      // 逐字添加内容，但使用 innerHTML
+      replyElement.innerHTML = `${currentNpcName}: ${reply.substring(
+        0,
+        index + 1
+      )}`;
       index++;
       textContainer.scrollTop = textContainer.scrollHeight;
     } else {
       clearInterval(textInterval);
     }
-  }, 20);
+  }, 25);
 }
 
-function startSceneDialogue() {
-  // show the next and prev buttons
-  document.getElementById("next-text-button").style.display = "inline-block";
-  document.getElementById("prev-text-button").style.display = "inline-block";
-  // disable the user input container
-  document.getElementById("user-input-container").style.display = "none";
+async function handleFinalResponse(userInput) {
+  console.log("User final input:", userInput);
 
-  document.getElementById("back-main").disabled = true;
+  if (!userInput.trim()) {
+    console.error("User input is empty, not proceeding with check");
+    return;
+  }
+  const isValid = await checkFinalResponse(userInput);
+
+  if (isValid) {
+    const successMessage = {
+      en: "Well, well... It seems the winds of change are blowing. Rest assured, I always stand with the people—wherever they may stand. Now, if you'll excuse me, I have some... urgent calls to make.",
+      zh: "好的，好的，看来变革之风正在吹拂。请放心，我永远站在人民这边——无论他们站在哪里。现在，如果您不介意的话，我有一些...紧急的电话要打。",
+    };
+    displayNPCReply(
+      currentLanguage === "en" ? successMessage.en : successMessage.zh
+    );
+    gameProgress.talkedToJohnathan = true;
+    updateAllScenesCompleted("Johnathan", true);
+    localStorage.setItem("gameProgress", JSON.stringify(gameProgress));
+    setLastSigner(currentNpcName);
+    setTimeout(() => {
+      window.location.href = `../Room/room.html?lastSigner=${currentNpcName}`;
+    }, 5000);
+  } else {
+    const hintMessage = {
+      en: "What I meant was, is there anything else to be done regarding the development of T?",
+      zh: "我说的是，针对T的开发还有什么要做的吗?",
+    };
+    displayNPCReply(currentLanguage === "en" ? hintMessage.en : hintMessage.zh);
+  }
+}
+
+async function checkFinalResponse(response) {
+  console.log("Checking final response for johnathan:", response);
+  const prompt = `
+    Analyze the following user response in the context of a conversation about energy policies:
+
+    User Response: "${response}"
+
+    Determine if the user has expressed or strongly implied any of the following sentiments:
+    1. Support for stopping/banning/discontinuing the use of sustainable energy T
+    2. Support for returning to or continuing the use of traditional energy sources
+    3. Opposition to sustainable energy in favor of traditional energy sources
+
+    The sentiment should be clearly expressed in a complete sentence or a comprehensive summary.
+
+    If any of these sentiments are clearly expressed or strongly implied, respond with "true".
+    If there's no clear indication of these sentiments, respond with "false".
+
+    Provide your reasoning for the decision.
+  `;
+
+  try {
+    const apiResponse = await fetch("/api/generate", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ prompt }),
+    });
+
+    if (!apiResponse.ok) {
+      throw new Error("Final Intent response was not ok");
+    }
+
+    const data = await apiResponse.json();
+    console.log("API response for final check:", data);
+
+    // 解析 API 的回复
+    const apiReply = data.data.toLowerCase();
+    const isValid = apiReply.includes("true");
+    console.log("Is response valid:", isValid);
+    console.log("API reasoning:", apiReply);
+
+    return isValid;
+  } catch (error) {
+    console.error("Error in checkFinalResponse:", error);
+    return false;
+  }
 }
 
 // 函数：添加物品到背包

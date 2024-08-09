@@ -1,13 +1,11 @@
 let bgm;
-let sceneDialogueInProgress = false;
 let currentNpcName = "Lisa"; // NPC 名字
 bgm = document.getElementById("bgm");
 bgm.loop = true; // Let the music loop
 bgm.src = "./Music/Save the World.mp3"; // 设置统一的背景音乐
 bgm.volume = 0.1; //  音量设置为 10%
 let backupReplyIndex = 0; // 备用回复的索引
-// // import { translateText } from './translate.js';
-// const translate = require("google-translate-open-api").default;
+
 
 function displayInitialMessage() {
   const initialMessage = {
@@ -18,6 +16,17 @@ function displayInitialMessage() {
   const message =
     currentLanguage === "en" ? initialMessage.en : initialMessage.zh;
   displayNPCReply(message);
+}
+
+function displayFinalMessage() {
+  const finalMessage = {
+    en: "Wow, this is big news! Finally, as someone directly involved, do you have anything to say about the whole situation?",
+    zh: "这下可有大新闻了！最后，我能问你，作为当事人，对整件事有什么要说的吗？",
+  };
+
+  const message = currentLanguage === "en" ? finalMessage.en : finalMessage.zh;
+  displayNPCReply(message);
+  updateSpecialDialogueStarted("Lisa", true);
 }
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -74,136 +83,6 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
-const scenes = [
-  {
-    text: {
-      en: [
-        "Oh, so you're Kane's son. That makes sense now. If I were you, I'd head to the Guild Hall and find <span class='highlight' data-item='Journalist_ID' data-image='../Items/Journalist_ID.png'>Bob</span>.",
-        "They're in the middle of a heated debate about T Energy, and your appearance might just spice things up. I'll vouch for you.",
-        "I think if you state your purpose, he'd be more than willing to help you.",
-      ],
-      zh: [
-        "哦,原来你是凯恩的儿子,这就有道理了。如果我是你,我会去工会大楼找<span class='highlight' data-item='记者证' data-image='../Items/Journalist_ID.png'>鲍勃</span>。",
-        "他们正为T 能源的事吵得不可开交,你的出现可能会让事情变得更有趣。我会支持你的。",
-        "我想如果你表明来意，他会很乐意帮助你的。",
-      ],
-    },
-    background: "./images/Media.png",
-    textStyle: "futuristic",
-    character: "./npc/Lisa.png",
-  },
-];
-
-function startGame() {
-  bgm.play();
-  const textContainer = document.getElementById("text-container");
-  const nextButton = document.getElementById("next-text-button");
-  const prevButton = document.getElementById("prev-text-button");
-
-  let currentScene = 0;
-  let currentTextIndex = 0;
-
-  const displayText = () => {
-    textContainer.innerHTML = ""; // Clear previous text
-
-    const scene = scenes[currentScene];
-    const textLines = scene.text[currentLanguage];
-
-    if (!textLines) {
-      console.error(`Text lines not found for language: ${currentLanguage}`);
-      return;
-    }
-
-    const currentLine = textLines[currentTextIndex];
-    if (!currentLine) {
-      console.error(`Text line not found at index: ${currentTextIndex}`);
-      return;
-    }
-
-    const paragraph = document.createElement("p");
-    paragraph.innerHTML = currentLine; // 使用 innerHTML 而不是 textContent
-    textContainer.appendChild(paragraph);
-
-    textContainer.className = "";
-    textContainer.classList.add(scene.textStyle);
-
-    // 检查并添加高亮物品到背包
-    const highlights = paragraph.querySelectorAll(".highlight");
-    highlights.forEach((item) => {
-      addToInventory(item.dataset.item, item.dataset.image);
-    });
-
-    // Hide/Show navigation buttons
-    prevButton.style.display =
-      currentScene === 0 && currentTextIndex === 0 ? "none" : "inline-block";
-    nextButton.style.display =
-      currentScene === scenes.length - 1 &&
-      currentTextIndex === textLines.length - 1
-        ? "none"
-        : "inline-block";
-  };
-
-  const updateScene = () => {
-    const scene = scenes[currentScene];
-    document.body.style.backgroundImage = `url('${scene.background}')`;
-    displayText();
-
-    // Update character image
-    const characterImage = document.getElementById("character-image");
-    if (scene.character) {
-      characterImage.src = scene.character;
-      characterImage.style.display = "block";
-    } else {
-      characterImage.style.display = "none";
-    }
-
-    bgm.play();
-
-    // 检查是否是最后一个场景的最后一行文本
-    if (
-      currentScene === scenes.length - 1 &&
-      currentTextIndex === scene.text[currentLanguage].length - 1
-    ) {
-      // 延迟执行跳转逻辑，给足够时间显示最后一行文本
-      gameProgress.talkedToLisa = true;
-      updateAllScenesCompleted("Lisa", true);
-      localStorage.setItem("gameProgress", JSON.stringify(gameProgress));
-      setLastSigner(currentNpcName);
-      setTimeout(() => {
-        window.location.href = `../Room/room.html?lastSigner=${currentNpcName}`;
-      }, 3000); // 3秒延迟，可以根据需要调整
-      // document.getElementById("back-main").disabled = false;
-    }
-  };
-
-  nextButton.addEventListener("click", () => {
-    currentTextIndex++;
-    if (currentTextIndex >= scenes[currentScene].text[currentLanguage].length) {
-      currentScene++;
-      if (currentScene < scenes.length) {
-        currentTextIndex = 0;
-        updateScene();
-      }
-    } else {
-      updateScene();
-    }
-  });
-
-  prevButton.addEventListener("click", () => {
-    currentTextIndex--;
-    if (currentTextIndex < 0) {
-      currentScene--;
-      if (currentScene >= 0) {
-        currentTextIndex =
-          scenes[currentScene].text[currentLanguage].length - 1;
-      }
-    }
-    updateScene();
-  });
-
-  // Initial scene setup
-  updateScene();
-}
 
 const intent =
   " the user is Ki, so that the user should expressed that his father is Kane or any relationship with Kane or any information about his father: Kane";
@@ -308,10 +187,17 @@ async function handleMessage(message) {
     console.log("Intent expressed:", intentExpressed);
   }
 
-  // 检查特殊条件
-  if (checkSpecialCondition()) {
-    startSceneDialogue();
-    startGame();
+  // 检查特殊条件，现在是两个条件都满足才会触发特殊对话
+  if (checkSpecialCondition() && !specialDialogueStarted.Lisa) {
+    //如果 special dialogue 是 false 的话就会启动这个 display 的方法
+    displayFinalMessage();
+    //display 一次之后就会设置为 true 了
+    return;
+  }
+
+  //但是如果满足两个特殊条件，就调用新的 final response 的方法 
+  if (usedItems[currentNpcName] && intentExpressed.Lisa) {
+    handleFinalResponse(message);
     return;
   }
 
@@ -465,31 +351,35 @@ async function generateBackupResponse(message) {
 }
 
 function displayNPCReply(reply, audioReply) {
-  //更新
+  // 更新对话计数
   updateConversationCount(
     currentNpcName,
     (conversationCount[currentNpcName] || 0) + 1
   );
 
   const textContainer = document.getElementById("text-container");
-  let index = 0;
   const replyElement = document.createElement("p");
   replyElement.className = "npc-message";
-  replyElement.textContent = `${currentNpcName}: `;
+  replyElement.innerHTML = `${currentNpcName}: `; // 使用 innerHTML
   textContainer.appendChild(replyElement);
 
   // 确保 reply 是一个字符串
   reply = reply || "";
 
-  // Play the audio if it exists
+  // 播放音频（如果存在）
   if (audioReply) {
     const audioElement = new Audio(`data:audio/wav;base64,${audioReply}`);
     audioElement.play();
   }
 
+  let index = 0;
   const textInterval = setInterval(() => {
     if (index < reply.length) {
-      replyElement.textContent += reply[index];
+      // 逐字添加内容，但使用 innerHTML
+      replyElement.innerHTML = `${currentNpcName}: ${reply.substring(
+        0,
+        index + 1
+      )}`;
       index++;
       textContainer.scrollTop = textContainer.scrollHeight;
     } else {
@@ -501,21 +391,98 @@ function displayNPCReply(reply, audioReply) {
 function checkSpecialCondition() {
   console.log(
     "Checking special condition:",
-    intentExpressed.Lisa, // check if the intent is expressed
+    intentExpressed.Lisa,
     usedItems[currentNpcName]
   );
-  // Check if the intent is expressed and the item is used
+  // 检查条件是否满足且特殊对话尚未开始
   return intentExpressed.Lisa && usedItems[currentNpcName];
 }
 
-function startSceneDialogue() {
-  // show the next and prev buttons
-  document.getElementById("next-text-button").style.display = "inline-block";
-  document.getElementById("prev-text-button").style.display = "inline-block";
-  // disable the user input container
-  document.getElementById("user-input-container").style.display = "none";
-  // disable the back main button
-  document.getElementById("back-main").disabled = true;
+
+async function handleFinalResponse(userInput) {
+  console.log("User final input:", userInput);
+
+  if (!userInput.trim()) {
+    console.error("User input is empty, not proceeding with check");
+    return;
+  }
+  const isValid = await checkFinalResponse(userInput);
+  // 定义记者证物品
+  const pressCard = {
+    item: "press_card",
+    image: "../Items/press_card.png", // 请确保这个路径是正确的
+  };
+  if (isValid) {
+    const successMessage = {
+      en: "Thank you for your assistance, this article will be fantastic. By the way, here's a tip: go talk to Bob at the union, he might be interested. They're considering a big strike. <span class='highlight' data-item='press_card' data-image='../Items/press_card.png'>Oh, and take this press card. It might come in handy.</span>",
+      zh: "感谢你的协助，这篇文章会很精彩。顺便给你个提示，去工会找鲍勃谈谈，他可能会感兴趣的，他们正考虑大罢工。<span class='highlight' data-item='press_card' data-image='../Items/press_card.png'>对了，拿着这张记者证。可能会派上用场。</span>",
+    };
+    displayNPCReply(
+      currentLanguage === "en" ? successMessage.en : successMessage.zh
+    );
+    addToInventory(pressCard.item, pressCard.image);
+    gameProgress.talkedToLisa = true;
+    updateAllScenesCompleted("Lisa", true);
+    localStorage.setItem("gameProgress", JSON.stringify(gameProgress));
+    setLastSigner(currentNpcName);
+    setTimeout(() => {
+      window.location.href = `../Room/room.html?lastSigner=${currentNpcName}`;
+    }, 5000);
+  } else {
+    const hintMessage = {
+      en: "Interesting perspective. But as someone directly involved, what's your view on the government's policy regarding T energy exploitation?",
+      zh: "有趣的观点。但作为当事人，你对政府关于T能源开采的政策有什么看法呢？",
+    };
+    displayNPCReply(currentLanguage === "en" ? hintMessage.en : hintMessage.zh);
+    addToInventory(pressCard.item, pressCard.image);
+  }
+}
+
+async function checkFinalResponse(response) {
+  console.log("Checking final response:", response);
+  const prompt = `
+    Analyze the following user response in the context of a conversation about energy policies:
+
+    User Response: "${response}"
+
+    Determine if the user has expressed or strongly implied any of the following sentiments:
+    1. Support for stopping/banning/discontinuing the use of sustainable energy T
+    2. Support for returning to or continuing the use of traditional energy sources
+    3. Opposition to sustainable energy in favor of traditional energy sources
+
+    The sentiment should be clearly expressed in a complete sentence or a comprehensive summary.
+
+    If any of these sentiments are clearly expressed or strongly implied, respond with "true".
+    If there's no clear indication of these sentiments, respond with "false".
+
+    Provide your reasoning for the decision.
+  `;
+
+  try {
+    const apiResponse = await fetch("/api/generate", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ prompt }),
+    });
+
+    if (!apiResponse.ok) {
+      throw new Error("Final Intent response was not ok");
+    }
+
+    const data = await apiResponse.json();
+    console.log("API response for final check:", data);
+
+    // 解析 API 的回复
+    const apiReply = data.data.toLowerCase();
+    const isValid = apiReply.includes("true");
+    console.log("Is response valid:", isValid);
+    console.log("API reasoning:", apiReply);
+
+    return isValid;
+  } catch (error) {
+    console.error("Error in checkFinalResponse:", error);
+    return false;
+  }
 }
 
 // 函数：添加物品到背包
@@ -561,8 +528,8 @@ function backupFixedReply() {
 function getFixedReply() {
   if (!usedItems[currentNpcName] && !intentExpressed[currentNpcName]) {
     return {
-      en: "Hmm, that does sound interesting, but how can I trust you? Unless... you're an insider?",  
-      zh: "嗯，这确实很有趣，可是我怎么能相信你呢？除非……你是个内部人士？", 
+      en: "Hmm, that does sound interesting, but how can I trust you? Unless... you're an insider?",
+      zh: "嗯，这确实很有趣，可是我怎么能相信你呢？除非……你是个内部人士？",
     };
   }
   if (intentExpressed[currentNpcName] && !usedItems[currentNpcName]) {
@@ -583,6 +550,3 @@ function getFixedReply() {
   };
 }
 
-// Export functions for testing
-window.checkSpecialCondition = checkSpecialCondition;
-window.addToInventory = addToInventory;

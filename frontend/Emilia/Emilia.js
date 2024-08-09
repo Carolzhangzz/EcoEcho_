@@ -6,20 +6,18 @@ const MAIN_PAGE_PATH = "../Main.html";
 const MAIN_MAP_PATH = "../Emilia/Emilia.html";
 let bgm;
 
-
 // 允许所有场景
-  function enableAllScenes() {
-    ["scene1", "scene2", "scene3", "scene4"].forEach((sceneId) => {
-      const sceneButton = document.getElementById(sceneId);
-      if (sceneButton) {
-        sceneButton.style.pointerEvents = "auto";
-        sceneButton.style.opacity = "1";
-        sceneButton.style.backgroundColor = "";
-        sceneButton.style.color = "";
-      }
-    });
-  }
-
+function enableAllScenes() {
+  ["scene1", "scene2", "scene3", "scene4"].forEach((sceneId) => {
+    const sceneButton = document.getElementById(sceneId);
+    if (sceneButton) {
+      sceneButton.style.pointerEvents = "auto";
+      sceneButton.style.opacity = "1";
+      sceneButton.style.backgroundColor = "";
+      sceneButton.style.color = "";
+    }
+  });
+}
 
 // 初始化背景音乐
 function initializeAudio() {
@@ -90,7 +88,7 @@ function startGame(lastSigner) {
   }
 
   // 检查签名状态并禁用/启用相应场景
-  if ( signatures[lastSigner]!= null && signatures[lastSigner] != undefined) {
+  if (signatures[lastSigner] != null && signatures[lastSigner] != undefined) {
     enableAllScenes();
   } else if (lastSigner === "Ki") {
     disableScenes(["scene1", "scene2", "scene3", "scene4"]);
@@ -318,18 +316,10 @@ function startGame(lastSigner) {
     if (currentTextIndex >= scenes[currentScene].text[currentLanguage].length) {
       currentScene++;
       if (currentScene >= scenes.length) {
-        if (previousPage) {
-          localStorage.removeItem("previousPage");
-          window.location.href = previousPage; // 返回上一个页面
-        } else {
-          window.location.href = MAIN_PAGE_PATH; // 跳转到默认地图页面
-        }
-      } else {
+        currentScene = scenes.length - 1; // 防止上溢
         currentTextIndex = 0;
         updateScene();
       }
-    } else {
-      updateScene();
     }
   });
 
