@@ -2,7 +2,7 @@ let bgm;
 let currentNpcName = "Guard"; // NPC 名字
 bgm = document.getElementById("bgm");
 bgm.loop = true; // Let the music loop
-bgm.src = "./Music/Save the World.mp3"; // 设置统一的背景音乐
+bgm.src = "../Music/NPC_talk.mp3"; // 设置统一的背景音乐
 bgm.volume = 0.1; //  音量设置为 10%
 let backupReplyIndex = 0; // 备用回复的索引
 
@@ -310,11 +310,17 @@ async function handleMessage(message) {
     return;
   }
 
+  // Display thinking indicator
+  displayThinkingIndicator();
+
   try {
     await sendMessageToNPC(message);
   } catch (error) {
     console.error("Error in sendMessageToNPC:", error);
     await generateBackupResponse(message);
+  } finally {
+    // Remove thinking indicator
+    removeThinkingIndicator();
   }
 }
 
@@ -378,6 +384,10 @@ async function sendMessageToNPC(message) {
 // 调用 generate 接口获取 NPC 的回复
 async function generateBackupResponse(message) {
   const prompt = getNPCSpecificPrompt(currentNpcName, message);
+
+  // Display thinking indicator
+  displayThinkingIndicator();
+
   try {
     const response = await fetch("/generate", {
       method: "POST",
@@ -415,6 +425,9 @@ async function generateBackupResponse(message) {
     console.error("Error in generateBackupResponse:", error);
     const fixedReply = backupFixedReply();
     displayNPCReply(currentLanguage === "en" ? fixedReply.en : fixedReply.zh);
+  } finally {
+    // Remove thinking indicator
+    removeThinkingIndicator();
   }
 }
 

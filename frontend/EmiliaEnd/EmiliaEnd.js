@@ -6,6 +6,7 @@ const emiliaVoice = new Audio("./Music/EmiliaR.mp3");
 const nextSceneButton = document.getElementById("next-scene");
 //最后点击物品时光胶囊，可以重启游戏
 document.addEventListener("DOMContentLoaded", () => {
+  const lastSigner = getLastSigner();
   emiliaVoice.volume = 0.3;
   const musicToggleButton = document.getElementById("music-toggle");
 
@@ -64,13 +65,13 @@ document.addEventListener("DOMContentLoaded", () => {
       textStyle: "futuristic",
       en: "Will you stand with us?",
       zh: "你会和我们站在一起吗？",
+      choices: ["Willing", "Unwilling"],
     },
     {
       background: "./images/Space.png",
       textStyle: "futuristic",
       en: "We're on the brink of a new era in energy.",
       zh: "我们正站在能源新纪元的门槛上。",
-      choices: ["Willing", "Unwilling"],
     },
     {
       background: "./images/Space.png",
@@ -134,32 +135,11 @@ document.addEventListener("DOMContentLoaded", () => {
       if (currentDialogueObj.choices) {
         // initialBgm.pause();
         setTimeout(() => {
-          showSignaturePrompt();
+          showVotingPrompt();
+          // showSignaturePrompt();
         }, 1000); // 延迟两秒显示提示
         return; // 停止继续显示对话
       }
-      // // 如果是标记的对话，切换背景音乐并播放Kane的录音
-      // if (currentDialogueObj.playKaneVoice) {
-      //   initialBgm.pause();
-      //   if (isMusicPlaying) {
-      //     secondBgm
-      //       .play()
-      //       .then(() => {
-      //         setTimeout(() => {
-      //           if (isMusicPlaying) {
-      //             kaneVoice
-      //               .play()
-      //               .catch((error) =>
-      //                 console.log("Kane's voice playback failed:", error)
-      //               );
-      //           }
-      //         }, 3000);
-      //       })
-      //       .catch((error) =>
-      //         console.log("Second BGM playback failed:", error)
-      //       );
-      //   }
-      // }
 
       // 设置打字速度
       const typingSpeed = 40; // 5表示“亲爱的KI”的对话，越小越快
@@ -194,47 +174,95 @@ function goToNextScene() {
 nextSceneButton.addEventListener("click", goToNextScene);
 nextSceneButton.style.display = "none";
 
-function showSignaturePrompt() {
+// Load saved signatures from localStorage
+if (localStorage.getItem("signatures")) {
+  signatures = JSON.parse(localStorage.getItem("signatures"));
+}
+
+function showVotingPrompt() {
+  console.log("Entering showVotingPrompt function");
   const message = {
-    en: "Would you be willing to sign the petition right now?",
-    zh: "你愿意现在在联署书上签字吗?",
+    en: "How many votes would you like to cast for the petition? (0-5)",
+    zh: "第四阶段我们已经联署了9532份，快要接近门槛9875份，你想为这份请愿书投多少票？",
   };
 
   const lastSigner = getLastSigner();
+  console.log("Last signer:", lastSigner);
 
+  // Check if the last signer has already voted
   if (signatures[lastSigner] !== null && signatures[lastSigner] !== undefined) {
-    showAlert(
-      currentLanguage === "en"
-        ? "You have already signed this petition."
-        : "你已经在这份联署书上签过名了。"
-    );
-    addItemToInventoryAndFinish();
-    showNextSceneButton();
+    console.log("Signer has already voted, exiting function");
     return;
   }
-  showConfirm(message[currentLanguage], async (confirmed) => {
-    await addSignature(lastSigner, confirmed);
 
-    if (confirmed) {
-      showAlert(
-        currentLanguage === "en"
-          ? "Thank you for your support!"
-          : "感谢您的支持！"
-      );
-    } else {
-      showAlert(
-        currentLanguage === "en"
-          ? "We understand your decision. Thank you for your time."
-          : "我们理解您的决定。感谢您的时间。"
-      );
-    }
-    bgm.play().catch((error) => console.log("BGM playback failed:", error));
+  console.log("Calling showVotingOptions");
+  showVotingOptions(message[currentLanguage], async (voteCount) => {
+    console.log("Vote count selected:", voteCount);
+    await Signature(lastSigner, voteCount);
+
+    const confirmMessage =
+      voteCount > 0
+        ? currentLanguage === "en"
+          ? `Thank you for your support! You've cast ${voteCount} vote(s).`
+          : `感谢您的支持！您投了 ${voteCount} 票。`
+        : currentLanguage === "en"
+        ? "We understand your decision. Thank you for your time."
+        : "我们理解您的决定。感谢您的时间。";
+
+    console.log("Showing confirm message");
+    showConfirmMessage(confirmMessage);
+
+    console.log("Updating music and inventory");
     isMusicPlaying = true;
     document.getElementById("music-toggle").textContent = "🔊";
     addItemToInventoryAndFinish();
     showNextSceneButton();
   });
+  console.log("Updating Met Emilia");
   updateMetEmilia(lastSigner, true);
+}
+
+// 确保这个函数也有适当的日志
+function showVotingOptions(message, callback) {
+  console.log("Entering showVotingOptions function");
+  const voteDialog = document.createElement("div");
+  voteDialog.className = "voting-dialog";
+
+  const messageElement = document.createElement("p");
+  messageElement.textContent = message;
+  voteDialog.appendChild(messageElement);
+
+  const optionsContainer = document.createElement("div");
+  optionsContainer.className = "voting-options";
+
+  for (let i = 0; i <= 5; i++) {
+    const button = document.createElement("button");
+    button.textContent = i;
+    button.addEventListener("click", () => {
+      console.log(`Vote option ${i} selected`);
+      document.body.removeChild(voteDialog);
+      callback(i);
+    });
+    optionsContainer.appendChild(button);
+  }
+
+  voteDialog.appendChild(optionsContainer);
+  document.body.appendChild(voteDialog);
+  console.log("Voting dialog appended to body");
+}
+
+async function Signature(name, voteCount) {
+  try {
+    signatures[name] = voteCount;
+    localStorage.setItem("signatures", JSON.stringify(signatures));
+  } catch (error) {
+    console.error("Error submitting vote:", error);
+    showAlert(
+      currentLanguage === "en"
+        ? "An error occurred. Please try again."
+        : "发生错误，请重试。"
+    );
+  }
 }
 
 function showNextSceneButton() {

@@ -16,22 +16,20 @@ document.addEventListener("DOMContentLoaded", () => {
       en: "Congratulations on completing all scenes. Please review your signing status:",
       zh: "恭喜你完成了所有的场景。请回顾你的联署情况：",
     },
-    // 这里将添加签名情况的对话
+    // // 这里将添加投票情况的对话
   ];
 
   function generateSignatureSummary() {
     const signatures = JSON.parse(localStorage.getItem("signatures")) || {};
     const validKeys = ["Ki", "Lisa", "Bob", "Johnathan"];
-
+  
     return validKeys.map((key, index) => {
       const value = signatures[key];
       let status;
       if (value === null) {
         status = { en: "Not encountered", zh: "未遇到" };
-      } else if (value === false) {
-        status = { en: "Refused to sign", zh: "拒绝签署" };
-      } else if (typeof value === "number") {
-        status = { en: "Signed", zh: "已签署" };
+      } else if (typeof value === 'number') {
+        status = { en: `${value} vote(s)`, zh: `${value} 票` };
       } else {
         status = { en: "Unknown", zh: "未知" };
       }
@@ -99,7 +97,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 
         currentLine++;
-        setTimeout(updateDialogue, 1000);
+        setTimeout(updateDialogue, 10);
       });
     } else {
       // 所有对话结束后，显示返回按钮

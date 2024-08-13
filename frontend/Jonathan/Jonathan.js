@@ -2,7 +2,7 @@ let bgm;
 let currentNpcName = "Johnathan"; // NPC 名字
 bgm = document.getElementById("bgm");
 bgm.loop = true; // Let the music loop
-bgm.src = "./Music/Save the World.mp3"; // 设置统一的背景音乐
+bgm.src = "../Music/NPC_talk.mp3"; // 设置统一的背景音乐
 bgm.volume = 0.1; //  音量设置为 10%
 let backupReplyIndex = 0; // 备用回复的索引
 
@@ -19,8 +19,8 @@ function displayInitialMessage() {
 
 function displayFinalMessage() {
   const finalMessage = {
-    en: "Really! The people's will can change so easily. Alright, for the votes—I mean, the will of the people—I'll push the government to halt the development.",
-    zh: "真的吗！原来人民的意愿这样轻易改变。好吧，为了选票，我是说人民的意愿，我会推动政府停止开发。",
+    en: "Really! The people's will can change so easily. Please rest assured, I always stand with the people—wherever they may stand.",
+    zh: "真的吗！原来人民的意愿这样轻易改变。请放心，我永远站在人民这边 —— 无论他们站在哪里。",
   };
 
   const message = currentLanguage === "en" ? finalMessage.en : finalMessage.zh;
@@ -302,21 +302,25 @@ async function handleMessage(message) {
   }
 
   //判断是否要启用备用的回复
-  if (conversationCount >= 4) {
+  if (conversationCount[currentNpcName] >= 4) {
     const fixedReply = backupFixedReply();
     textContainer.innerHTML += `<p class="npc-message">Johnathan: ${
       currentLanguage === "en" ? fixedReply.en : fixedReply.zh
     }</p>`;
-    // 重置对话次数
-    resetConversationCount();
     return;
   }
+
+  // Display thinking indicator
+  displayThinkingIndicator();
 
   try {
     await sendMessageToNPC(message);
   } catch (error) {
     console.error("Error in sendMessageToNPC:", error);
     await generateBackupResponse(message);
+  } finally {
+    // Remove thinking indicator
+    removeThinkingIndicator();
   }
 }
 // 向 NPC 发送消息并获取回复
@@ -378,6 +382,10 @@ async function sendMessageToNPC(message) {
 // 调用 generate 接口获取 NPC 的回复
 async function generateBackupResponse(message) {
   const prompt = getNPCSpecificPrompt(currentNpcName, message);
+
+  // Display thinking indicator
+  displayThinkingIndicator();
+
   try {
     const response = await fetch("/api/generate", {
       method: "POST",
@@ -415,6 +423,9 @@ async function generateBackupResponse(message) {
     console.error("Error in generateBackupResponse:", error);
     const fixedReply = backupFixedReply();
     displayNPCReply(currentLanguage === "en" ? fixedReply.en : fixedReply.zh);
+  } finally {
+    // Remove thinking indicator
+    removeThinkingIndicator();
   }
 }
 
@@ -486,8 +497,8 @@ async function handleFinalResponse(userInput) {
 
   if (isValid) {
     const successMessage = {
-      en: "Well, well... It seems the winds of change are blowing. Rest assured, I always stand with the people—wherever they may stand. Now, if you'll excuse me, I have some... urgent calls to make.",
-      zh: "好的，好的，看来变革之风正在吹拂。请放心，我永远站在人民这边——无论他们站在哪里。现在，如果您不介意的话，我有一些...紧急的电话要打。",
+      en: "Well, well... It seems the winds of change are blowing. Now, if you'll excuse me, I have some... urgent calls to make. I'll push the government to halt the development.",
+      zh: "好的，好的，看来变革之风正在吹拂。现在，如果您不介意的话，我有一些...紧急的电话要打。我会推动政府停止开发。", // 请根据需要修改
     };
     displayNPCReply(
       currentLanguage === "en" ? successMessage.en : successMessage.zh
@@ -496,28 +507,49 @@ async function handleFinalResponse(userInput) {
     updateAllScenesCompleted("Johnathan", true);
     localStorage.setItem("gameProgress", JSON.stringify(gameProgress));
     setLastSigner(currentNpcName);
+    //在这里问玩家关于是否要继续阻止清洁能源的问题
+    // 在这里添加最后的决策确认
     setTimeout(() => {
-      window.location.href = `../Room/room.html?lastSigner=${currentNpcName}`;
-    }, 5000);
+      showFinalDecisionPrompt();
+    }, 3000);
   } else {
     const hintMessage = {
-      en: "What I meant was, is there anything else to be done regarding the development of T?",
-      zh: "我说的是，针对T的开发还有什么要做的吗?",
+      en: "Do you think there's anything else that needs to be done for the development of T?",
+      zh: "你觉得针对 T 的开发还有什么需要做的吗？",
     };
     displayNPCReply(currentLanguage === "en" ? hintMessage.en : hintMessage.zh);
   }
 }
 
+function showFinalDecisionPrompt() {
+  const message = {
+    en: "After Johnathan opposes traditional energy, he will introduce related plans. The future of T will completely become a past that can never be returned to. This is the last decision before success. Are you ready?",
+    zh: "当Johnathan反对传统能源之后，将推出相关方案，关于T的未来将彻底成为永远无法回到的过去。这是成功之前的最后一个决定了，你准备好了吗？",
+  };
+  showConfirm(message[currentLanguage], (confirmed) => {
+    if (confirmed) {
+      // 如果玩家选择是，跳转到room页面
+      window.location.href = `../Room/room.html?lastSigner=${currentNpcName}`;
+    } else {
+      // 如果玩家选择否，跳转到另一个页面（这里假设是一个名为 "alternate_ending.html" 的页面）
+      window.location.href = "../alternate_ending/alternate_ending.html";
+    }
+  });
+}
+
 async function checkFinalResponse(response) {
   console.log("Checking final response for johnathan:", response);
+
+  displayThinkingIndicator();
+
   const prompt = `
     Analyze the following user response in the context of a conversation about energy policies:
 
     User Response: "${response}"
 
     Determine if the user has expressed or strongly implied any of the following sentiments:
-    1. Support for stopping/banning/discontinuing the use of sustainable energy T
-    2. Support for returning to or continuing the use of traditional energy sources
+    1. Support for banning or discontinuing the development of sustainable energy T
+    2. Support for obstructing government clean energy policies
     3. Opposition to sustainable energy in favor of traditional energy sources
 
     The sentiment should be clearly expressed in a complete sentence or a comprehensive summary.
@@ -527,7 +559,6 @@ async function checkFinalResponse(response) {
 
     Provide your reasoning for the decision.
   `;
-
   try {
     const apiResponse = await fetch("/api/generate", {
       method: "POST",
@@ -551,8 +582,34 @@ async function checkFinalResponse(response) {
     return isValid;
   } catch (error) {
     console.error("Error in checkFinalResponse:", error);
-    return false;
+    // Fallback to keyword matching
+    return checkKeywords(response);
+  } finally {
+    // Remove thinking indicator
+    removeThinkingIndicator();
   }
+}
+
+function checkKeywords(response) {
+  const keywords = [
+    "ban t energy development",
+    "stop t energy development",
+    "prevent t energy development",
+    "oppose t energy development",
+    "obstruct government clean energy policies",
+    "stop clean energy policies",
+    "oppose clean energy initiatives",
+    "阻止t能源开发",
+    "禁止t能源开发",
+    "反对t能源开发",
+    "阻碍政府清洁能源政策",
+    "反对政府清洁能源政策",
+    "停止清洁能源政策",
+    "反对清洁能源计划",
+  ];
+
+  const lowercaseResponse = response.toLowerCase();
+  return keywords.some((keyword) => lowercaseResponse.includes(keyword));
 }
 
 // 函数：添加物品到背包

@@ -2,10 +2,9 @@ let bgm;
 let currentNpcName = "Lisa"; // NPC 名字
 bgm = document.getElementById("bgm");
 bgm.loop = true; // Let the music loop
-bgm.src = "./Music/Save the World.mp3"; // 设置统一的背景音乐
+bgm.src = "../Music/NPC_talk.mp3"; // 设置统一的背景音乐
 bgm.volume = 0.1; //  音量设置为 10%
 let backupReplyIndex = 0; // 备用回复的索引
-
 
 function displayInitialMessage() {
   const initialMessage = {
@@ -82,7 +81,6 @@ document.addEventListener("DOMContentLoaded", () => {
     window.location.href = "../Emilia/Emilia.html"; // 跳转到默认地图页面
   });
 });
-
 
 const intent =
   " the user is Ki, so that the user should expressed that his father is Kane or any relationship with Kane or any information about his father: Kane";
@@ -187,7 +185,7 @@ async function handleMessage(message) {
     console.log("Intent expressed:", intentExpressed);
   }
 
-  // 检查特殊条件，现在是两个条件都满足才会触发特殊对话
+  // 检查特殊条件，现在是两个条件都满足才会触发最后特殊对话
   if (checkSpecialCondition() && !specialDialogueStarted.Lisa) {
     //如果 special dialogue 是 false 的话就会启动这个 display 的方法
     displayFinalMessage();
@@ -195,7 +193,7 @@ async function handleMessage(message) {
     return;
   }
 
-  //但是如果满足两个特殊条件，就调用新的 final response 的方法 
+  //但是如果满足两个特殊条件，就调用新的 final response 的方法
   if (usedItems[currentNpcName] && intentExpressed.Lisa) {
     handleFinalResponse(message);
     return;
@@ -208,13 +206,18 @@ async function handleMessage(message) {
     return;
   }
 
+  // Display thinking indicator
+  displayThinkingIndicator();
+
   // 尝试发送消息给 NPC
   try {
     await sendMessageToNPC(message);
   } catch (error) {
     console.error("Error in handleMessage:", error);
-    // 如果 sendMessageToNPC 失败，它会内部调用 generateBackupResponse
-    // 所以这里不需要再次调用 generateBackupResponse
+    await generateBackupResponse(message);
+  } finally {
+    // Remove thinking indicator
+    removeThinkingIndicator();
   }
 }
 
@@ -321,6 +324,9 @@ async function generateBackupResponse(message) {
     // 模拟 第二个 NPC 调用 接口失败，强制抛出错误
     // throw new Error("Simulated Second NPC API failure");
 
+    // Display thinking indicator
+    displayThinkingIndicator();
+
     if (!response.ok) {
       throw new Error("Network response was not ok for backup response");
     }
@@ -347,6 +353,9 @@ async function generateBackupResponse(message) {
     console.error("Error in generateBackupResponse:", error);
     const fixedReply = getFixedReply();
     displayNPCReply(currentLanguage === "en" ? fixedReply.en : fixedReply.zh);
+  } finally {
+    // Remove thinking indicator
+    removeThinkingIndicator();
   }
 }
 
@@ -398,7 +407,6 @@ function checkSpecialCondition() {
   return intentExpressed.Lisa && usedItems[currentNpcName];
 }
 
-
 async function handleFinalResponse(userInput) {
   console.log("User final input:", userInput);
 
@@ -425,9 +433,13 @@ async function handleFinalResponse(userInput) {
     updateAllScenesCompleted("Lisa", true);
     localStorage.setItem("gameProgress", JSON.stringify(gameProgress));
     setLastSigner(currentNpcName);
+    //disable back to the map button 
+    document.getElementById("back-main").disabled = true;
     setTimeout(() => {
       window.location.href = `../Room/room.html?lastSigner=${currentNpcName}`;
-    }, 5000);
+      //启用 back to the map button
+      document.getElementById("back-main").disabled = false;
+    }, 6000);
   } else {
     const hintMessage = {
       en: "Interesting perspective. But as someone directly involved, what's your view on the government's policy regarding T energy exploitation?",
@@ -458,6 +470,9 @@ async function checkFinalResponse(response) {
     Provide your reasoning for the decision.
   `;
 
+  // Display thinking indicator
+  displayThinkingIndicator();
+
   try {
     const apiResponse = await fetch("/api/generate", {
       method: "POST",
@@ -481,9 +496,38 @@ async function checkFinalResponse(response) {
     return isValid;
   } catch (error) {
     console.error("Error in checkFinalResponse:", error);
-    return false;
+    // Fallback to keyword matching
+    return checkKeywords(response);
+  } finally {
+    // Remove thinking indicator
+    removeThinkingIndicator();
   }
 }
+
+function checkKeywords(response) {
+  const keywords = [
+    "stop t energy",
+    "ban t energy",
+    "discontinue t energy",
+    "return to traditional energy",
+    "continue traditional energy",
+    "against sustainable energy",
+    "oppose sustainable energy",
+    "prefer traditional energy",
+    "禁止T能源",
+    "停止T能源",
+    "不再使用T能源",
+    "回归传统能源",
+    "继续使用传统能源",
+    "反对可持续能源",
+    "不支持可持续能源",
+    "倾向于传统能源"
+  ];
+
+  const lowercaseResponse = response.toLowerCase();
+  return keywords.some(keyword => lowercaseResponse.includes(keyword));
+}
+
 
 // 函数：添加物品到背包
 function addToInventory(item, image) {
@@ -549,4 +593,3 @@ function getFixedReply() {
     zh: "你还有什么东西或者新闻可以让我感兴趣吗？",
   };
 }
-

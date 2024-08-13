@@ -1,6 +1,6 @@
 bgm = document.getElementById("bgm");
 bgm.loop = true; // Let the music loop
-bgm.src = "./Music/Save the World.mp3"; // 设置统一的背景音乐
+bgm.src = "../Music/NPC_talk.mp3"; // 设置统一的背景音乐
 bgm.volume = 0.1; // 设置音量为 50%
 
 const endScenes = [

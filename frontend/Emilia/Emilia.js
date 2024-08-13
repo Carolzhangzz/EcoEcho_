@@ -87,8 +87,8 @@ function startGame(lastSigner) {
     });
   }
 
-  // 检查签名状态并禁用/启用相应场景
-  if (signatures[lastSigner] != null && signatures[lastSigner] != undefined) {
+  // Replace the signature check with a vote check , 检查签名状态并禁用/启用相应场景
+  if (signatures[lastSigner] != null && signatures[lastSigner] !== undefined) {
     enableAllScenes();
   } else if (lastSigner === "Ki") {
     disableScenes(["scene1", "scene2", "scene3", "scene4"]);
@@ -305,22 +305,25 @@ function startGame(lastSigner) {
       lastSigner != ""
     ) {
       setTimeout(() => {
-        // 如果是最后一个，显示签名提示
-        showSignaturePrompt();
-      }, 200); // 延迟两秒显示提示
+        showVotingPrompt();
+      }, 200);
     }
   };
 
   nextButton.addEventListener("click", () => {
     currentTextIndex++;
-    if (currentTextIndex >= scenes[currentScene].text[currentLanguage].length) {
+    const sceneLength = scenes[currentScene].text[currentLanguage].length;
+
+    if (currentTextIndex >= sceneLength) {
       currentScene++;
-      if (currentScene >= scenes.length) {
-        currentScene = scenes.length - 1; // 防止上溢
-        currentTextIndex = 0;
-        updateScene();
+      if (currentScene < scenes.length) {
+        currentTextIndex = 0; // Reset the text index for the next scene
+      } else {
+        currentScene = scenes.length - 1; // Prevent overflow
+        currentTextIndex = sceneLength - 1; // Go to the last text in the last scene
       }
     }
+    updateScene();
   });
 
   prevButton.addEventListener("click", () => {
@@ -361,58 +364,110 @@ function startGame(lastSigner) {
   updateScene();
 }
 
-function showSignaturePrompt() {
-  const message = {
-    en: "Would you be willing to sign the petition right now?",
-    zh: "你愿意现在在联署书上签字吗?",
-  };
+// Load saved signatures from localStorage
+if (localStorage.getItem("signatures")) {
+  signatures = JSON.parse(localStorage.getItem("signatures"));
+}
 
+function showVotingPrompt() {
+  let message;
   const lastSigner = getLastSigner();
 
-  // 检查最后签名者是否已经签名
-  if (signatures[lastSigner] !== null && signatures[lastSigner] !== undefined) {
-    // 如果已经签名，直接返回，不显示任何提示
-    return;
-    // showAlert(
-    //   currentLanguage === "en"
-    //     ? "You have already signed this petition."
-    //     : "你已经在这份联署书上签过名了。"
-    // );
-    // return;
+  switch (lastSigner) {
+    case "Ki":
+      message = {
+        en: "In the first phase, we have already collected 587 signatures, close to the threshold of 618. How many votes would you like to cast for the petition? (0-5)",
+        zh: "第一阶段我们已经联署了587份了，已经接近门槛618份，您想为这份请愿书投多少票？(0-5)",
+      };
+      break;
+    case "Lisa":
+      message = {
+        en: "In the second phase, we have already collected 2490 signatures, close to the threshold of 3098. How many votes would you like to cast for the petition? (0-5)",
+        zh: "第二阶段我们已经联署了2490份了，已经接近门槛3098份，您想为这份请愿书投多少票？(0-5)",
+      };
+      break;
+    case "Bob":
+      message = {
+        en: "In the third phase, we have already collected 5837 signatures, close to the threshold of 6818. How many votes would you like to cast for the petition? (0-5)",
+        zh: "第三阶段我们已经联署了5837份了，已经接近门槛6818份，您想为这份请愿书投多少票？(0-5)",  
+      };
+      break;
+    case "Jonathan":
+      message = {
+        en: "In the fourth phase, we have already collected 9532 signatures, close to the threshold of 9875. How many votes would you like to cast for the petition? (0-5)",
+        zh: "第四阶段我们已经联署了9532份，快要接近门槛9875份，你想为这份请愿书投多少票？(0-5)",  
+      };
+      break;
+    default:
+      message = {
+        en: "How many votes would you like to cast for the petition? (0-5)",
+        zh: "你想为这份请愿书投多少票？(0-5)",
+      };
   }
 
-  showConfirm(message[currentLanguage], async (confirmed) => {
-    await Signature(lastSigner, confirmed);
+  // Check if the last signer has already voted
+  if (signatures[lastSigner] !== null && signatures[lastSigner] !== undefined) {
+    return;
+  }
 
-    if (confirmed) {
-      showAlert(
-        currentLanguage === "en"
-          ? "Thank you for your support!"
-          : "感谢您的支持！"
-      );
-    } else {
-      showAlert(
-        currentLanguage === "en"
-          ? "We understand your decision. Thank you for your time."
-          : "我们理解您的决定。感谢您的时间。"
-      );
-    }
+  showVotingOptions(message[currentLanguage], async (voteCount) => {
+    await Signature(lastSigner, voteCount);
+
+    const confirmMessage =
+      voteCount > 0
+        ? currentLanguage === "en"
+          ? `Thank you for your support! You've cast ${voteCount} vote(s).`
+          : `感谢您的支持！您投了 ${voteCount} 票。`
+        : currentLanguage === "en"
+        ? "We understand your decision. Thank you for your time."
+        : "我们理解您的决定。感谢您的时间。";
+
+    showConfirmMessage(confirmMessage, (confirmed) => {
+      // 不需要执行额外的操作，只是显示消息
+    });
   });
 }
 
-async function Signature(name, signed) {
+function showVotingOptions(message, callback) {
+  const voteDialog = document.createElement("div");
+  voteDialog.className = "voting-dialog";
+
+  const messageElement = document.createElement("p");
+  messageElement.textContent = message;
+  voteDialog.appendChild(messageElement);
+
+  const optionsContainer = document.createElement("div");
+  optionsContainer.className = "voting-options";
+
+  for (let i = 0; i <= 5; i++) {
+    const button = document.createElement("button");
+    button.textContent = i;
+    button.addEventListener("click", () => {
+      document.body.removeChild(voteDialog);
+      callback(i);
+    });
+    optionsContainer.appendChild(button);
+  }
+
+  voteDialog.appendChild(optionsContainer);
+  document.body.appendChild(voteDialog);
+}
+
+async function Signature(name, voteCount) {
   try {
-    signatures[name] = signed ? Date.now() : false;
-    await localStorage.setItem("signatures", JSON.stringify(signatures));
-    if (signed) {
-      // 只有在实际签名时才刷新页面
-      window.location.reload();
+    signatures[name] = voteCount;
+    localStorage.setItem("signatures", JSON.stringify(signatures));
+    if (voteCount >= 0) {
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
     } else {
-      // 如果拒绝签名，只更新当前页面的状态，不刷新整个页面
-      enableAllScenes();
+      setTimeout(() => {
+        enableAllScenes();
+      }, 1000);
     }
   } catch (error) {
-    console.error("Error adding signature:", error);
+    console.error("Error submitting vote:", error);
     showAlert(
       currentLanguage === "en"
         ? "An error occurred. Please try again."
@@ -420,6 +475,7 @@ async function Signature(name, signed) {
     );
   }
 }
+
 // 在页面加载时调用 startGame
 document.addEventListener("DOMContentLoaded", () => {
   const lastSigner = getLastSigner();

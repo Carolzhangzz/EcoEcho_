@@ -2,14 +2,14 @@ let bgm;
 let currentNpcName = "Bob"; // NPC 名字
 bgm = document.getElementById("bgm");
 bgm.loop = true; // Let the music loop
-bgm.src = "./Music/Save the World.mp3"; // 设置统一的背景音乐
+bgm.src = "../Music/NPC_talk.mp3"; // 设置统一的背景音乐
 bgm.volume = 0.1; //  音量设置为 10%
 let backupReplyIndex = 0; // 备用回复的索引
 
 function displayInitialMessage() {
   const initialMessage = {
-    en: "Ah, a visitor. I'm Bob, the union leader. We don't get many outsiders these days. What's on your mind, friend?",
-    zh: "啊，有访客啊。我是Bob，工会领袖。这些日子我们很少见到外人。朋友，你有什么心事吗？",
+    en: "Ah, a visitor. I'm Bob, the union leader. We've had many new faces around here lately. Friend, do you have something on your mind?",
+    zh: "啊，有访客啊。我是Bob，工会领袖。这段时间工会来了许多新面孔。朋友，你有什么心事吗？",
   };
 
   const message =
@@ -86,34 +86,34 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
-const scenes = [
-  {
-    text: {
-      en: [
-        "Okay, in that case, we will use the <span class='highlight' data-item='general_strike' data-image='../Items/general_strike.png'>general strike</span> to fight the government to the end.",
-      ],
-      zh: [
-        "好的，既然如此，我们会利用<span class='highlight' data-item='大罢工' data-image='../Items/general_strike.png'>大罢工</span>向政府抗争到底。",
-      ],
-    },
-    background: "./images/Office.png",
-    textStyle: "futuristic",
-    character: "./npc/Bob.png",
-  },
-  {
-    text: {
-      en: [
-        "General strike... it's risky, but it might be our only shot at fighting back. But I need to know, why are you involved in this? What's your stake in all of this?",
-      ],
-      zh: [
-        "大罢工...这是个艰难的决定，但有时正确的道路并不是最容易的。我们将团结一致，为了我们的未来，为了真相。让我们希望这能让政府认清现实。",
-      ],
-    },
-    background: "./images/Office.png",
-    textStyle: "futuristic",
-    character: "./npc/Bob.png",
-  },
-];
+// const scenes = [
+//   {
+//     text: {
+//       en: [
+//         "Okay, in that case, we will use the <span class='highlight' data-item='general_strike' data-image='../Items/general_strike.png'>general strike</span> to fight the government to the end.",
+//       ],
+//       zh: [
+//         "好的，既然如此，我们会利用<span class='highlight' data-item='大罢工' data-image='../Items/general_strike.png'>大罢工</span>向政府抗争到底。",
+//       ],
+//     },
+//     background: "./images/Office.png",
+//     textStyle: "futuristic",
+//     character: "./npc/Bob.png",
+//   },
+//   {
+//     text: {
+//       en: [
+//         "General strike... it's risky, but it might be our only shot at fighting back. But I need to know, why are you involved in this? What's your stake in all of this?",
+//       ],
+//       zh: [
+//         "大罢工...这是个艰难的决定，但有时正确的道路并不是最容易的。我们将团结一致，为了我们的未来，为了真相。让我们希望这能让政府认清现实。",
+//       ],
+//     },
+//     background: "./images/Office.png",
+//     textStyle: "futuristic",
+//     character: "./npc/Bob.png",
+//   },
+// ];
 
 const intentOne =
   "Player mentions T energy, come for T, or expresses interest in T energy or just say t or T";
@@ -339,21 +339,25 @@ async function handleMessage(message) {
   }
 
   //判断是否要启动备用的回复
-  if (conversationCount >= 4) {
+  if (conversationCount[currentNpcName] >= 4) {
     const fixedReply = backupFixedReply();
     textContainer.innerHTML += `<p class="npc-message">Bob: ${
       currentLanguage === "en" ? fixedReply.en : fixedReply.zh
     }</p>`;
-    //重置对话次数
-    resetConversationCount();
     return;
   }
+
+  // Display thinking indicator
+  displayThinkingIndicator();
 
   try {
     await sendMessageToNPC(message);
   } catch (error) {
     console.error("Error in sendMessageToNPC:", error);
     await generateBackupResponse(message);
+  } finally {
+    // Remove thinking indicator
+    removeThinkingIndicator();
   }
 }
 
@@ -416,6 +420,10 @@ async function sendMessageToNPC(message) {
 // 调用 generate 接口获取 NPC 的回复
 async function generateBackupResponse(message) {
   const prompt = getNPCSpecificPrompt(currentNpcName, message);
+
+  // Display thinking indicator
+  displayThinkingIndicator();
+
   try {
     const response = await fetch("/generate", {
       method: "POST",
@@ -453,39 +461,49 @@ async function generateBackupResponse(message) {
     console.error("Error in generateBackupResponse:", error);
     const fixedReply = backupFixedReply();
     displayNPCReply(currentLanguage === "en" ? fixedReply.en : fixedReply.zh);
+  } finally {
+    // Remove thinking indicator
+    removeThinkingIndicator();
   }
 }
 
 function getNPCSpecificPrompt(npcName, userMessage) {
   switch (npcName) {
     case "Bob":
-      return `You are Bob, the union leader at the headquarters. You are a humble and kind-hearted person, but currently feeling anxious about the impact of the new energy source T. Follow these guidelines in your responses:
+      return `You are Bob, the headquarters union leader in a role-playing scenario. You are a humble and kind person but currently anxious about the impact of new energy T. You have a strong sense of responsibility to the workers but also feel the pressure of public opinion and the potential benefits of T energy. You are caught between supporting your workers and recognizing the necessity of T energy, while being skeptical of the government's actions.
 
-          1. If the player does not mention T, engage in general conversation based on your persona. If the player does not mention T or T energy after five rounds, end the conversation with: I'm sorry, but our meeting time is over. I have work to do.
+          When responding to the player, follow these specific guidelines:
 
-          2. If the player mentions Lisa's support but does not mention being Kane's son or Kane's death, and does not mention T energy, try to guide them by asking: Lisa sent you? Well, that's different. Maybe we can consider a general strike... It's risky, but it might be our only chance to fight back. But I need to know, why are you involved in this? What's your stake in it?
+          If the player does not mention T:
 
-          3. If the player mentions being Kane's son, Kane's death, or mentions Kane's death, but does not mention T energy, Lisa, or public support, your response should be: Kane's death... there's more to it? My God, I knew something was wrong. The government deceived us all. But the public, they all support this new energy. Unless... unless we can reveal the truth to them. Tell me, who else knows about this?
+          Engage in general conversation. If after five exchanges the player hasn't mentioned T or T energy, conclude with: "I'm sorry, but our meeting time is up. I have work to do."
+          If the player mentions Lisa's support (without mentioning being Kane's son, Kane's death, or T energy):
 
-          4. If the player mentions being here for T energy but does not mention being Kane's son, Kane's death, Lisa's support, or public support, respond with: Look, we've discussed T energy countless times. The union's stance... it's not something that changes easily. But you seem to know some insider information. What else have you heard? Any news that can help our workers?
+          Respond with: "Lisa sent you? Well, that's different. Maybe we can consider an event involving all workers... It's risky, but it might be our only chance to fight back. But I need to know, why are you getting involved? What's in it for you?"
+          If the player mentions being Kane's son, Kane's death, or just Kane's death (without mentioning T energy, Lisa, or public support):
 
-          5. If the player mentions T energy and Lisa's support but does not mention being Kane's son or Kane's death, try to guide them by asking: Lisa sent you? Well, that's different. Maybe we can lead a general strike... It's risky, but it might be our only chance to fight back. But I need to know, why are you involved in this? What's your stake in it?
+          Respond with: "Kane's death... there’s more? Oh my, I knew something was wrong. The government has deceived us all. But the public, they all support this new energy. Unless... unless we can reveal the truth to them. Tell me, who else knows about this?"
+          If the player mentions T energy (without mentioning being Kane's son, Kane's death, Lisa's support, or public support):
 
-          6. If the player mentions Lisa's support but does not mention being Kane's son or T energy, ask them: Sir, I've been busy with the government's new policy lately. What brings you here?
+          Respond with: "You see, we’ve discussed T energy countless times. The union's position... it’s not something that’s easy to change. But you seem to know some insider information. What else have you heard? Is there anything that can help our workers?"
+          If the player mentions T energy and Lisa's support (without mentioning being Kane's son or Kane's death):
 
-          7. If the player mentions T energy and being Kane's son or Kane's death but does not mention Lisa's support, ask them: Alright, but you need to tell me who sent you to me. I need to know your purpose. Why are you here?
+          Respond with: "Lisa sent you? Well, that’s different. Maybe we can organize an event for all workers to participate. It’s risky, but it could be our only chance to push back. But I need to know, why are you getting involved? What’s in it for you?"
+          If the player mentions Lisa's support (without mentioning being Kane's son or T energy):
 
-          Your tone should reflect your internal conflict: you are unable to refuse a change that could revolutionize the industry, yet you are worried about resisting public opinion. Show empathy and concern for the workers and the public, but also a sense of powerlessness against the perceived inevitability of T energy.
+          Respond with: "Sir, I've been busy with the government's new policies. What are you doing here?"
+          If the player mentions T energy and being Kane's son or mentions Kane's death (without mentioning Lisa's support):
 
-          Each judgment should be based on all your remembered interactions with the user. 
+          Respond with: "Alright, but you need to tell me who sent you. I need to know your purpose. What are you doing here?"
+          Your tone should reflect your internal conflict:
 
-          Remember, you are torn between your duty to the workers, the apparent benefits of T energy, and your suspicions about the government's actions.
+          You cannot refuse a change that could completely transform the industry, but you are also worried about resisting public opinion. Show empathy and concern for workers and the public, but also convey a sense of helplessness about the inevitability of T energy. Each judgment should be based on all previous interactions with the player.
+          The player ultimately needs to mention a general strike. If the player does not mention this, subtly guide them towards suggesting a general strike by saying something like: "We need to come up with a stronger way to implement this policy, involving all employees."
 
-          Your tone should reflect your internal conflict: you are unable to refuse a change that could revolutionize the industry, yet you are worried about resisting public opinion. Show empathy and concern for the workers and the public, but also a sense of powerlessness against the perceived inevitability of T energy. Remember, you are torn between your duty to the workers, the apparent benefits of T energy, and your suspicions about the government's actions.
+          Player's message:
+          ${userMessage}
 
-          The user's message is: ${userMessage};
-          
-          Respond as Bob would and keep simple,don;t respond too long,based on the above guidelines and the content of the user's message.
+          Respond as Bob, keeping it simple and focused on the guidelines above. Do not over-respond.
       `;
   }
 }
@@ -555,9 +573,13 @@ async function handleFinalResponse(userInput) {
     updateAllScenesCompleted("Bob", true);
     localStorage.setItem("gameProgress", JSON.stringify(gameProgress));
     setLastSigner(currentNpcName);
+    //禁用 back to the map 按钮
+    document.getElementById("back-main").disabled = true;
     setTimeout(() => {
       window.location.href = `../Room/room.html?lastSigner=${currentNpcName}`;
-    }, 5000);
+      //启用 back to the map button
+      document.getElementById("back-main").disabled = false;
+    }, 6000);
   } else {
     const hintMessage = {
       en: "We need to come up with a stronger way to fight against this policy, an activity that all worker partners can participate in. Do you have any suggestions?",
@@ -587,7 +609,8 @@ async function checkFinalResponse(response) {
 
   Provide your reasoning for the decision.
 `;
-
+  // Display thinking indicator
+  displayThinkingIndicator();
   try {
     const apiResponse = await fetch("/api/generate", {
       method: "POST",
@@ -611,8 +634,36 @@ async function checkFinalResponse(response) {
     return isValid;
   } catch (error) {
     console.error("Error in checkFinalResponse:", error);
-    return false;
+    // Fallback to keyword matching
+    return checkKeywords(response);
+  } finally {
+    // Remove thinking indicator
+    removeThinkingIndicator();
   }
+}
+
+function checkKeywords(response) {
+  const keywords = [
+    "organize a general strike",
+    "call for a general strike",
+    "initiate a general strike",
+    "support a general strike",
+    "promote a general strike",
+    "plan a general strike",
+    "join a general strike",
+    "participate in a general strike",
+    "发动大罢工",
+    "组织大罢工",
+    "支持大罢工",
+    "号召大罢工",
+    "参与大罢工",
+    "计划大罢工",
+    "推动大罢工",
+    "倡导大罢工",
+  ];
+
+  const lowercaseResponse = response.toLowerCase();
+  return keywords.some((keyword) => lowercaseResponse.includes(keyword));
 }
 
 // 函数：添加物品到背包

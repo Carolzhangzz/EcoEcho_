@@ -77,6 +77,27 @@ let npcSessionIDs = {
   Johnathan: null,
 };
 
+// npc 思考指示
+function displayThinkingIndicator() {
+  const textContainer = document.getElementById("text-container");
+  const thinkingElement = document.createElement("p");
+  thinkingElement.className = "npc-message thinking";
+  thinkingElement.id = "thinking-indicator";
+  thinkingElement.textContent = `${currentNpcName} is thinking...`;
+  textContainer.appendChild(thinkingElement);
+  textContainer.scrollTop = textContainer.scrollHeight;
+}
+
+// Add this function to remove the thinking indicator
+function removeThinkingIndicator() {
+  const thinkingIndicator = document.getElementById("thinking-indicator");
+  if (thinkingIndicator) {
+    thinkingIndicator.remove();
+  }
+}
+
+
+// 更新任务栏 
 function updateTaskBar() {
   const taskBar = document.getElementById("task-bar");
   const task =
@@ -582,6 +603,22 @@ function showAlert(message) {
     .addEventListener("click", () => alertBox.remove());
 }
 
+
+// 定义一个只显示 confirm message ，没有是否按钮的函数 
+function showConfirmMessage(message) {
+  const confirmBox = document.createElement("div");
+  confirmBox.className = "custom-alert";
+  confirmBox.innerHTML = `
+    <p>${message}</p>
+    <button id="confirm-ok">${currentLanguage === "en" ? "OK" : "确定"}</button>
+  `;
+
+  document.body.appendChild(confirmBox);
+  document.getElementById("confirm-ok").addEventListener("click", () => {
+    document.body.removeChild(confirmBox);
+  });
+}
+
 // 显示自定义 confirm 框
 function showConfirm(message, callback) {
   const confirmBox = document.createElement("div");
@@ -757,14 +794,14 @@ document.addEventListener("DOMContentLoaded", () => {
 function shouldTriggerAutoReply(currentNpcName) {
   const triggerConditions = {
     Lisa: {
-      noIntentNoItem: 5,
-      intentNoItem: 5,
-      noIntentItem: 5,
+      noIntentNoItem: 3,
+      intentNoItem: 3,
+      noIntentItem: 3,
     },
     Guard: {
-      noIntentNoItem: 4,
-      intentNoItem: 4,
-      noIntentItem: 4,
+      noIntentNoItem: 3,
+      intentNoItem: 3,
+      noIntentItem: 3,
     },
     Bob: {
       noIntentNoItem: 3,

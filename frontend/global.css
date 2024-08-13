@@ -51,6 +51,11 @@
     box-shadow: 0 0 15px #00ffff;
   }
   
+  .thinking {
+    font-style: italic;
+    color: #888;
+  }
+
   #task-bar {
     position: fixed;
     top: 20px;
@@ -69,4 +74,49 @@
 
 #task-bar:hover {
     background-color: rgba(40, 40, 40, 0.9);
+}
+
+
+/* vote style */
+.voting-dialog {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  background-color: rgba(0, 150, 199, 0.9);
+  color: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 20px rgba(0, 200, 255, 0.5);
+  z-index: 1000;
+  font-family: 'Arial', sans-serif;
+  text-align: center;
+  min-width: 300px;
+}
+
+.voting-dialog p {
+  margin-bottom: 20px;
+  font-size: 18px;
+}
+
+.voting-options {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.voting-options button {
+  background-color: rgba(0, 100, 150, 0.8);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  margin: 5px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  font-size: 16px;
+}
+
+.voting-options button:hover {
+  background-color: rgba(0, 150, 200, 0.8);
 }
