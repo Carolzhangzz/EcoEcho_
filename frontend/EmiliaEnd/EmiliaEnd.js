@@ -183,7 +183,7 @@ function showVotingPrompt() {
   console.log("Entering showVotingPrompt function");
   const message = {
     en: "How many votes would you like to cast for the petition? (0-5)",
-    zh: "第四阶段我们已经联署了9532份，快要接近门槛9875份，你想为这份请愿书投多少票？",
+    zh: "第四阶段我们已经联署了9532份，快要接近门槛9875份，您想为这份请愿书投多少票？",
   };
 
   const lastSigner = getLastSigner();

@@ -395,13 +395,13 @@ function showVotingPrompt() {
     case "Jonathan":
       message = {
         en: "In the fourth phase, we have already collected 9532 signatures, close to the threshold of 9875. How many votes would you like to cast for the petition? (0-5)",
-        zh: "第四阶段我们已经联署了9532份，快要接近门槛9875份，你想为这份请愿书投多少票？(0-5)",  
+        zh: "第四阶段我们已经联署了9532份，快要接近门槛9875份，您想为这份请愿书投多少票？(0-5)",  
       };
       break;
     default:
       message = {
         en: "How many votes would you like to cast for the petition? (0-5)",
-        zh: "你想为这份请愿书投多少票？(0-5)",
+        zh: "您想为这份请愿书投多少票？(0-5)",
       };
   }
 

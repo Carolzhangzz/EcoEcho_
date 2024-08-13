@@ -334,7 +334,7 @@ async function sendMessageToNPC(message) {
     };
 
     // // 注释掉模拟错误的代码
-    // throw new Error("Simulated ConvAI API failure");
+    throw new Error("Simulated ConvAI API failure");
 
     const response = await fetch("/api/convai", {
       method: "POST",
@@ -396,7 +396,7 @@ async function generateBackupResponse(message) {
     });
 
     // 模拟第二个 NPC 调用 接口失败，强制抛出错误
-    // throw new Error("Simulated Second NPC API failure");
+    throw new Error("Simulated Second NPC API failure");
 
     if (!response.ok) {
       throw new Error("Network response was not ok for backup response");
@@ -514,8 +514,8 @@ async function handleFinalResponse(userInput) {
     }, 3000);
   } else {
     const hintMessage = {
-      en: "Do you think there's anything else that needs to be done for the development of T?",
-      zh: "你觉得针对 T 的开发还有什么需要做的吗？",
+      en: "What do you think the government can do for the development of T?",
+      zh: "你觉得针对 T 的开发，有什么政府可以做的吗？",
     };
     displayNPCReply(currentLanguage === "en" ? hintMessage.en : hintMessage.zh);
   }
@@ -560,6 +560,8 @@ async function checkFinalResponse(response) {
     Provide your reasoning for the decision.
   `;
   try {
+    //模拟 Final Intent API 失败，强制抛出错误
+    throw new Error("Simulated Final Intent API failure");
     const apiResponse = await fetch("/api/generate", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -593,19 +595,27 @@ async function checkFinalResponse(response) {
 function checkKeywords(response) {
   const keywords = [
     "ban t energy development",
+    "ban t energy",
+    "stop the development of t energy",
     "stop t energy development",
     "prevent t energy development",
     "oppose t energy development",
     "obstruct government clean energy policies",
     "stop clean energy policies",
     "oppose clean energy initiatives",
+    "hindering government clean energy initiatives",
+    "oppose government clean energy initiatives",
     "阻止t能源开发",
     "禁止t能源开发",
     "反对t能源开发",
+    "推动政府清洁能源政策",
     "阻碍政府清洁能源政策",
     "反对政府清洁能源政策",
     "停止清洁能源政策",
     "反对清洁能源计划",
+    "阻止政府清洁能源计划",
+    "反对政府清洁能源计划",
+    "阻碍清洁能源政策",
   ];
 
   const lowercaseResponse = response.toLowerCase();

@@ -103,6 +103,15 @@ async function Check(intent, message) {
     "真相",
     "死",
     "父亲去世",
+    "凯恩是我父亲",
+    "kane是我的父亲",
+    "kane 去世了",
+    "kane 死了",
+    "kane 去世",
+    "kane 死",
+    "kane 真相",
+    "凯恩 真相",
+    "kane 去世的真相",
   ]; // 关键字列表
 
   try {
@@ -133,7 +142,7 @@ async function Check(intent, message) {
     });
 
     //  模拟 Intent 接口失败，强制抛出错误
-    // throw new Error("Simulated Intent API failure");
+    throw new Error("Simulated Intent API failure");
 
     if (!response.ok) {
       throw new Error("Network response was not ok");
@@ -150,14 +159,14 @@ async function Check(intent, message) {
       // 重置对话计数
       resetConversationCount();
     }
-
     return intentExpressedValue;
   } catch (error) {
     console.error("Error in Check:", error);
 
     // 检查用户输入是否包含关键字
-    const containsKeyword = keywords.some((keyword) =>
-      message.includes(keyword)
+    const lowercaseResponse = message.toLowerCase();
+    const containsKeyword = keywords.some(
+      (keyword) => lowercaseResponse.includes(keyword) // 检查用户输入是否包含关键字
     );
 
     if (containsKeyword) {
@@ -232,7 +241,7 @@ async function sendMessageToNPC(message) {
     };
 
     // 模拟 ConvAI 接口失败，强制抛出错误
-    // throw new Error("Simulated ConvAI API failure");
+    throw new Error("Simulated ConvAI API failure");
 
     const response = await fetch("/api/convai", {
       method: "POST",
@@ -322,7 +331,7 @@ async function generateBackupResponse(message) {
     });
 
     // 模拟 第二个 NPC 调用 接口失败，强制抛出错误
-    // throw new Error("Simulated Second NPC API failure");
+    throw new Error("Simulated Second NPC API failure");
 
     // Display thinking indicator
     displayThinkingIndicator();
@@ -433,7 +442,7 @@ async function handleFinalResponse(userInput) {
     updateAllScenesCompleted("Lisa", true);
     localStorage.setItem("gameProgress", JSON.stringify(gameProgress));
     setLastSigner(currentNpcName);
-    //disable back to the map button 
+    //disable back to the map button
     document.getElementById("back-main").disabled = true;
     setTimeout(() => {
       window.location.href = `../Room/room.html?lastSigner=${currentNpcName}`;
@@ -474,6 +483,9 @@ async function checkFinalResponse(response) {
   displayThinkingIndicator();
 
   try {
+    //模拟最终的 intent 接口失败，强制抛出错误
+    throw new Error("Simulated Final Intent API failure");
+
     const apiResponse = await fetch("/api/generate", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -514,20 +526,27 @@ function checkKeywords(response) {
     "against sustainable energy",
     "oppose sustainable energy",
     "prefer traditional energy",
+    "halt t energy",
+    "support traditional energy",
+    "oppose clean energy",
     "禁止T能源",
     "停止T能源",
     "不再使用T能源",
     "回归传统能源",
+    "支持传统能源",
     "继续使用传统能源",
     "反对可持续能源",
     "不支持可持续能源",
-    "倾向于传统能源"
+    "倾向于传统能源",
+    "阻止 T 能源",
+    "反对清洁能源",
+    "hinder the susatainable energy",
+    "阻碍清洁能源",
   ];
 
   const lowercaseResponse = response.toLowerCase();
-  return keywords.some(keyword => lowercaseResponse.includes(keyword));
+  return keywords.some((keyword) => lowercaseResponse.includes(keyword));
 }
-
 
 // 函数：添加物品到背包
 function addToInventory(item, image) {
@@ -549,16 +568,8 @@ const backupReplies = [
     zh: "我希望有一些更有趣、更轰动的新闻，比如，嗯……关于目前最火热的能源议题, T能源的。",
   },
   {
-    en: "Hmm, that does sound interesting, but how can I trust you? Unless... you're an insider?",
-    zh: "嗯，这确实很有趣，可是我怎么能相信你呢？除非……你是个内部人士？",
-  },
-  {
-    en: "The news you provided is interesting, but unfortunately, I can't verify its authenticity. That makes it useless to me. I have other things to attend to; we'll talk next time.",
-    zh: "你提供的新闻很有意思，但可惜我没办法验证它的真实性，这对我来说就没有用。我还有事，我们下次再聊。",
-  },
-  {
     en: "Is there anything else or any news that might interest me?",
-    zh: "你还有什么东西或者新闻可以让我感兴趣吗？",
+    zh: "你有什么东西或者新闻可以让我感兴趣吗？",
   },
 ];
 

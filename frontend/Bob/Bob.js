@@ -204,7 +204,7 @@ async function Check(intent, message) {
     });
 
     //模拟 Intent 接口失败，强制抛出错误
-    // throw new Error("Simulated Intent API failure");
+    throw new Error("Simulated Intent API failure");
 
     if (!response.ok) {
       throw new Error("Network response was not ok");
@@ -372,7 +372,7 @@ async function sendMessageToNPC(message) {
     };
 
     // // 注释掉模拟错误的代码
-    // throw new Error("Simulated ConvAI API failure");
+    throw new Error("Simulated ConvAI API failure");
 
     const response = await fetch("/api/convai", {
       method: "POST",
@@ -562,8 +562,8 @@ async function handleFinalResponse(userInput) {
   };
   if (isValid) {
     const successMessage = {
-      en: "For Kane, for the future of the union, we will bravely stand up and express our stance with a <span class='highlight' data-item='general_strike' data-image='../Items/general_strike.png'>general strike</span>.",
-      zh: "为了Kane，为了工会的未来，我们会勇敢站出来，用<span class='highlight' data-item='general_strike' data-image='../Items/general_strike.png'>大罢工</span>表达我们的态度。",
+      en: "<span class='highlight' data-item='general_strike' data-image='../Items/general_strike.png'>General strike...</span> It's a difficult decision, but sometimes the right path isn't the easiest. We will stand together, for our future, for the truth. Let's hope this makes the government see reason.",
+      zh: "<span class='highlight' data-item='general_strike' data-image='../Items/general_strike.png'>大罢工...</span>这是个艰难的决定，但有时正确的道路并不是最容易的。我们将团结一致，为了我们的未来，为了真相。让我们希望这能让政府认清现实。",
     };
     displayNPCReply(
       currentLanguage === "en" ? successMessage.en : successMessage.zh
@@ -612,6 +612,8 @@ async function checkFinalResponse(response) {
   // Display thinking indicator
   displayThinkingIndicator();
   try {
+    //模拟 Final Intent 接口失败，强制抛出错误
+    throw new Error("Simulated Final Intent API failure");
     const apiResponse = await fetch("/api/generate", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -652,6 +654,9 @@ function checkKeywords(response) {
     "plan a general strike",
     "join a general strike",
     "participate in a general strike",
+    "lead a general strike",
+    "big strike",
+    "general strike",
     "发动大罢工",
     "组织大罢工",
     "支持大罢工",
@@ -660,6 +665,7 @@ function checkKeywords(response) {
     "计划大罢工",
     "推动大罢工",
     "倡导大罢工",
+    "大罢工",
   ];
 
   const lowercaseResponse = response.toLowerCase();
