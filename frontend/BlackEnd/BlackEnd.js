@@ -4,6 +4,14 @@ document.addEventListener("DOMContentLoaded", () => {
   const backButton = document.getElementById("back-to-main");
   const bgm = document.getElementById("bgm");
 
+
+  const copyHistoryButton = document.getElementById("copy-history");
+  copyHistoryButton.addEventListener("click", copyInputHistory);
+
+  const exportHistoryButton = document.getElementById("export-history");
+  exportHistoryButton.addEventListener("click", exportInputHistory);
+
+
   backButton.addEventListener("click", () => {
     window.location.href = "../Emilia/Emilia.html";
   });
@@ -143,6 +151,47 @@ document.addEventListener("DOMContentLoaded", () => {
 
   updateDialogue();
 });
+
+
+// 更新 copyInputHistory 函数
+function copyInputHistory() {
+  const formattedHistory = displayFormattedHistory();
+  navigator.clipboard.writeText(formattedHistory).then(() => {
+    alert(currentLanguage === "en" ? "Input history copied to clipboard!" : "输入历史已复制到剪贴板！");
+  }, (err) => {
+    console.error('Could not copy text: ', err);
+    alert(currentLanguage === "en" ? "Failed to copy input history." : "复制输入历史失败。");
+  });
+}
+
+function exportInputHistory() {
+  const history = getPlayerInputHistory();
+  
+  // 格式化历史记录
+  const formattedHistory = history.map(entry => {
+    if (entry.type === 'user') {
+      return `Player: ${entry.content}`;
+    } else {
+      return `${entry.speaker}: ${entry.content}`;
+    }
+  }).join('\n');
+
+  // 创建 Blob 和下载链接
+  const blob = new Blob([formattedHistory], { type: 'text/plain' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'player_input_history.txt';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+
+// 在页面关闭或刷新时导出统计数据
+window.addEventListener('beforeunload', function(event) {
+  exportInputHistory();
+});
+
 
 // Function to get the final decision (should be defined in your global scope)
 function getFinalDecision() {

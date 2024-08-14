@@ -181,6 +181,18 @@ async function Check(intent, message) {
 }
 
 async function handleMessage(message) {
+
+  
+  // 添加用户消息到历史记录
+  addToPlayerInputHistory({
+    type: "user",
+    speaker: "Player",
+    content: message,
+    npc: currentNpcName
+  });
+
+  console.log("Updated player input history:", playerInputHistory);
+
   bgm.play(); // 播放背景音乐
 
   // 生成对话提示
@@ -369,6 +381,15 @@ async function generateBackupResponse(message) {
 }
 
 function displayNPCReply(reply, audioReply) {
+
+  // 追加 NPC 的回复到历史记录中
+  addToPlayerInputHistory({
+    type: "npc",
+    speaker: currentNpcName,
+    content: reply,
+    npc: currentNpcName
+  });
+
   // 更新对话计数
   updateConversationCount(
     currentNpcName,

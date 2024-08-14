@@ -302,6 +302,18 @@ async function Check(intent, message) {
 }
 
 async function handleMessage(message) {
+  if (!message.trim()) {
+    console.error("Empty message, not processing.");
+    return;
+  }
+  // 添加用户消息到历史记录
+  addToPlayerInputHistory({
+    type: "user",
+    speaker: "Player",
+    content: message,
+    npc: currentNpcName,
+  });
+
   bgm.play(); // 播放背景音乐
 
   // 确保导航按钮隐藏
@@ -509,6 +521,14 @@ function getNPCSpecificPrompt(npcName, userMessage) {
 }
 
 function displayNPCReply(reply, audioReply) {
+  // 添加 NPC 回复到历史记录
+  addToPlayerInputHistory({
+    type: "npc",
+    speaker: currentNpcName,
+    content: reply,
+    npc: currentNpcName,
+  });
+
   //更新
   updateConversationCount(
     currentNpcName,
@@ -614,7 +634,7 @@ async function checkFinalResponse(response) {
   displayThinkingIndicator();
   try {
     //模拟 Final Intent 接口失败，强制抛出错误
-   // throw new Error("Simulated Final Intent API failure");
+    // throw new Error("Simulated Final Intent API failure");
     const apiResponse = await fetch("/api/generate", {
       method: "POST",
       headers: { "Content-Type": "application/json" },

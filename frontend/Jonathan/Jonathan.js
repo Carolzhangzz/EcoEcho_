@@ -262,6 +262,18 @@ async function Check(intent, message) {
 }
 
 async function handleMessage(message) {
+  if (!message.trim()) {
+    console.error("Empty message, not processing.");
+    return;
+  }
+  // 添加用户消息到历史记录
+  addToPlayerInputHistory({
+    type: "user",
+    speaker: "Player",
+    content: message,
+    npc: currentNpcName,
+  });
+
   bgm.play(); // 播放背景音乐
 
   // 确保导航按钮隐藏
@@ -447,6 +459,15 @@ function getNPCSpecificPrompt(npcName, userMessage) {
 }
 
 function displayNPCReply(reply, audioReply) {
+  
+  // 添加 NPC 回复到历史记录
+  addToPlayerInputHistory({
+    type: "npc",
+    speaker: currentNpcName,
+    content: reply,
+    npc: currentNpcName,
+  });
+
   //更新
   updateConversationCount(
     currentNpcName,

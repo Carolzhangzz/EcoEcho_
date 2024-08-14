@@ -1,4 +1,8 @@
 let usedItems = {};
+
+// 在全局范围内定义一个数组来存储玩家的输入历史
+let playerInputHistory = [];
+
 let currentLanguage = getLanguage() || "en";
 let gameProgress = {
   talkedToLisa: false,
@@ -78,10 +82,62 @@ let npcSessionIDs = {
 
 let finalDecision = null; // New variable to store the final decision
 
+// 添加一个函数来保存玩家输入历史 
+// 从 localStorage 加载历史记录
+function loadPlayerInputHistory() {
+  const savedHistory = localStorage.getItem("playerInputHistory");
+  if (savedHistory) {
+    playerInputHistory = JSON.parse(savedHistory);
+  }
+}
+
+// 保存历史记录到 localStorage
+function savePlayerInputHistory() {
+  localStorage.setItem("playerInputHistory", JSON.stringify(playerInputHistory));
+}
+
+// 添加新的对话记录
+function addToPlayerInputHistory(entry) {
+  loadPlayerInputHistory(); // 先加载最新的历史记录
+  playerInputHistory.push(entry);
+  savePlayerInputHistory(); // 保存更新后的历史记录
+  console.log("Player input history updated:", playerInputHistory);
+}
+
+// 获取完整的对话历史
+function getFullPlayerInputHistory() {
+  loadPlayerInputHistory(); // 确保我们有最新的历史记录
+  return playerInputHistory;
+}
+
+// 添加一个函数来格式化并显示历史记录
+function displayFormattedHistory() {
+  return playerInputHistory
+    .map((entry) => {
+      if (entry.type === "user") {
+        return `Player: ${entry.content}`;
+      } else {
+        return `${entry.speaker}: ${entry.content}`;
+      }
+    })
+    .join("\n");
+}
+
 // Function to get the final decision
 function getFinalDecision() {
   const storedDecision = localStorage.getItem("finalDecision");
   return storedDecision ? JSON.parse(storedDecision) : null;
+}
+
+// 添加一个函数来获取玩家输入历史
+function getPlayerInputHistory() {
+  return playerInputHistory;
+}
+
+// 添加一个函数来清除玩家输入历史（如果需要的话）
+function clearPlayerInputHistory() {
+  playerInputHistory = [];
+  localStorage.removeItem("playerInputHistory");
 }
 
 // Function to reset the final decision
@@ -121,6 +177,9 @@ function updateTaskBar() {
 
 // 在页面加载时更新任务栏
 document.addEventListener("DOMContentLoaded", updateTaskBar);
+
+// 在页面加载时初始化input history 
+document.addEventListener("DOMContentLoaded", loadPlayerInputHistory);
 
 // 在语言切换时更新任务栏
 document
@@ -317,7 +376,7 @@ JohnathanIntentExpress = loadDataFromLocalStorage(
   JohnathanIntentExpress
 );
 
-//
+
 
 //检查 Johnathan 的所有意图是否都已表达
 function allJohnathanIntentsExpressed() {
@@ -517,6 +576,9 @@ function resetGame() {
 
   // 重置 finalDecision
   resetFinalDecision();
+
+  // 清除玩家输入历史
+  clearPlayerInputHistory();
 
   window.location.href = "/Main.html";
 }
@@ -807,14 +869,14 @@ document.addEventListener("DOMContentLoaded", () => {
 function shouldTriggerAutoReply(currentNpcName) {
   const triggerConditions = {
     Lisa: {
-      noIntentNoItem: 3,
-      intentNoItem: 3,
-      noIntentItem: 3,
+      noIntentNoItem: 5,
+      intentNoItem: 5,
+      noIntentItem: 5,
     },
     Guard: {
-      noIntentNoItem: 3,
-      intentNoItem: 3,
-      noIntentItem: 3,
+      noIntentNoItem: 4,
+      intentNoItem: 4,
+      noIntentItem: 4,
     },
     Bob: {
       noIntentNoItem: 3,
