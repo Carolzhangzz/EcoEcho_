@@ -1,5 +1,4 @@
 let usedItems = {};
-
 let currentLanguage = getLanguage() || "en";
 let gameProgress = {
   talkedToLisa: false,
@@ -77,6 +76,20 @@ let npcSessionIDs = {
   Johnathan: null,
 };
 
+let finalDecision = null; // New variable to store the final decision
+
+// Function to get the final decision
+function getFinalDecision() {
+  const storedDecision = localStorage.getItem("finalDecision");
+  return storedDecision ? JSON.parse(storedDecision) : null;
+}
+
+// Function to reset the final decision
+function resetFinalDecision() {
+  finalDecision = null;
+  localStorage.removeItem("finalDecision");
+}
+
 // npc 思考指示
 function displayThinkingIndicator() {
   const textContainer = document.getElementById("text-container");
@@ -96,8 +109,7 @@ function removeThinkingIndicator() {
   }
 }
 
-
-// 更新任务栏 
+// 更新任务栏
 function updateTaskBar() {
   const taskBar = document.getElementById("task-bar");
   const task =
@@ -486,7 +498,6 @@ function resetGame() {
     "specialDialogueStarted",
     JSON.stringify(specialDialogueStarted)
   );
- 
 
   // 重置 newSceneCompleted
   resetObject(newSceneCompleted, false);
@@ -503,6 +514,9 @@ function resetGame() {
 
   // 重置 Johnathan 的意图
   resetJohnathanIntentExpress();
+
+  // 重置 finalDecision
+  resetFinalDecision();
 
   window.location.href = "/Main.html";
 }
@@ -603,8 +617,7 @@ function showAlert(message) {
     .addEventListener("click", () => alertBox.remove());
 }
 
-
-// 定义一个只显示 confirm message ，没有是否按钮的函数 
+// 定义一个只显示 confirm message ，没有是否按钮的函数
 function showConfirmMessage(message) {
   const confirmBox = document.createElement("div");
   confirmBox.className = "custom-alert";

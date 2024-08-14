@@ -142,7 +142,7 @@ async function Check(intent, message) {
     });
 
     //  模拟 Intent 接口失败，强制抛出错误
-    throw new Error("Simulated Intent API failure");
+    //throw new Error("Simulated Intent API failure");
 
     if (!response.ok) {
       throw new Error("Network response was not ok");
@@ -240,8 +240,8 @@ async function sendMessageToNPC(message) {
       voiceResponse: true,
     };
 
-    // 模拟 ConvAI 接口失败，强制抛出错误
-    throw new Error("Simulated ConvAI API failure");
+    // // 模拟 ConvAI 接口失败，强制抛出错误
+    // throw new Error("Simulated ConvAI API failure");
 
     const response = await fetch("/api/convai", {
       method: "POST",
@@ -331,7 +331,7 @@ async function generateBackupResponse(message) {
     });
 
     // 模拟 第二个 NPC 调用 接口失败，强制抛出错误
-    throw new Error("Simulated Second NPC API failure");
+    // throw new Error("Simulated Second NPC API failure");
 
     // Display thinking indicator
     displayThinkingIndicator();
@@ -470,6 +470,7 @@ async function checkFinalResponse(response) {
     1. Support for stopping/banning/discontinuing the use of sustainable energy T
     2. Support for returning to or continuing the use of traditional energy sources
     3. Opposition to sustainable energy in favor of traditional energy sources
+    4. Support for stopping/banning/discontinuing the use of sustainable energy
 
     The sentiment should be clearly expressed in a complete sentence or a comprehensive summary.
 
@@ -484,7 +485,7 @@ async function checkFinalResponse(response) {
 
   try {
     //模拟最终的 intent 接口失败，强制抛出错误
-    throw new Error("Simulated Final Intent API failure");
+    // throw new Error("Simulated Final Intent API failure");
 
     const apiResponse = await fetch("/api/generate", {
       method: "POST",

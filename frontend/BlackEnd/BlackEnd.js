@@ -22,13 +22,13 @@ document.addEventListener("DOMContentLoaded", () => {
   function generateSignatureSummary() {
     const signatures = JSON.parse(localStorage.getItem("signatures")) || {};
     const validKeys = ["Ki", "Lisa", "Bob", "Johnathan"];
-  
+
     return validKeys.map((key, index) => {
       const value = signatures[key];
       let status;
       if (value === null) {
         status = { en: "Not encountered", zh: "未遇到" };
-      } else if (typeof value === 'number') {
+      } else if (typeof value === "number") {
         status = { en: `${value} vote(s)`, zh: `${value} 票` };
       } else {
         status = { en: "Unknown", zh: "未知" };
@@ -47,6 +47,25 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   dialogues.push(...generateSignatureSummary());
+
+  // Add final decision display
+  const finalDecision = getFinalDecision();
+  if (finalDecision !== null) {
+    dialogues.push({
+      background: "./images/summary_background.png",
+      textStyle: "futuristic",
+      en: `Your final decision: ${
+        finalDecision
+          ? "Continue to prevent the development of clean energy T"
+          : "Stop preventing the development of clean energy T"
+      }`,
+      zh: `你最后的决定：${
+        finalDecision
+          ? "继续阻止清洁能源 T 的开发"
+          : "停止阻止清洁能源 T 的开发"
+      }`,
+    });
+  }
 
   dialogues.push({
     background: "./images/summary_background.png",
@@ -124,3 +143,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
   updateDialogue();
 });
+
+// Function to get the final decision (should be defined in your global scope)
+function getFinalDecision() {
+  const storedDecision = localStorage.getItem("finalDecision");
+  return storedDecision ? JSON.parse(storedDecision) : null;
+}

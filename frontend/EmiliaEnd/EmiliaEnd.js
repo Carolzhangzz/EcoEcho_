@@ -6,7 +6,11 @@ const emiliaVoice = new Audio("./Music/EmiliaR.mp3");
 const nextSceneButton = document.getElementById("next-scene");
 //最后点击物品时光胶囊，可以重启游戏
 document.addEventListener("DOMContentLoaded", () => {
-  const lastSigner = getLastSigner();
+
+  if (signatures["Johnathan"] !== null && signatures["Johnathan"] !== undefined) {
+    showNextSceneButton();
+  }
+  
   emiliaVoice.volume = 0.3;
   const musicToggleButton = document.getElementById("music-toggle");
 
@@ -65,13 +69,13 @@ document.addEventListener("DOMContentLoaded", () => {
       textStyle: "futuristic",
       en: "Will you stand with us?",
       zh: "你会和我们站在一起吗？",
-      choices: ["Willing", "Unwilling"],
     },
     {
       background: "./images/Space.png",
       textStyle: "futuristic",
       en: "We're on the brink of a new era in energy.",
       zh: "我们正站在能源新纪元的门槛上。",
+      choices: ["Willing", "Unwilling"],
     },
     {
       background: "./images/Space.png",
@@ -163,7 +167,6 @@ document.addEventListener("DOMContentLoaded", () => {
       .play()
       .catch((error) => console.log("Initial BGM playback failed:", error));
   }
-
   updateDialogue();
 });
 
@@ -182,8 +185,8 @@ if (localStorage.getItem("signatures")) {
 function showVotingPrompt() {
   console.log("Entering showVotingPrompt function");
   const message = {
-    en: "How many votes would you like to cast for the petition? (0-5)",
-    zh: "第四阶段我们已经联署了9532份，快要接近门槛9875份，您想为这份请愿书投多少票？",
+    en: "In the final stage of the petition, we have collected 9532 signatures out of the goal of 9875. How many votes would you like to cast for the petition? (0-5)",
+    zh: "第四阶段目前联署数量为9532份，接近目标9875份，您想为这份请愿书投多少票？(0-5)",
   };
 
   const lastSigner = getLastSigner();

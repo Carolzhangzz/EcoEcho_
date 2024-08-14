@@ -37,7 +37,7 @@ document.addEventListener("DOMContentLoaded", () => {
     window.location.href = "../Emilia/Emilia.html";
   });
 
-  const initialBgm = new Audio("./Music/The lament of mankind.mp3");
+  const initialBgm = new Audio("./Music/Sad.mp3");
   const secondBgm = new Audio("./Music/Sad.mp3");
   const kaneVoice = new Audio("./Music/Kane.mp3");
 
@@ -112,8 +112,15 @@ document.addEventListener("DOMContentLoaded", () => {
     {
       background: "./images/ruined_landscape.png",
       textStyle: "futuristic",
-      en: "I hope you can understand the significance of this and share my beliefs. We all have a duty to protect this world and leave a beautiful home for future generations.",
-      zh: "希望你能够明白这其中的意义，并且认同我的想法。我们都有责任去保护这个世界，为后代留下一个美好的家园。",
+      en: "I hope you can understand the significance of this and share my beliefs. ",
+      zh: "希望你能够明白这其中的意义，并且认同我的想法。",
+      fatherSpeech: true,
+    },
+    {
+      background: "./images/ruined_landscape.png",
+      textStyle: "futuristic",
+      en: "We all have a duty to protect this world and leave a beautiful home for future generations.",
+      zh: "我们都有责任去保护这个世界，为后代留下一个美好的家园。",
       fatherSpeech: true,
     },
     {
@@ -188,7 +195,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       // 设置打字速度
-      const typingSpeed = currentLine >= 5 ? 55 : 70; // 5表示“亲爱的KI”的对话，越小越快
+      const typingSpeed = currentLine >= 5 ? 170 : 70; // 5表示“亲爱的KI”的对话，越小越快
       typeWriter(
         dialogueElement,
         currentDialogueObj[currentLanguage],

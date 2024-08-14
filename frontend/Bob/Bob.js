@@ -204,7 +204,7 @@ async function Check(intent, message) {
     });
 
     //模拟 Intent 接口失败，强制抛出错误
-    throw new Error("Simulated Intent API failure");
+    //throw new Error("Simulated Intent API failure");
 
     if (!response.ok) {
       throw new Error("Network response was not ok");
@@ -372,7 +372,7 @@ async function sendMessageToNPC(message) {
     };
 
     // // 注释掉模拟错误的代码
-    throw new Error("Simulated ConvAI API failure");
+    //throw new Error("Simulated ConvAI API failure");
 
     const response = await fetch("/api/convai", {
       method: "POST",
@@ -601,6 +601,7 @@ async function checkFinalResponse(response) {
   1. Support for organizing or participating in a large-scale strike.
   2. Mention of a potential or ongoing large-scale strike.
   3. Advocacy for worker rights or actions that may lead to a strike.
+  4. Mention of the big strike or general strike.
 
   The sentiment should be clearly expressed in a complete sentence or a comprehensive summary.
 
@@ -613,7 +614,7 @@ async function checkFinalResponse(response) {
   displayThinkingIndicator();
   try {
     //模拟 Final Intent 接口失败，强制抛出错误
-    throw new Error("Simulated Final Intent API failure");
+   // throw new Error("Simulated Final Intent API failure");
     const apiResponse = await fetch("/api/generate", {
       method: "POST",
       headers: { "Content-Type": "application/json" },

@@ -236,7 +236,7 @@ async function Check(intent, message) {
     });
 
     // 模拟 Intent 接口失败，强制抛出错误
-    throw new Error("Simulated Intent API failure");
+    //throw new Error("Simulated Intent API failure");
 
     if (!response.ok) {
       throw new Error("Network response was not ok");
@@ -343,7 +343,7 @@ async function sendMessageToNPC(message) {
     });
 
     // 模拟 NPC 接口失败，强制抛出错误
-     throw new Error("Simulated NPC API failure");
+    // throw new Error("Simulated NPC API failure");
 
     if (!response.ok) {
       throw new Error("Network response was not ok");

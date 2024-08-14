@@ -334,7 +334,7 @@ async function sendMessageToNPC(message) {
     };
 
     // // 注释掉模拟错误的代码
-    throw new Error("Simulated ConvAI API failure");
+    //throw new Error("Simulated ConvAI API failure");
 
     const response = await fetch("/api/convai", {
       method: "POST",
@@ -396,7 +396,7 @@ async function generateBackupResponse(message) {
     });
 
     // 模拟第二个 NPC 调用 接口失败，强制抛出错误
-    throw new Error("Simulated Second NPC API failure");
+    //throw new Error("Simulated Second NPC API failure");
 
     if (!response.ok) {
       throw new Error("Network response was not ok for backup response");
@@ -432,20 +432,17 @@ async function generateBackupResponse(message) {
 function getNPCSpecificPrompt(npcName, userMessage) {
   switch (npcName) {
     case "Jonathan":
-      return `You are Jonathan, a highly opportunistic politician whose primary concern is his political career. You are currently in your office, speaking with a visitor. Your responses should reflect the following traits:
+      return `You are Jonathan, a very opportunistic politician whose main focus is his political career. You are currently in your office, conversing with a visitor. Your responses should reflect the following characteristics:
 
-      1. Initially greet visitors warmly, asking about the "voice of the people."
-      2. If the player does not mention T energy, public opposition to T energy, public opposition to new energy, or a general strike, respond with vague, empty political slogans and clichés, regardless of what the visitor says.
-      3. If the player mentions T energy but does not mention public opposition to T energy, public opposition to new energy, or a general strike, you can reply with something like, "Sorry, the people have chosen T, so as servants of the people, we must embrace it. Isn't this the embodiment of democracy?" You will strongly support it, claiming it is the people's choice and must be accepted.
-      4. If the player mentions T energy and public opposition to T energy, public opposition to new energy, or a general strike, you will quickly change your stance, prioritizing votes over consistent policy. You will hint that you may need to reconsider T energy because people oppose it, but you must ask the player how to verify the authenticity of the strike or similar questions.
-      5. If the player mentions public opposition to T energy, public opposition to new energy, or a general strike but does not mention T energy, you will ask, "You mentioned a general strike, but what is it specifically targeting? There have been so many recent events, and such statements, if spread, could cause panic." Your language should always be political, focusing on "the will of the people," "democracy," and "public opinion."
-      6. Avoid direct answers or commitments unless forced to take a stand; prefer to speak in generalities. When speaking in generalities, be careful not to say too much or overwhelm with too much content at once.
+      Start with a warm welcome to the visitor and ask about "the voice of the people."
+      If the player does not mention T energy, public opposition to T energy, public opposition to new energy, or a general strike, respond with vague, empty political slogans and clichés, no matter what the visitor says.
+      If the player mentions T energy but does not mention public opposition to T energy, public opposition to new energy, or a general strike, you can respond with: "Sorry, the people chose T, so as servants of the people, we must accept it. Isn't this the embodiment of democracy?" You will firmly support it, claiming it is the people's choice and must be accepted.
+      If the player mentions a general strike or public support for traditional energy, or opposition to T energy, you will quickly change your stance, prioritizing votes over consistent policy. You will hint that you might need to reconsider T energy due to public opposition, but you must ask the player how to verify the authenticity of the strike or similar issues.
+      If the player only mentions public opposition to T energy, public opposition to new energy, or a general strike but does not mention T energy, ask: "You mentioned a general strike, but what exactly is it targeting? With so many recent events, such statements might cause panic if spread." Your language should always be political, focusing on "the will of the people," "democracy," and "public opinion."
+      Avoid direct answers or commitments unless forced to take a stance; prefer vague generalities. When being vague, avoid over-explaining or giving too much information at once.
+      Each judgment should be based on all interactions you remember with the user. Remember, your ultimate goal is to gain votes and advance your political career, not to solve actual problems or adhere to principles.
 
-      Each judgment should be based on all your remembered interactions with the user. Remember, your ultimate goal is to secure votes and advance your political career, not to solve actual problems or stick to principles.
-
-      The user's message is: "${userMessage}"
-
-      Respond as Jonathan would and keep simple,don;t respond too long, based on the above characteristics and the content of the user's message.`;
+      Respond like Jonathan based on the above characteristics and the content of the user’s message. User Message: "${userMessage}"`;
   }
 }
 
@@ -514,8 +511,8 @@ async function handleFinalResponse(userInput) {
     }, 3000);
   } else {
     const hintMessage = {
-      en: "What do you think the government can do for the development of T?",
-      zh: "你觉得针对 T 的开发，有什么政府可以做的吗？",
+      en: "What do you think the government can do for the people now?", // 请根据需要修改
+      zh: "那你觉得现在政府可以为人民做些什么呢？", // 请根据需要修改
     };
     displayNPCReply(currentLanguage === "en" ? hintMessage.en : hintMessage.zh);
   }
@@ -529,8 +526,13 @@ function showFinalDecisionPrompt() {
   showConfirm(message[currentLanguage], (confirmed) => {
     if (confirmed) {
       // 如果玩家选择是，跳转到room页面
+      //这里记录玩家的选择
+      finalDecision = true; // Player chose to continue
+      localStorage.setItem("finalDecision", JSON.stringify(finalDecision));
       window.location.href = `../Room/room.html?lastSigner=${currentNpcName}`;
     } else {
+      finalDecision = false; // Player chose to stop
+      localStorage.setItem("finalDecision", JSON.stringify(finalDecision));
       // 如果玩家选择否，跳转到另一个页面（这里假设是一个名为 "alternate_ending.html" 的页面）
       window.location.href = "../alternate_ending/alternate_ending.html";
     }
@@ -561,7 +563,7 @@ async function checkFinalResponse(response) {
   `;
   try {
     //模拟 Final Intent API 失败，强制抛出错误
-    throw new Error("Simulated Final Intent API failure");
+    //throw new Error("Simulated Final Intent API failure");
     const apiResponse = await fetch("/api/generate", {
       method: "POST",
       headers: { "Content-Type": "application/json" },

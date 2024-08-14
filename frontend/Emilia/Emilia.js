@@ -376,26 +376,26 @@ function showVotingPrompt() {
   switch (lastSigner) {
     case "Ki":
       message = {
-        en: "In the first phase, we have already collected 587 signatures, close to the threshold of 618. How many votes would you like to cast for the petition? (0-5)",
-        zh: "第一阶段我们已经联署了587份了，已经接近门槛618份，您想为这份请愿书投多少票？(0-5)",
+        en: "In the first phase, we have already collected 587 signatures, close to the goal of 618. How many votes would you like to cast for the petition? (0-5)",
+        zh: "第一阶段目前联署数量为587份，接近目标618份，您想为这份请愿书投多少票？(0-5)",
       };
       break;
     case "Lisa":
       message = {
-        en: "In the second phase, we have already collected 2490 signatures, close to the threshold of 3098. How many votes would you like to cast for the petition? (0-5)",
-        zh: "第二阶段我们已经联署了2490份了，已经接近门槛3098份，您想为这份请愿书投多少票？(0-5)",
+        en: "In the second phase, we have already collected 2490 signatures, close to the goal of 3098. How many votes would you like to cast for the petition? (0-5)",
+        zh: "第二阶段目前联署数量为2490份，接近目标3098份，您想为这份请愿书投多少票？(0-5)",
       };
       break;
     case "Bob":
       message = {
-        en: "In the third phase, we have already collected 5837 signatures, close to the threshold of 6818. How many votes would you like to cast for the petition? (0-5)",
-        zh: "第三阶段我们已经联署了5837份了，已经接近门槛6818份，您想为这份请愿书投多少票？(0-5)",  
+        en: "In the third phase, we have already collected 5837 signatures, close to the goal of 6818. How many votes would you like to cast for the petition? (0-5)",
+        zh: "第三阶段目前联署数量为5837份，接近目标6818份，您想为这份请愿书投多少票？(0-5)",  
       };
       break;
     case "Jonathan":
       message = {
-        en: "In the fourth phase, we have already collected 9532 signatures, close to the threshold of 9875. How many votes would you like to cast for the petition? (0-5)",
-        zh: "第四阶段我们已经联署了9532份，快要接近门槛9875份，您想为这份请愿书投多少票？(0-5)",  
+        en: "In the fourth phase, we have already collected 9532 signatures, close to the goal of 9875. How many votes would you like to cast for the petition? (0-5)",
+        zh: "第四阶段目前联署数量为9532份，接近目标9875份，您想为这份请愿书投多少票？(0-5)",  
       };
       break;
     default:
