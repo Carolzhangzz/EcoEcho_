@@ -170,8 +170,8 @@ function updateTaskBar() {
   const taskBar = document.getElementById("task-bar");
   const task =
     currentLanguage === "en"
-      ? "Main Task: Return to the past to hinder clean energy policies"
-      : "主要任务：回到过去阻碍清洁能源政策";
+      ? "Primary mission: Go back to the past to hinder clean energy policies to protect oil."
+      : "主要任务：回到过去阻碍清洁能源政策以保护石油";
   taskBar.textContent = task;
 }
 

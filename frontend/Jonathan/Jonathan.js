@@ -118,27 +118,15 @@ document.addEventListener("DOMContentLoaded", () => {
 // ];
 
 const intentOne =
-  "Player mentions T energy, come for T, or expresses interest in T energy or just say t or T";
-const intentTwo =
   "Player need to mention anything about the general strike or public or citizen also don't support or they want to do general strike or they want to fight against government.";
+const intentTwo =
+  "Player mentions T energy, come for T, or expresses interest in T energy or just say t or T or T energy policy";
 
 // 检查用户是否表达了特定的意图
 async function Check(intent, message) {
   // 为不同的意图设置不同的关键字
   const keywords = {
     [intentOne]: [
-      "T",
-      "come for T",
-      "looking for T",
-      "stop T",
-      "T energy",
-      "here for T",
-      "energy",
-      "T energy",
-      "t",
-      "T",
-    ],
-    [intentTwo]: [
       "support",
       "人们也不支持",
       "citizen don;t support",
@@ -151,31 +139,41 @@ async function Check(intent, message) {
       "罢工",
       "反对政府",
     ],
+    [intentTwo]: [
+      "T",
+      "come for T",
+      "looking for T",
+      "stop T",
+      "T energy",
+      "here for T",
+      "energy",
+      "T energy",
+      "t",
+      "T",
+      "为了T",
+      "来找T",
+      "停止T",
+      "T能源",
+    ],
   };
 
   // 获取对应意图的关键字
   const intentKeywords = keywords[intent];
 
   try {
-    const prompt = `Analyze the following user message in the context of a conversation about family relationships:
+    const prompt = `Analyze the following user message in the context of a conversation:
 
     User Message: "${message}"
     
     Determine if the user has expressed or implied the following intent, even if it's subtle or indirect:
     Intent: "${intent}"
     
-    Consider the following:
-    1. Direct statements about the relationship
-    2. Indirect references or hints
-    3. Questions that might imply knowledge of the relationship
-    4. Any context clues that suggest the user is aware of this relationship
-    
     If the intent is expressed or strongly implied in any way, respond with "true".
     If there's no clear indication of the intent, respond with "false".
     
     Respond ONLY with "true" or "false", no other words or explanations.`;
 
-    const response = await fetch("/generate", {
+    const response = await fetch("/api/generate", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -198,12 +196,12 @@ async function Check(intent, message) {
     if (intentExpressedValue) {
       switch (intent) {
         case intentOne:
-          updateJohnathanIntentExpress("comeForK", true);
+          updateJohnathanIntentExpress("publicSupport", true);
           resetConversationCount();
           break;
         case intentTwo:
-          updateJohnathanIntentExpress("publicSupport", true);
-          if (!JohnathanIntentExpress.comeForK) {
+          updateJohnathanIntentExpress("comeForK", true);
+          if (!JohnathanIntentExpress.publicSupport) {
             //如果第一个意图没有表达，不能reset
             break;
           }
@@ -233,16 +231,16 @@ async function Check(intent, message) {
     if (containsKeyword) {
       switch (intent) {
         case intentOne:
-          updateJohnathanIntentExpress("comeForK", true);
+          updateJohnathanIntentExpress("publicSupport", true);
           // 如果第一个意图表达了，重置对话次数
           resetConversationCount();
           break;
         case intentTwo:
+          updateJohnathanIntentExpress("comeForK", true);
           // 如果第一个意图没有表达，不能reset
-          if (!JohnathanIntentExpress.comeForK) {
+          if (!JohnathanIntentExpress.publicSupport) {
             break;
           }
-          updateJohnathanIntentExpress("publicSupport", true);
           resetConversationCount();
           break;
       }
@@ -285,9 +283,17 @@ async function handleMessage(message) {
   const textContainer = document.getElementById("text-container");
   textContainer.innerHTML += `<p class="user-message">You: ${message}</p>`;
 
+  //如果对话次数达到了惊人的地步，就自动设定所有的意图都已经表达了
+  if (conversationCount[currentNpcName] >= 30) {
+    updateJohnathanIntentExpress("publicSupport", true);
+    updateJohnathanIntentExpress("comeForK", true);
+    usedItems[currentNpcName] = true;
+    localStorage.setItem("usedItems", JSON.stringify(usedItems));
+  }
+
   // 检查用户是否表达了特定的意图
   const intents = [intentOne, intentTwo];
-  const intentKeys = ["comeForK", "publicSupport"];
+  const intentKeys = ["publicSupport", "comeForK"];
 
   for (let i = 0; i < intents.length; i++) {
     if (!JohnathanIntentExpress[intentKeys[i]]) {
@@ -459,7 +465,6 @@ function getNPCSpecificPrompt(npcName, userMessage) {
 }
 
 function displayNPCReply(reply, audioReply) {
-  
   // 添加 NPC 回复到历史记录
   addToPlayerInputHistory({
     type: "npc",
@@ -661,7 +666,7 @@ function addToInventory(item, image) {
 // 两个接口都失败时，且没有表达任何的意图（关键词检测），显示固定的回复
 //备用的意图的方案
 
-//没有提到 k
+//啥也没有提到
 const backupReplies = [
   {
     en: "Ah, another young person who wants to 'change the world'. Listen, kid, politics is no child's play. It's about reality, about compromise, and most importantly, about survival.",
@@ -673,6 +678,7 @@ const backupReplies = [
   },
 ];
 
+//表达了为 T 来的，但是没有说明大罢工
 const comeForkReplies = [
   {
     en: "I'm sorry, the people have chosen T, so as servants of the people, we must embrace K. This is the embodiment of democracy, isn't it?",
@@ -688,14 +694,11 @@ const comeForkReplies = [
   },
 ];
 
+//如果表达了 publicSupport 和 为了 t 意图，但没有给大罢工的东西，随机返回 noItemsReplies 中的一个回复
 const noItemsReplies = [
   {
     en: "I've heard some rumors, but you know, in politics, information is power. If you have any insider information, maybe we can... help each other?",
     zh: "我听说了一些传言，但你知道，在政治圈里，信息就是力量。如果你有什么内部消息，也许我们可以...互相帮助？",
-  },
-  {
-    en: " The voice of the people is certainly important, but you know, in this position, we need to consider more. If you have any insider information, maybe we can find a... win-win solution together?",
-    zh: "人民的声音当然重要，但你知道，在这个位置上，我们需要考虑更多。如果你有什么内部消息，也许我们可以一起找到一个...双赢的解决方案？",
   },
   {
     en: "A general strike? That's explosive news. If it's true, it could affect the results of the next election... Do you have any specific evidence?",
@@ -707,15 +710,20 @@ const noItemsReplies = [
   },
 ];
 
+//如果表达了 公众支持，但是没有表达为了 T ，不管有没有用东西
 const noComeForKReplies = [
   {
     en: "General strike?  Recently, there have been too many things happening... Which specific policy are you referring to? If we can prepare in advance... maybe we can turn this crisis into an opportunity. Do you have any reliable sources of information?",
     zh: "大罢工？ 最近发生的事情太多了...你是指具体哪个政策？如果我们能提前准备...也许能转危为机。你有什么可靠的消息来源吗？",
   },
+  {
+    en: " The voice of the people is certainly important, but you know, in this position, we need to consider more. If you have any insider information... I mean, what is the general strike about?",
+    zh: "人民的声音当然重要，但你知道，在这个位置上，我们需要考虑更多。如果你有什么内部消息...我是说，人民举行大罢工的诉求是关于什么？",
+  },
 ];
 
 function backupFixedReply() {
-  //只要没有提到 k，就返回 backupReplies 中的一个回复
+  //只要没有提到 T 和 public support，就返回 backupReplies 中的一个回复
   if (
     !JohnathanIntentExpress.comeForK &&
     !JohnathanIntentExpress.publicSupport
@@ -726,9 +734,16 @@ function backupFixedReply() {
     JohnathanIntentExpress.comeForK &&
     !JohnathanIntentExpress.publicSupport
   ) {
-    // 如果表达了 comeForK 意图，随机返回 comeForkReplies 中的一个回复
+    // 如果表达了 comeForT 意图， 但是没有表达大罢工，随机返回 comeForkReplies 中的一个回复
     const random = Math.floor(Math.random() * comeForkReplies.length);
     return comeForkReplies[random];
+  } else if (
+    //如果表达了 公众支持，但是没有表达为了 T
+    JohnathanIntentExpress.publicSupport &&
+    !JohnathanIntentExpress.comeForK
+  ) {
+    const random = Math.floor(Math.random() * noComeForKReplies.length);
+    return noComeForKReplies[random];
   } else if (
     JohnathanIntentExpress.publicSupport &&
     JohnathanIntentExpress.comeForK &&
@@ -737,13 +752,6 @@ function backupFixedReply() {
     // 如果表达了 publicSupport 意图，但没有给大罢工的东西，随机返回 noItemsReplies 中的一个回复
     const random = Math.floor(Math.random() * noItemsReplies.length);
     return noItemsReplies[random];
-  } else if (
-    JohnathanIntentExpress.publicSupport &&
-    !JohnathanIntentExpress.comeForK &&
-    usedItems[currentNpcName]
-  ) {
-    const random = Math.floor(Math.random() * noComeForKReplies.length);
-    return noComeForKReplies[random];
   } else {
     return {
       en: "I'm sorry, I don't have much time to waste on this. The people need me, goodbye.",

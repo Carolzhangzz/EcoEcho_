@@ -87,6 +87,37 @@ function startGame(lastSigner) {
     });
   }
 
+  const setLanguageStyles = () => {
+    const language = currentLanguage; // Replace with your actual language variable
+    const body = document.body;
+
+    if (language === "zh") {
+      body.classList.add("chinese");
+    } else {
+      body.classList.remove("chinese");
+    }
+  };
+
+  // 设置 footer 文本内容
+  function updateFooterText() {
+    const scene1 = document.getElementById("scene1");
+    const scene2 = document.getElementById("scene2");
+    const scene3 = document.getElementById("scene3");
+    const scene4 = document.getElementById("scene4");
+
+    if (currentLanguage === "zh") {
+      scene1.textContent = "媒体中心";
+      scene2.textContent = "工会办公室";
+      scene3.textContent = "政府大楼";
+      scene4.textContent = "工会大楼";
+    } else {
+      scene1.textContent = "Media Center";
+      scene2.textContent = "Union Office";
+      scene3.textContent = "Government Building";
+      scene4.textContent = "Union Building";
+    }
+  }
+
   // Replace the signature check with a vote check , 检查签名状态并禁用/启用相应场景
   if (signatures[lastSigner] != null && signatures[lastSigner] !== undefined) {
     enableAllScenes();
@@ -253,6 +284,11 @@ function startGame(lastSigner) {
     character: "./npc/Emilia.png",
   }));
 
+  // 更新 footer 文本
+  updateFooterText();
+
+  setLanguageStyles();
+
   const displayText = () => {
     bgm.play();
     textContainer.innerHTML = ""; // 清除之前的文本
@@ -389,13 +425,13 @@ function showVotingPrompt() {
     case "Bob":
       message = {
         en: "In the third phase, we have already collected 5837 signatures, close to the goal of 6818. How many votes would you like to cast for the petition? (0-5)",
-        zh: "第三阶段目前联署数量为5837份，接近目标6818份，您想为这份请愿书投多少票？(0-5)",  
+        zh: "第三阶段目前联署数量为5837份，接近目标6818份，您想为这份请愿书投多少票？(0-5)",
       };
       break;
     case "Jonathan":
       message = {
         en: "In the fourth phase, we have already collected 9532 signatures, close to the goal of 9875. How many votes would you like to cast for the petition? (0-5)",
-        zh: "第四阶段目前联署数量为9532份，接近目标9875份，您想为这份请愿书投多少票？(0-5)",  
+        zh: "第四阶段目前联署数量为9532份，接近目标9875份，您想为这份请愿书投多少票？(0-5)",
       };
       break;
     default:

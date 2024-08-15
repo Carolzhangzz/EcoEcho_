@@ -65,7 +65,7 @@
     padding: 8px 15px;
     border-radius: 4px;
     font-family: 'Orbitron', sans-serif;
-    font-size: 14px;
+    font-size: 18px;
     letter-spacing: 0.5px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
     border: 1px solid rgba(255, 255, 255, 0.1);
@@ -75,7 +75,6 @@
 #task-bar:hover {
     background-color: rgba(40, 40, 40, 0.9);
 }
-
 
 /* vote style */
 .voting-dialog {

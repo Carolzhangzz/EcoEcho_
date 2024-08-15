@@ -18,8 +18,8 @@ function displayInitialMessage() {
 }
 function displayFinalMessage() {
   const finalMessage = {
-    en: "Well, in that case, is there anything that Kane and I can do for you?",
-    zh: "既然这样，有什么是我和 kane 能为你做的吗？",
+    en: "Well, in that case, is there anything I can do for you and Kane?",
+    zh: "既然这样，有什么是我能为你和 kane 做的吗？",
   };
 
   const message = currentLanguage === "en" ? finalMessage.en : finalMessage.zh;
@@ -177,18 +177,12 @@ async function Check(intent, message) {
   const intentKeywords = keywords[intent];
 
   try {
-    const prompt = `Analyze the following user message in the context of a conversation about family relationships:
+    const prompt = `Analyze the following user message in the context of a conversation:
 
     User Message: "${message}"
     
     Determine if the user has expressed or implied the following intent, even if it's subtle or indirect:
     Intent: "${intent}"
-    
-    Consider the following:
-    1. Direct statements about the relationship
-    2. Indirect references or hints
-    3. Questions that might imply knowledge of the relationship
-    4. Any context clues that suggest the user is aware of this relationship
     
     If the intent is expressed or strongly implied in any way, respond with "true".
     If there's no clear indication of the intent, respond with "false".
@@ -325,6 +319,16 @@ async function handleMessage(message) {
   const textContainer = document.getElementById("text-container");
   textContainer.innerHTML += `<p class="user-message">You: ${message}</p>`;
 
+  //如果对话次数达到了惊人的地步，就自动设定所有的意图都已经表达了
+  if (conversationCount[currentNpcName] >= 30) {
+    updateBobIntentExpress("comeForK", true);
+    updateBobIntentExpress("kaneRelation", true);
+    updateBobIntentExpress("lisaSupport", true);
+    //物品使用
+    usedItems[currentNpcName] = true;
+    localStorage.setItem("usedItems", JSON.stringify(usedItems));
+  }
+
   // 检查用户是否表达了特定的意图
   const intents = [intentOne, intentTwo, intentThree];
   const intentKeys = ["comeForK", "kaneRelation", "lisaSupport"];
@@ -437,7 +441,7 @@ async function generateBackupResponse(message) {
   displayThinkingIndicator();
 
   try {
-    const response = await fetch("/generate", {
+    const response = await fetch("/api/generate", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -599,7 +603,7 @@ async function handleFinalResponse(userInput) {
       window.location.href = `../Room/room.html?lastSigner=${currentNpcName}`;
       //启用 back to the map button
       document.getElementById("back-main").disabled = false;
-    }, 6000);
+    }, 7000);
   } else {
     const hintMessage = {
       en: "We need to come up with a stronger way to fight against this policy, an activity that all worker partners can participate in. Do you have any suggestions?",

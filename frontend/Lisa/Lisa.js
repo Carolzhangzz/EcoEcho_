@@ -83,7 +83,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 const intent =
-  " the user is Ki, so that the user should expressed that his father is Kane or any relationship with Kane or any information about his father: Kane";
+  "The user may mention being a son, father-son relationship, or any information about their father, The user may mention Kane as their father, or express that they are Kane's child, or provide any information related to their father, Kane.";
 
 // 检查用户是否表达了特定的意图
 async function Check(intent, message) {
@@ -99,6 +99,9 @@ async function Check(intent, message) {
     "我父亲凯恩的死",
     "truth of My father: Kane's death",
     "father's death",
+    "kane is father",
+    "i am his son",
+    "i am son",
     "Kane is my father", // 用于检查玩家是否表达了与 Kane 有关的信息
     "真相",
     "死",
@@ -112,6 +115,8 @@ async function Check(intent, message) {
     "kane 真相",
     "凯恩 真相",
     "kane 去世的真相",
+    "儿子",
+    "父亲",
   ]; // 关键字列表
 
   try {
@@ -127,6 +132,7 @@ async function Check(intent, message) {
     2. Indirect references or hints
     3. Questions that might imply knowledge of the relationship
     4. Any context clues that suggest the user is aware of this relationship
+    5. the user indicate he is son or kane is his father or just say i am son or kane is my father 
     
     If the intent is expressed or strongly implied in any way, respond with "true".
     If there's no clear indication of the intent, respond with "false".
@@ -181,14 +187,12 @@ async function Check(intent, message) {
 }
 
 async function handleMessage(message) {
-
-  
   // 添加用户消息到历史记录
   addToPlayerInputHistory({
     type: "user",
     speaker: "Player",
     content: message,
-    npc: currentNpcName
+    npc: currentNpcName,
   });
 
   console.log("Updated player input history:", playerInputHistory);
@@ -199,6 +203,15 @@ async function handleMessage(message) {
   console.log("Sending message to NPC:", message);
   const textContainer = document.getElementById("text-container");
   textContainer.innerHTML += `<p class="user-message">You: ${message}</p>`;
+
+  //如果对话次数达到了惊人的地步，就自动设定所有的意图都已经表达了
+  if (conversationCount[currentNpcName] >= 30) {
+    intentExpressed[currentNpcName] = true; // 动态设置属性
+    localStorage.setItem("intentExpressed", JSON.stringify(intentExpressed));
+    //物品使用
+    usedItems[currentNpcName] = true;
+    localStorage.setItem("usedItems", JSON.stringify(usedItems));
+  }
 
   // 检查用户是否表达了特定的意图
   if (!intentExpressed[currentNpcName]) {
@@ -381,13 +394,12 @@ async function generateBackupResponse(message) {
 }
 
 function displayNPCReply(reply, audioReply) {
-
   // 追加 NPC 的回复到历史记录中
   addToPlayerInputHistory({
     type: "npc",
     speaker: currentNpcName,
     content: reply,
-    npc: currentNpcName
+    npc: currentNpcName,
   });
 
   // 更新对话计数
@@ -469,7 +481,7 @@ async function handleFinalResponse(userInput) {
       window.location.href = `../Room/room.html?lastSigner=${currentNpcName}`;
       //启用 back to the map button
       document.getElementById("back-main").disabled = false;
-    }, 6000);
+    }, 7000);
   } else {
     const hintMessage = {
       en: "Interesting perspective. But as someone directly involved, what's your view on the government's policy regarding T energy exploitation?",
@@ -562,7 +574,7 @@ function checkKeywords(response) {
     "倾向于传统能源",
     "阻止 T 能源",
     "反对清洁能源",
-    "hinder the susatainable energy",
+    "hinder the sustainable energy",
     "阻碍清洁能源",
   ];
 

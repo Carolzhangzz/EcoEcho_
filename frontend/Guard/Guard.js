@@ -202,25 +202,19 @@ function startGame() {
 }
 
 const intent =
-  "the user has expressed the name Bob or the user is looking for Bob"; // 意图描述
+  "the user has expressed the name Bob or the user is looking for Bob or 鲍勃"; // 意图描述
 
 // 检查用户是否表达了特定的意图
 async function Check(intent, message) {
   const keywords = ["Bob", "鲍勃"];
 
   try {
-    const prompt = `Analyze the following user message in the context of a conversation about family relationships:
+    const prompt = `Analyze the following user message in the context of a conversation:
 
     User Message: "${message}"
     
     Determine if the user has expressed or implied the following intent, even if it's subtle or indirect:
     Intent: "${intent}"
-    
-    Consider the following:
-    1. Direct statements about the relationship
-    2. Indirect references or hints
-    3. Questions that might imply knowledge of the relationship
-    4. Any context clues that suggest the user is aware of this relationship
     
     If the intent is expressed or strongly implied in any way, respond with "true".
     If there's no clear indication of the intent, respond with "false".
@@ -300,6 +294,15 @@ async function handleMessage(message) {
   console.log("Sending message to NPC:", message);
   const textContainer = document.getElementById("text-container");
   textContainer.innerHTML += `<p class="user-message">You: ${message}</p>`;
+
+  //如果对话次数达到了惊人的地步，就自动设定所有的意图都已经表达了
+  if (conversationCount[currentNpcName] >= 10) {
+    intentExpressed[currentNpcName] = true; // 动态设置属性
+    localStorage.setItem("intentExpressed", JSON.stringify(intentExpressed));
+    //物品使用
+    usedItems[currentNpcName] = true;
+    localStorage.setItem("usedItems", JSON.stringify(usedItems));
+  }
 
   // 检查用户是否表达了特定的意图
   if (!intentExpressed[currentNpcName]) {
@@ -402,7 +405,7 @@ async function generateBackupResponse(message) {
   displayThinkingIndicator();
 
   try {
-    const response = await fetch("/generate", {
+    const response = await fetch("/api/generate", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -470,13 +473,12 @@ function getNPCSpecificPrompt(npcName, userMessage) {
 }
 
 function displayNPCReply(reply, audioReply) {
-  
-   // 添加 NPC 回复到历史记录
-   addToPlayerInputHistory({
+  // 添加 NPC 回复到历史记录
+  addToPlayerInputHistory({
     type: "npc",
     speaker: currentNpcName,
     content: reply,
-    npc: currentNpcName
+    npc: currentNpcName,
   });
 
   // 更新对话次数

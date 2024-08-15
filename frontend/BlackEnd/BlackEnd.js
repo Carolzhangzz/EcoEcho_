@@ -187,10 +187,10 @@ function exportInputHistory() {
 }
 
 
-// 在页面关闭或刷新时导出统计数据
-window.addEventListener('beforeunload', function(event) {
-  exportInputHistory();
-});
+// // 在页面关闭或刷新时导出统计数据
+// window.addEventListener('beforeunload', function(event) {
+//   exportInputHistory();
+// });
 
 
 // Function to get the final decision (should be defined in your global scope)
