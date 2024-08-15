@@ -3,7 +3,8 @@ let usedItems = {};
 // 在全局范围内定义一个数组来存储玩家的输入历史
 let playerInputHistory = [];
 
-let currentLanguage = getLanguage() || "en";
+let currentLanguage = getLanguage(); // 默认语言为 null
+
 let gameProgress = {
   talkedToLisa: false,
   talkedToGuard: false,
@@ -82,7 +83,7 @@ let npcSessionIDs = {
 
 let finalDecision = null; // New variable to store the final decision
 
-// 添加一个函数来保存玩家输入历史 
+// 添加一个函数来保存玩家输入历史
 // 从 localStorage 加载历史记录
 function loadPlayerInputHistory() {
   const savedHistory = localStorage.getItem("playerInputHistory");
@@ -93,7 +94,10 @@ function loadPlayerInputHistory() {
 
 // 保存历史记录到 localStorage
 function savePlayerInputHistory() {
-  localStorage.setItem("playerInputHistory", JSON.stringify(playerInputHistory));
+  localStorage.setItem(
+    "playerInputHistory",
+    JSON.stringify(playerInputHistory)
+  );
 }
 
 // 添加新的对话记录
@@ -178,8 +182,14 @@ function updateTaskBar() {
 // 在页面加载时更新任务栏
 document.addEventListener("DOMContentLoaded", updateTaskBar);
 
-// 在页面加载时初始化input history 
+// 在页面加载时初始化input history
 document.addEventListener("DOMContentLoaded", loadPlayerInputHistory);
+
+//在页面加载的时候获取语言
+document.addEventListener("DOMContentLoaded", () => {
+  currentLanguage = getLanguage();
+  console.log("Loaded language:", currentLanguage); // 调试
+});
 
 // 在语言切换时更新任务栏
 document
@@ -375,8 +385,6 @@ JohnathanIntentExpress = loadDataFromLocalStorage(
   "JohnathanIntentExpress",
   JohnathanIntentExpress
 );
-
-
 
 //检查 Johnathan 的所有意图是否都已表达
 function allJohnathanIntentsExpressed() {
@@ -579,6 +587,9 @@ function resetGame() {
 
   // 清除玩家输入历史
   clearPlayerInputHistory();
+
+  //清空语言
+  clearLanguage();
 
   window.location.href = "/Main.html";
 }
@@ -831,11 +842,19 @@ function setLanguage(lang) {
   currentLanguage = lang;
   localStorage.setItem("language", lang);
   document.dispatchEvent(new Event("languageChanged"));
+  setTimeout(() => {
+    location.reload();  // 延时刷新
+  }, 100);  // 100ms 的延时以确保 localStorage 操作完成
 }
 
 // 获取当前语言
 function getLanguage() {
-  return localStorage.getItem("language") || "en"; // 默认英语
+  return localStorage.getItem("language"); // 默认英语
+}
+
+//清空语言设定
+function clearLanguage() {
+  localStorage.removeItem("language");
 }
 
 // Music toggle logic

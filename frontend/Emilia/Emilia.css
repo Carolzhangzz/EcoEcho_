@@ -151,9 +151,10 @@ body {
 }
 
 .futuristic {
-    font-family: "Courier New", monospace;
+  font-family: "Courier New", monospace;
   color: #ffd700;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  animation: continuousGlow 2s infinite;
 }
 
 .vintage {
@@ -286,4 +287,43 @@ body {
 @keyframes flash {
     0%, 100% { opacity: 1; }
     50% { opacity: 0.5; }
+}
+
+@keyframes continuousGlow {
+    0%, 100% { 
+        opacity: 1;
+        filter: drop-shadow(0 0 10px rgba(255, 255, 255, 1));
+    }
+    50% { 
+        opacity: 0.5;
+        filter: drop-shadow(0 0 25px rgb(76, 76, 76));
+    }
+}
+
+
+#character-image {
+    position: absolute;
+    left: 100px;
+    bottom: 100%;
+    width: 25%;
+    max-height: 300px;
+    object-fit: contain;
+}
+
+#character-image::after {
+    content: "!";
+    font-size: 24px;
+    color: red;
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    background-color: white;
+    border-radius: 50%;
+    padding: 5px;
+    display: var(--display, none);  /* Use CSS variable to control display */
+    z-index: 10;
+}
+
+#character-image.show-exclamation::after {
+    --display: block;  /* Show exclamation when class is applied */
 }

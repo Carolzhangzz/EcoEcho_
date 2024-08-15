@@ -317,15 +317,29 @@ function startGame(lastSigner) {
     document.body.style.backgroundImage = `url('${scene.background}')`;
     displayText();
 
-    if (scene.isBlackScreen) {
-      window.location.href = "black_screen.html"; // 移除了 './'
+ 
+    // Get the character image container
+    const characterImage = document.getElementById("character-image");
+
+    // Load saved signatures from localStorage
+    if (localStorage.getItem("signatures")) {
+        signatures = JSON.parse(localStorage.getItem("signatures"));
+    }
+    
+    // Check whether to show the red exclamation mark
+    if (signatures[lastSigner] === null || signatures[lastSigner] === undefined) {
+        // If there's no lastSigner, show the exclamation mark
+        characterImage.classList.add("show-exclamation");
+    } else {
+        // If there is a lastSigner, hide the exclamation mark
+        characterImage.classList.remove("show-exclamation");
     }
 
-    // 更新角色图片
-    const characterImage = document.getElementById("character-image");
+    // Update character image with continuous glow effect
     if (scene.character) {
       characterImage.src = scene.character;
       characterImage.style.display = "block";
+      // The glow effect is now applied via CSS animation
     } else {
       characterImage.style.display = "none";
     }
