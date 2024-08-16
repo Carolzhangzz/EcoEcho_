@@ -122,8 +122,8 @@
 
 #timeline-indicator {
   position: fixed;
-  top: 20px;
-  left: 300px;
+  top: 100px;
+  right: 150px;
   padding: 5px 15px;
   font-size: 14px;
   background: rgba(0, 0, 0, 0.6);
