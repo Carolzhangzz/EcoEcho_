@@ -294,7 +294,7 @@ function startGame() {
   updateScene();
 }
 
-const backMainButton = document.getElementById("back-main");
+const backMainButton = document.getElementById("back-main-scene");
 backMainButton.addEventListener("click", () => {
   window.location.href = "../Main.html"; // 确保这是正确的主页面路径
 });
