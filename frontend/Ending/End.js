@@ -1,5 +1,6 @@
 let isMusicPlaying = true;
 document.addEventListener("DOMContentLoaded", () => {
+ 
   const musicToggleButton = document.getElementById("music-toggle");
 
   musicToggleButton.addEventListener("click", () => {
@@ -159,6 +160,10 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function updateDialogue() {
+    const backButton = document.getElementById("back-to-main");
+    //一旦对话开始，禁用返回按钮 
+    backButton.disabled = true;
+
     if (currentLine < dialogues.length) {
       const currentDialogueObj = dialogues[currentLine];
       const dialogueElement = document.createElement("div");
@@ -195,7 +200,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       // 设置打字速度
-      const typingSpeed = currentLine >= 5 ? 150 : 70; // 5表示“亲爱的KI”的对话，越小越快
+      const typingSpeed = currentLine >= 5 ? 130 : 70; // 5表示“亲爱的KI”的对话，越小越快
       typeWriter(
         dialogueElement,
         currentDialogueObj[currentLanguage],
@@ -206,6 +211,8 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       );
     } else {
+      // 所有对话结束后，显示返回按钮
+      backButton.disabled = false;
       nextSceneButton.style.display = "block";
     }
   }

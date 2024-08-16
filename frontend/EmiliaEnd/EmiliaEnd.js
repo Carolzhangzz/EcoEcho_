@@ -111,6 +111,10 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function updateDialogue() {
+    // 禁用返回按钮
+    const backButton = document.getElementById("back-to-main");
+    backButton.disabled = true;
+
     initialBgm.play();
     if (currentLine < dialogues.length) {
       const currentDialogueObj = dialogues[currentLine];
@@ -157,6 +161,8 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       );
     } else {
+      // 启用返回按钮
+      backButton.disabled = false;
       // 所有对话结束后，显示返回按钮
       nextSceneButton.style.display = "block";
     }
