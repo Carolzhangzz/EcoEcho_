@@ -4,10 +4,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const backButton = document.getElementById("back-to-main");
   const bgm = document.getElementById("bgm");
 
-
   const exportHistoryButton = document.getElementById("export-history");
   exportHistoryButton.addEventListener("click", exportInputHistory);
-
 
   backButton.addEventListener("click", () => {
     window.location.href = "../Emilia/Emilia.html";
@@ -100,6 +98,8 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function updateDialogue() {
+    // 一旦开始更新对话，就禁用返回按钮
+    backButton.disabled = true;
     if (currentLine < dialogues.length) {
       const currentDialogueObj = dialogues[currentLine];
       const dialogueElement = document.createElement("div");
@@ -124,6 +124,8 @@ document.addEventListener("DOMContentLoaded", () => {
         setTimeout(updateDialogue, 10);
       });
     } else {
+      // 所有对话结束后，启用返回按钮
+      backButton.disabled = false;
       // 所有对话结束后，显示返回按钮
       backButton.style.display = "block";
     }
@@ -149,35 +151,34 @@ document.addEventListener("DOMContentLoaded", () => {
   updateDialogue();
 });
 
-
 function exportInputHistory() {
   const history = getPlayerInputHistory();
-  
+
   // 格式化历史记录
-  const formattedHistory = history.map(entry => {
-    if (entry.type === 'user') {
-      return `Player: ${entry.content}`;
-    } else {
-      return `${entry.speaker}: ${entry.content}`;
-    }
-  }).join('\n');
+  const formattedHistory = history
+    .map((entry) => {
+      if (entry.type === "user") {
+        return `Player: ${entry.content}`;
+      } else {
+        return `${entry.speaker}: ${entry.content}`;
+      }
+    })
+    .join("\n");
 
   // 创建 Blob 和下载链接
-  const blob = new Blob([formattedHistory], { type: 'text/plain' });
+  const blob = new Blob([formattedHistory], { type: "text/plain" });
   const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
+  const a = document.createElement("a");
   a.href = url;
-  a.download = 'player_input_history.txt';
+  a.download = "player_input_history.txt";
   a.click();
   URL.revokeObjectURL(url);
 }
-
 
 // // 在页面关闭或刷新时导出统计数据
 // window.addEventListener('beforeunload', function(event) {
 //   exportInputHistory();
 // });
-
 
 // Function to get the final decision (should be defined in your global scope)
 function getFinalDecision() {
