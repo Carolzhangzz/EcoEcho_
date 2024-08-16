@@ -7,6 +7,11 @@ bgm.volume = 0.1; //  音量设置为 10%
 let backupReplyIndex = 0; // 备用回复的索引
 
 function displayInitialMessage() {
+
+  // 隐藏
+  document.getElementById("next-text-button").style.display = "none";
+  document.getElementById("prev-text-button").style.display = "none";
+
   const initialMessage = {
     en: "Ah, a visitor. I'm Bob, the union leader. We've had many new faces around here lately. Friend, do you have something on your mind?",
     zh: "啊，有访客啊。我是Bob，工会领袖。这段时间工会来了许多新面孔。朋友，你有什么心事吗？",
@@ -44,6 +49,10 @@ document.addEventListener("DOMContentLoaded", () => {
   // gameProgress.talkedToGuard = true;
   // gameProgress.talkedToBob=true;
   // usedItems.Bob = true;
+
+  nextButton.style.display = "inline-block";
+  prevButton.style.display = "none";
+
   if (!gameProgress.talkedToGuard) {
     // 如果没有与Guard对话，说明就是地图来的，直接显示默认对话
     startFirstDialogue();
@@ -58,8 +67,6 @@ document.addEventListener("DOMContentLoaded", () => {
     displayInitialMessage();
   }
 
-  nextButton.style.display = "inline-block";
-  prevButton.style.display = "none";
 
   // userInputContainer.style.display =  "none";
   const userInput = document.getElementById("user-input");
@@ -418,9 +425,9 @@ async function sendMessageToNPC(message) {
       displayNPCReply(npcReply, audioReply);
     } else {
       try {
-        const translatedReply = await translateText(npcReply, "auto", "zh");
+        const translatedReply = await translateText(npcReply);
         console.log("Translated Reply:", translatedReply);
-        displayNPCReply(translatedReply.data, audioReply);
+        displayNPCReply(translatedReply, audioReply);
       } catch (error) {
         console.error("Error in translation, using original reply:", error);
         displayNPCReply(npcReply, audioReply);
@@ -465,9 +472,9 @@ async function generateBackupResponse(message) {
       displayNPCReply(npcReply);
     } else {
       try {
-        const translatedReply = await translateText(npcReply, "auto", "zh");
+        const translatedReply = await translateText(npcReply);
         console.log("Translated Backup Reply:", translatedReply);
-        displayNPCReply(translatedReply.data);
+        displayNPCReply(translatedReply);
       } catch (error) {
         console.error("Error in translation, using original reply:", error);
         displayNPCReply(npcReply);

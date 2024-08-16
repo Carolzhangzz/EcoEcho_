@@ -12,8 +12,10 @@
 
 <body>
     <div class="game-container">
-        <button id="back-main">Back to Main Scene</button>
-        <img id="character-image" src="" alt="">
+        <button id="back-main-scene">Back to Main Scene</button>
+        <div id="timeline-indicator">2024</div>
+        <img id="character-image" src="./npc/Emilia.png" alt="Emilia">
+        <div id="prompt-icon" class="hidden">!</div>
         <div id="text-container"></div>
         <div id="button-container">
             <button id="prev-text-button">
@@ -46,8 +48,10 @@
     <audio id="bgm" loop></audio>
     <button id="music-toggle">🔊</button>
     <button id="language-toggle">EN/CH</button>
-    <script src="./Emilia.js"></script>
     <script src="../global.js"></script>
+    <script src="../npc.js"></script>
+    <script src="./Emilia.js"></script>
+    <script src="../button.js"></script>
 </body>
 
 </html>

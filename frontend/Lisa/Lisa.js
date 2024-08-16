@@ -1,3 +1,4 @@
+
 let bgm;
 let currentNpcName = "Lisa"; // NPC 名字
 bgm = document.getElementById("bgm");
@@ -5,6 +6,7 @@ bgm.loop = true; // Let the music loop
 bgm.src = "../Music/NPC_talk.mp3"; // 设置统一的背景音乐
 bgm.volume = 0.1; //  音量设置为 10%
 let backupReplyIndex = 0; // 备用回复的索引
+
 
 function displayInitialMessage() {
   const initialMessage = {
@@ -295,10 +297,10 @@ async function sendMessageToNPC(message) {
       displayNPCReply(npcReply, audioReply);
     } else {
       try {
-        const translatedReply = await translateText(npcReply, "auto", "zh");
+        const translatedReply = await translateText(npcReply);
         // const translatedReply = await translateText(npcReply, 'zh-CN');
         console.log("Translated Reply:", translatedReply);
-        displayNPCReply(translatedReply.data, audioReply);
+        displayNPCReply(translatedReply, audioReply);
       } catch (error) {
         console.error("Error in translation, using original reply:", error);
         displayNPCReply(npcReply, audioReply);
@@ -375,9 +377,10 @@ async function generateBackupResponse(message) {
       displayNPCReply(npcReply);
     } else {
       try {
-        const translatedReply = await translateText(npcReply, "auto", "zh");
+        const translatedReply = await translateText(npcReply);
+        // const translatedReply = await translateText(npcReply, 'zh-CN');
         console.log("Translated Backup Reply:", translatedReply);
-        displayNPCReply(translatedReply.data);
+        displayNPCReply(translatedReply);
       } catch (error) {
         console.error("Error in translation, using original reply:", error);
         displayNPCReply(npcReply);

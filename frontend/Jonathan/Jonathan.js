@@ -7,6 +7,10 @@ bgm.volume = 0.1; //  音量设置为 10%
 let backupReplyIndex = 0; // 备用回复的索引
 
 function displayInitialMessage() {
+  // 隐藏
+  document.getElementById("next-text-button").style.display = "none";
+  document.getElementById("prev-text-button").style.display = "none";
+
   const initialMessage = {
     en: "Welcome, esteemed citizen! I'm Jonathan, your dedicated public servant. I'm always eager to hear the voice of the people. What brings you to my office today? How can I assist you in making our community better?",
     zh: "欢迎，尊敬的市民！我是Johnathan，您忠诚的公仆。我一直渴望听到人民的声音。今天是什么风把您吹到我办公室来的？我怎样才能帮助您让我们的社区变得更好呢？",
@@ -18,6 +22,7 @@ function displayInitialMessage() {
 }
 
 function displayFinalMessage() {
+
   const finalMessage = {
     en: "Really! The people's will can change so easily. Please rest assured, I always stand with the people—wherever they may stand.",
     zh: "真的吗！原来人民的意愿这样轻易改变。请放心，我永远站在人民这边 —— 无论他们站在哪里。",
@@ -45,6 +50,13 @@ document.addEventListener("DOMContentLoaded", () => {
   // gameProgress.talkedToBob = true;
   // Items.Bob = true;
   // signatures["Bob"] = 1;
+
+  const userInput = document.getElementById("user-input");
+  const sendMessageButton = document.getElementById("send-message");
+
+  nextButton.style.display = "inline-block";
+  prevButton.style.display = "none";
+
   if (!gameProgress.talkedToBob || signatures["Bob"] === null) {
     // 如果没有与Bob对话，说明就是地图来的，直接显示默认对话
     startFirstDialogue();
@@ -61,13 +73,8 @@ document.addEventListener("DOMContentLoaded", () => {
     displayInitialMessage();
   }
 
-  nextButton.style.display = "inline-block";
-  prevButton.style.display = "none";
 
   // userInputContainer.style.display =  "none";
-
-  const userInput = document.getElementById("user-input");
-  const sendMessageButton = document.getElementById("send-message");
 
   sendMessageButton.addEventListener("click", () => {
     const userMessage = userInput.value.trim();
@@ -382,9 +389,9 @@ async function sendMessageToNPC(message) {
       displayNPCReply(npcReply, audioReply);
     } else {
       try {
-        const translatedReply = await translateText(npcReply, "auto", "zh");
+        const translatedReply = await translateText(npcReply);
         console.log("Translated Reply:", translatedReply);
-        displayNPCReply(translatedReply.data, audioReply);
+        displayNPCReply(translatedReply, audioReply);
       } catch (error) {
         console.error("Error in translation, using original reply:", error);
         displayNPCReply(npcReply, audioReply);
@@ -429,9 +436,10 @@ async function generateBackupResponse(message) {
       displayNPCReply(npcReply);
     } else {
       try {
-        const translatedReply = await translateText(npcReply, "auto", "zh");
+        const translatedReply = await translateText(npcReply);
+        // const translatedReply = await translateText(npcReply, 'zh-CN');
         console.log("Translated Backup Reply:", translatedReply);
-        displayNPCReply(translatedReply.data);
+        displayNPCReply(translatedReply);
       } catch (error) {
         console.error("Error in translation, using original reply:", error);
         displayNPCReply(npcReply);
@@ -547,7 +555,7 @@ async function handleFinalResponse(userInput) {
 function showFinalDecisionPrompt() {
   const message = {
     en: "After Johnathan opposes traditional energy, he will introduce related plans. The future of T will completely become a past that can never be returned to. This is the last decision before success. Are you ready?",
-    zh: "当Johnathan反对传统能源之后，将推出相关方案，关于T的未来将彻底成为永远无法回到的过去。这是成功之前的最后一个决定了，你准备好了吗？",
+    zh: "当Johnathan反对传统能源之后，政府将推出相关方案阻止清洁能源的开发，关于T的未来将彻底成为永远无法回到的过去。这是成功之前的最后一个决定了，你准备好了吗？",
   };
   showConfirm(message[currentLanguage], (confirmed) => {
     if (confirmed) {

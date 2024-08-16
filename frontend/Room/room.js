@@ -2,7 +2,42 @@ let currentScene = 0;
 let currentTextIndex = 0;
 let bgm;
 
+function updateTimelineIndicator() {
+  const timelineIndicator = document.getElementById("timeline-indicator");
+  const now = new Date();
+  const year = 2056;
+  const month = now.getMonth() + 1;
+  const day = now.getDate();
+  const hours = now.getHours().toString().padStart(2, "0");
+  const minutes = now.getMinutes().toString().padStart(2, "0");
+  const seconds = now.getSeconds().toString().padStart(2, "0");
+
+  // 使用 window.currentLanguage 来确保我们访问的是全局变量
+  if (currentLanguage === "zh") {
+    timelineIndicator.textContent = `${year}年${month}月${day}日 ${hours}:${minutes}:${seconds}`;
+  } else {
+    timelineIndicator.textContent = `${year}-${month
+      .toString()
+      .padStart(2, "0")}-${day
+      .toString()
+      .padStart(2, "0")} ${hours}:${minutes}:${seconds}`;
+  }
+}
+
 document.addEventListener("DOMContentLoaded", () => {
+  // 初始更新时间线指示器
+  updateTimelineIndicator();
+
+  // 每秒更新一次时间线指示器
+  setInterval(updateTimelineIndicator, 1000);
+
+  // 在语言切换时更新时间线指示器
+  document.getElementById("language-toggle").addEventListener("click", () => {
+    // 语言切换的逻辑应该在 global.js 中处理
+    // 我们只需要在这里更新时间线指示器
+    updateTimelineIndicator();
+  });
+
   bgm = document.getElementById("bgm");
   bgm.loop = true; // Let the music loop
   bgm.src = "./Music/Living in future.mp3"; // 设置统一的背景音乐
@@ -12,7 +47,7 @@ document.addEventListener("DOMContentLoaded", () => {
   startGame(lastSigner);
 
   // 不禁用返回主页按钮
-  const backMainButton = document.getElementById("back-main");
+  const backMainButton = document.getElementById("back-to-main");
   backMainButton.addEventListener("click", () => {
     if (lastSigner === "Johnathan") {
       window.location.href = "../Ending/End.html"; // 跳转到落幕页面

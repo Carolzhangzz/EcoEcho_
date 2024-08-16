@@ -119,3 +119,111 @@
 .voting-options button:hover {
   background-color: rgba(0, 150, 200, 0.8);
 }
+
+#timeline-indicator {
+  position: fixed;
+  top: 20px;
+  left: 300px;
+  padding: 5px 15px;
+  font-size: 14px;
+  background: rgba(0, 0, 0, 0.6);
+  color: #5af7ff;
+  border: 1px solid #5af7ff;
+  border-radius: 10px;
+  font-family: 'Orbitron', sans-serif;
+  text-shadow: 0 0 3px #00FFFF;
+  box-shadow: 0 0 10px rgba(90, 247, 255, 0.5);
+  transition: all 0.3s ease;
+}
+
+#timeline-indicator:hover {
+  background: rgba(90, 247, 255, 0.2);
+  box-shadow: 0 0 15px rgba(90, 247, 255, 0.8);
+}
+
+.mouse-trail {
+  position: fixed;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0;
+  transition: opacity 0.3s ease, width 0.3s ease, height 0.3s ease;
+  background: radial-gradient(circle, rgba(0,255,255,1) 0%, rgba(0,128,255,0.8) 50%, rgba(0,0,255,0) 100%);
+  box-shadow: 
+      0 0 2px #00ffff,
+      0 0 4px #00ffff,
+      0 0 6px #00ffff,
+      0 0 10px rgba(0,255,255,0.5);
+  animation: trailAnimation 2s infinite;
+}
+
+.mouse-trail::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 1px;
+  height: 1px;
+  background: #ffffff;
+  border-radius: 50%;
+  box-shadow: 0 0 2px #ffffff, 0 0 4px #ffffff;
+}
+
+@keyframes trailAnimation {
+  0%, 100% {
+      transform: scale(1) rotate(0deg);
+  }
+  25% {
+      transform: scale(1.2) rotate(90deg);
+  }
+  50% {
+      transform: scale(1) rotate(180deg);
+  }
+  75% {
+      transform: scale(0.8) rotate(270deg);
+  }
+}
+
+body {
+  cursor: none; /* 隐藏默认鼠标指针 */
+}
+
+/* 自定义鼠标指针 */
+#custom-cursor {
+  position: fixed;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: rgba(0,255,255,0.7);
+  border: 1px solid rgba(255,255,255,0.7);
+  pointer-events: none;
+  z-index: 10000;
+  transition: transform 0.1s ease;
+  box-shadow: 0 0 5px #00ffff, 0 0 10px rgba(0,255,255,0.5);
+}
+
+#custom-cursor::before,
+#custom-cursor::after {
+  content: '';
+  position: absolute;
+  background: #00ffff;
+}
+
+#custom-cursor::before {
+  width: 1px;
+  height: 12px;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+#custom-cursor::after {
+  width: 12px;
+  height: 1px;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}

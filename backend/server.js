@@ -53,33 +53,82 @@ app.post("/api/generate", async (req, res) => {
 const BAIDU_APP_ID = process.env.BAIDU_APP_ID;
 const BAIDU_SECRET_KEY = process.env.BAIDU_SECRET_KEY;
 
+// app.post("/api/translate", async (req, res) => {
+//   const { text, from, to } = req.body;
+//   const salt = Date.now();
+//   const sign = md5(BAIDU_APP_ID + text + salt + BAIDU_SECRET_KEY);
+
+//   try {
+//     const response = await axios.get(
+//       "https://fanyi-api.baidu.com/api/trans/vip/translate",
+//       {
+//         params: {
+//           q: text, // 这里不进行URL编码
+//           from,
+//           to,
+//           appid: BAIDU_APP_ID,
+//           salt,
+//           sign,
+//         },
+//         paramsSerializer: (params) => {
+//           return Object.keys(params)
+//             .map((key) => `${key}=${encodeURIComponent(params[key])}`)
+//             .join("&");
+//         },
+//       }
+//     );
+//     res.json(response.data);
+//   } catch (error) {
+//     console.error("Translation error:", error);
+//     res.status(500).json({ error: "Translation failed" });
+//   }
+// });
+
+const GOOGLE_TRANSLATE_API_URL =
+  "https://translation.googleapis.com/language/translate/v2";
+const API_KEY = process.env.Google_API_KEY; // 替换为您的 API 密钥
+
+// app.post('/api/translate', async (req, res) => {
+//   const { text, source = 'auto', target = 'zh-CN' } = req.body;
+//   console.log('Received translation request:', { text, source, target });
+
+//   try {
+//       const response = await axios.post(`${GOOGLE_TRANSLATE_API_URL}?key=${API_KEY}`, {
+//           q: text,
+//           source: source,
+//           target: target,
+//           format: 'text'
+//       });
+
+//       const translatedText = response.data.data.translations[0].translatedText;
+//       console.log('Translated text:', translatedText);
+//       res.json({ translatedText });
+//   } catch (error) {
+//       console.error('Translation error:', error.response ? error.response.data : error.message);
+//       res.status(500).json({ error: 'Translation failed', originalText: text });
+//   }
+// });
+
 app.post("/api/translate", async (req, res) => {
-  const { text, from, to } = req.body;
-  const salt = Date.now();
-  const sign = md5(BAIDU_APP_ID + text + salt + BAIDU_SECRET_KEY);
+  const { text } = req.body;
 
   try {
-    const response = await axios.get(
-      "https://fanyi-api.baidu.com/api/trans/vip/translate",
+    const response = await axios.post(
+      `${GOOGLE_TRANSLATE_API_URL}?key=${API_KEY}`,
       {
-        params: {
-          q: text, // 这里不进行URL编码
-          from,
-          to,
-          appid: BAIDU_APP_ID,
-          salt,
-          sign,
-        },
-        paramsSerializer: (params) => {
-          return Object.keys(params)
-            .map((key) => `${key}=${encodeURIComponent(params[key])}`)
-            .join("&");
-        },
+        q: text,
+        target: "zh-CN", // 中文（简体）
+        format: "text",
       }
     );
-    res.json(response.data);
+
+    const translatedText = response.data.data.translations[0].translatedText;
+    res.json({ translatedText });
   } catch (error) {
-    console.error("Translation error:", error);
+    console.error(
+      "Error:",
+      error.response ? error.response.data : error.message
+    );
     res.status(500).json({ error: "Translation failed" });
   }
 });

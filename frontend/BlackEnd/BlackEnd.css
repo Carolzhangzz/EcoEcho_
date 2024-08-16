@@ -265,11 +265,11 @@ body {
 
 /* 现有的 CSS 保持不变 */
 
-#copy-history,
+
 #export-history {
   position: fixed;
   padding: 5px 10px;
-  font-size: 16px;
+  font-size: 20px;
   background: linear-gradient(
     135deg,
     rgba(38, 123, 208, 0.8),
@@ -282,34 +282,26 @@ body {
   outline: none;
   transition: all 0.3s ease;
   box-shadow: 0 0 10px #5af7ff;
-  font-family: "Orbitron", sans-serif;
   text-shadow: 0 0 5px #00ffff;
   z-index: 1000;
 }
 
-#copy-history {
-  bottom: 100px;
-  right: 530px;
-}
 
 #export-history {
-  bottom: 100px;
-  right: 800px; /* 调整这个值以确保按钮不会重叠 */
+  bottom: 10%;
+  right: center;
 }
 
-#copy-history:hover,
 #export-history:hover {
   background: linear-gradient(
     135deg,
-    rgba(0, 255, 128, 0.8),
     rgba(0, 128, 255, 0.8)
   );
-  box-shadow: 0 0 15px #5af7ff;
+  box-shadow: 0 0 15px #1605ff;
 }
 
 /* 为了确保按钮在小屏幕上不会重叠，可以添加媒体查询 */
 @media (max-width: 768px) {
-  #copy-history,
   #export-history {
     font-size: 14px;
     padding: 4px 8px;

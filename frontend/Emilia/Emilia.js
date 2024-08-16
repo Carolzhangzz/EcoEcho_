@@ -5,6 +5,9 @@ const MUSIC_PATH = "./Music/Living in future.mp3";
 const MAIN_PAGE_PATH = "../Main.html";
 const MAIN_MAP_PATH = "../Emilia/Emilia.html";
 let bgm;
+// 在全局作用域添加一个变量来跟踪是否需要显示提示
+let showPrompt = false;
+const promptIcon = document.getElementById("prompt-icon");
 
 // 允许所有场景
 function enableAllScenes() {
@@ -43,22 +46,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
   startGame(lastSigner);
 
-  const backMainButton = document.getElementById("back-main");
+  const backMainButton = document.getElementById("back-main-scene");
   backMainButton.addEventListener("click", () => {
     window.location.href = MAIN_PAGE_PATH;
   });
-
-  // document.addEventListener("click", (event) => {
-  //   if (event.target.id === "scene1") {
-  //     goToScene("../Lisa/Lisa.html");
-  //   } else if (event.target.id === "scene2") {
-  //     goToScene("../Bob/Bob.html");
-  //   } else if (event.target.id === "scene4") {
-  //     goToScene("../Guard/Guard.html");
-  //   } else if (event.target.id === "scene3") {
-  //     goToScene("../Jonathan/Jonathan.html");
-  //   }
-  // });
 });
 
 function startGame(lastSigner) {
@@ -68,6 +59,15 @@ function startGame(lastSigner) {
   // const lastSigner = getLastSigner();
   let dialogues;
 
+  //检查是否要显示 prompt-icon
+  // 检查是否需要显示提示
+  if (
+    lastSigner &&
+    (signatures[lastSigner] === undefined || signatures[lastSigner] === null)
+  ) {
+    showPrompt = true;
+    promptIcon.classList.remove("hidden");
+  }
   // 修改禁用场景的函数
   function disableScenes(scenesToDisable) {
     scenesToDisable.forEach((sceneId) => {
@@ -317,22 +317,31 @@ function startGame(lastSigner) {
     document.body.style.backgroundImage = `url('${scene.background}')`;
     displayText();
 
- 
+    // 如果需要显示提示，则显示提示图标
+    if (showPrompt) {
+      promptIcon.classList.remove("hidden");
+    } else {
+      promptIcon.classList.add("hidden");
+    }
+
     // Get the character image container
     const characterImage = document.getElementById("character-image");
 
     // Load saved signatures from localStorage
     if (localStorage.getItem("signatures")) {
-        signatures = JSON.parse(localStorage.getItem("signatures"));
+      signatures = JSON.parse(localStorage.getItem("signatures"));
     }
-    
+
     // Check whether to show the red exclamation mark
-    if (signatures[lastSigner] === null || signatures[lastSigner] === undefined) {
-        // If there's no lastSigner, show the exclamation mark
-        characterImage.classList.add("show-exclamation");
+    if (
+      signatures[lastSigner] === null ||
+      signatures[lastSigner] === undefined
+    ) {
+      // If there's no lastSigner, show the exclamation mark
+      characterImage.classList.add("show-exclamation");
     } else {
-        // If there is a lastSigner, hide the exclamation mark
-        characterImage.classList.remove("show-exclamation");
+      // If there is a lastSigner, hide the exclamation mark
+      characterImage.classList.remove("show-exclamation");
     }
 
     // Update character image with continuous glow effect
@@ -373,6 +382,7 @@ function startGame(lastSigner) {
         currentTextIndex = sceneLength - 1; // Go to the last text in the last scene
       }
     }
+    showPrompt = false; // 用户开始与 Emilia 对话，隐藏提示
     updateScene();
   });
 
@@ -507,6 +517,7 @@ async function Signature(name, voteCount) {
   try {
     signatures[name] = voteCount;
     localStorage.setItem("signatures", JSON.stringify(signatures));
+    showPrompt = false; // 签名后，不再需要提示
     if (voteCount >= 0) {
       setTimeout(() => {
         window.location.reload();

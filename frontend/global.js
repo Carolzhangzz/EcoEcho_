@@ -3,7 +3,8 @@ let usedItems = {};
 // 在全局范围内定义一个数组来存储玩家的输入历史
 let playerInputHistory = [];
 
-let currentLanguage = getLanguage(); // 默认语言为 null
+// 方法 3: 使用 var 在全局作用域声明（不推荐）
+var currentLanguage = getLanguage();
 
 let gameProgress = {
   talkedToLisa: false,
@@ -82,6 +83,72 @@ let npcSessionIDs = {
 };
 
 let finalDecision = null; // New variable to store the final decision
+
+
+
+// 鼠标拖尾效果
+(function() {
+  const numTrails = 25; // 增加拖尾粒子数量
+  const trails = [];
+  let mouseX = 0, mouseY = 0;
+
+  // 创建自定义鼠标指针
+  const cursor = document.createElement('div');
+  cursor.id = 'custom-cursor';
+  document.body.appendChild(cursor);
+
+  function createTrail() {
+      const trail = document.createElement('div');
+      trail.className = 'mouse-trail';
+      document.body.appendChild(trail);
+      return trail;
+  }
+
+  for (let i = 0; i < numTrails; i++) {
+      trails.push(createTrail());
+  }
+
+  document.addEventListener('mousemove', (e) => {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+      
+      // 更新自定义鼠标指针位置
+      cursor.style.left = `${mouseX}px`;
+      cursor.style.top = `${mouseY}px`;
+  });
+
+  let currentTrail = 0;
+  function animateTrails() {
+      const baseSize = 3;
+      trails.forEach((trail, index) => {
+          const size = baseSize * (1 - index / numTrails);
+          const x = mouseX - size / 2;
+          const y = mouseY - size / 2;
+          const delay = index * 10;
+          
+          setTimeout(() => {
+              trail.style.width = `${size}px`;
+              trail.style.height = `${size}px`;
+              trail.style.left = `${x}px`;
+              trail.style.top = `${y}px`;
+              trail.style.opacity = 1 - (index / numTrails);
+          }, delay);
+      });
+      
+      requestAnimationFrame(animateTrails);
+  }
+
+  animateTrails();
+
+  // 鼠标点击效果
+  document.addEventListener('mousedown', () => {
+      cursor.style.transform = 'scale(0.8)';
+  });
+
+  document.addEventListener('mouseup', () => {
+      cursor.style.transform = 'scale(1)';
+  });
+})();
 
 // 添加一个函数来保存玩家输入历史
 // 从 localStorage 加载历史记录
@@ -174,8 +241,8 @@ function updateTaskBar() {
   const taskBar = document.getElementById("task-bar");
   const task =
     currentLanguage === "en"
-      ? "Primary mission: Go back to the past to hinder clean energy policies to protect oil."
-      : "主要任务：回到过去阻碍清洁能源政策以保护石油";
+      ? "Primary mission: Go back to the past to hinder clean energy policies to protect traditional energy"
+      : "主要任务：回到过去阻碍清洁能源政策以保护传统能源";
   taskBar.textContent = task;
 }
 
@@ -196,32 +263,46 @@ document
   .getElementById("language-toggle")
   .addEventListener("click", updateTaskBar);
 
-// 替换原有的translateText函数
-async function translateText(text, from, to) {
+//前端给的 const translatedReply = await translateText(npcReply, "auto", "zh");
+//然后这边我希望把这个方法改一下，如果翻译失败，就返回原文
+//还有这里的数据结构也不对，
+async function translateText(text) {
+  const sourceText = text;
   try {
-    const response = await fetch("/api/translate", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ text, from, to }),
-    });
-
-    // 模拟 API 请求失败
-    // throw new Error('Network response was not ok');
-
-    const data = await response.json();
-
-    if (data.trans_result) {
-      return { data: data.trans_result[0].dst };
-    } else {
-      throw new Error("Translation failed");
-    }
+    const response = await axios.post("/api/translate", { text: sourceText });
+    return response.data.translatedText || text;
   } catch (error) {
     console.error("Translation error:", error);
-    return { data: text }; // 返回一个包含原始回复的对象
+    // 如果翻译失败，返回原文
+    return text;
   }
 }
+// // 替换原有的translateText函数
+// async function translateText(text, from, to) {
+//   try {
+//     const response = await fetch("/api/translate", {
+//       method: "POST",
+//       headers: {
+//         "Content-Type": "application/json",
+//       },
+//       body: JSON.stringify({ text, from, to }),
+//     });
+
+//     // 模拟 API 请求失败
+//     // throw new Error('Network response was not ok');
+
+//     const data = await response.json();
+
+//     if (data.trans_result) {
+//       return { data: data.trans_result[0].dst };
+//     } else {
+//       throw new Error("Translation failed");
+//     }
+//   } catch (error) {
+//     console.error("Translation error:", error);
+//     return { data: text }; // 返回一个包含原始回复的对象
+//   }
+// }
 
 function loadSessionIDs() {
   const savedSessionIDs = localStorage.getItem("npcSessionIDs");
@@ -843,8 +924,8 @@ function setLanguage(lang) {
   localStorage.setItem("language", lang);
   document.dispatchEvent(new Event("languageChanged"));
   setTimeout(() => {
-    location.reload();  // 延时刷新
-  }, 100);  // 100ms 的延时以确保 localStorage 操作完成
+    location.reload(); // 延时刷新
+  }, 100); // 100ms 的延时以确保 localStorage 操作完成
 }
 
 // 获取当前语言
@@ -877,10 +958,12 @@ const languageToggle = document.getElementById("language-toggle");
 document.addEventListener("DOMContentLoaded", () => {
   currentLanguage = getLanguage();
   languageToggle.textContent = currentLanguage === "en" ? "EN" : "CH";
-
+  
   languageToggle.addEventListener("click", () => {
     setLanguage(currentLanguage === "en" ? "zh" : "en");
     languageToggle.textContent = currentLanguage === "en" ? "EN" : "CH";
+    //更新按钮文本
+    updateButtonLanguage();
   });
 });
 
@@ -933,7 +1016,7 @@ function shouldTriggerAutoReply(currentNpcName) {
 async function addSignature(name, signed) {
   try {
     signatures[name] = signed ? Date.now() : false;
-    await localStorage.setItem("signatures", JSON.stringify(signatures));
+    localStorage.setItem("signatures", JSON.stringify(signatures));
   } catch (error) {
     console.error("Error adding signature:", error);
     showAlert(

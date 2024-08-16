@@ -7,13 +7,18 @@ bgm.volume = 0.1; //  音量设置为 10%
 let backupReplyIndex = 0; // 备用回复的索引
 
 function displayInitialMessage() {
+
+  //隐藏 prev 和 next 按钮
+  document.getElementById("next-text-button").style.display = "none";
+  document.getElementById("prev-text-button").style.display = "none";
+
   const initialMessage = {
     en: "Stop right there. This is a restricted area. State your business or leave immediately.",
     zh: "站住。这里是禁区。说明你的来意，否则请立即离开。",
   };
 
   const message =
-    currentLanguage === "en" ? initialMessage.en : initialMessage.zh;
+  currentLanguage === "en" ? initialMessage.en : initialMessage.zh;
   displayNPCReply(message);
 }
 
@@ -37,6 +42,11 @@ document.addEventListener("DOMContentLoaded", () => {
   //  if (signatures["Ki"] === null) {
   //   startFirstDialogue();
   // }
+
+  //其余情况就是直接显示Guard的对话
+  nextButton.style.display = "inline-block";
+  prevButton.style.display = "none";
+
   if (!gameProgress.talkedToLisa || signatures["Lisa"] === null) {
     // 如果没有与Lisa对话，显示初始对话
     startFirstDialogue();
@@ -46,10 +56,6 @@ document.addEventListener("DOMContentLoaded", () => {
   } else if (gameProgress.talkedToLisa && !gameProgress.talkedToGuard) {
     displayInitialMessage();
   }
-
-  //其余情况就是直接显示Guard的对话
-  nextButton.style.display = "inline-block";
-  prevButton.style.display = "none";
 
   const userInput = document.getElementById("user-input");
   const sendMessageButton = document.getElementById("send-message");
@@ -382,9 +388,9 @@ async function sendMessageToNPC(message) {
       displayNPCReply(npcReply, audioReply);
     } else {
       try {
-        const translatedReply = await translateText(npcReply, "auto", "zh");
+        const translatedReply = await translateText(npcReply);
         console.log("Translated Reply:", translatedReply);
-        displayNPCReply(translatedReply.data, audioReply);
+        displayNPCReply(translatedReply, audioReply);
       } catch (error) {
         console.error("Error in translation, using original reply:", error);
         displayNPCReply(npcReply, audioReply);
@@ -429,9 +435,9 @@ async function generateBackupResponse(message) {
       displayNPCReply(npcReply);
     } else {
       try {
-        const translatedReply = await translateText(npcReply, "auto", "zh");
+        const translatedReply = await translateText(npcReply);
         console.log("Translated Backup Reply:", translatedReply);
-        displayNPCReply(translatedReply.data);
+        displayNPCReply(translatedReply);
       } catch (error) {
         console.error("Error in translation, using original reply:", error);
         displayNPCReply(npcReply);

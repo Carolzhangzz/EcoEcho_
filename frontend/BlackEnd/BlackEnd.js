@@ -5,9 +5,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const bgm = document.getElementById("bgm");
 
 
-  const copyHistoryButton = document.getElementById("copy-history");
-  copyHistoryButton.addEventListener("click", copyInputHistory);
-
   const exportHistoryButton = document.getElementById("export-history");
   exportHistoryButton.addEventListener("click", exportInputHistory);
 
@@ -152,17 +149,6 @@ document.addEventListener("DOMContentLoaded", () => {
   updateDialogue();
 });
 
-
-// 更新 copyInputHistory 函数
-function copyInputHistory() {
-  const formattedHistory = displayFormattedHistory();
-  navigator.clipboard.writeText(formattedHistory).then(() => {
-    alert(currentLanguage === "en" ? "Input history copied to clipboard!" : "输入历史已复制到剪贴板！");
-  }, (err) => {
-    console.error('Could not copy text: ', err);
-    alert(currentLanguage === "en" ? "Failed to copy input history." : "复制输入历史失败。");
-  });
-}
 
 function exportInputHistory() {
   const history = getPlayerInputHistory();
