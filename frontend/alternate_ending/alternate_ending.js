@@ -2,6 +2,10 @@ let isMusicPlaying = true;
 document.addEventListener("DOMContentLoaded", () => {
   const musicToggleButton = document.getElementById("music-toggle");
 
+  const initialBgm = new Audio("./Music/Sad.mp3");
+  const secondBgm = new Audio("./Music/Sad.mp3");
+  const kaneVoice = new Audio("./Music/Kane.mp3");
+
   musicToggleButton.addEventListener("click", () => {
     isMusicPlaying = !isMusicPlaying;
     musicToggleButton.textContent = isMusicPlaying ? "🔊" : "🔇";
@@ -36,10 +40,6 @@ document.addEventListener("DOMContentLoaded", () => {
   backButton.addEventListener("click", () => {
     window.location.href = "../Emilia/Emilia.html";
   });
-
-  const initialBgm = new Audio("./Music/Sad.mp3");
-  const secondBgm = new Audio("./Music/Sad.mp3");
-  const kaneVoice = new Audio("./Music/Kane.mp3");
 
   // 设置初始背景音乐
   initialBgm.volume = 0.2;

@@ -4,6 +4,11 @@ document.addEventListener("DOMContentLoaded", () => {
   const backButton = document.getElementById("back-to-main");
   const bgm = document.getElementById("bgm");
 
+
+  // Set up background music
+  bgm.src = "./Music/circle.mp3";
+  bgm.volume = 0.1;
+
   backButton.addEventListener("click", () => {
     window.location.href = "../Emilia/Emilia.html";
   });
@@ -11,13 +16,13 @@ document.addEventListener("DOMContentLoaded", () => {
   let currentLine = 0;
   const dialogues = [
     {
-      background: "./images/MediaCenter.png",
+      background: "./images/BlackScene.png",
       textStyle: "futuristic",
       en: "You find a note detailing your father's past.",
       zh: "你得到了一个便条, 上面记载着父亲的过去。",
     },
     {
-      background: "./images/MediaCenter.png",
+      background: "./images/BlackScene.png",
       textStyle: "futuristic",
       en: "You find out the <span class='highlight' data-item='truth' data-image='../Items/truth.png'>truth</span> of your father's death.",
       zh: "你得到了你的父亲<span class='highlight' data-item='真相' data-image='../Items/truth.png'>“Kane”死亡的真相</span>。",
@@ -87,10 +92,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   nextSceneButton.addEventListener("click", goToNextScene);
   nextSceneButton.style.display = "none";
-
-  // Set up background music
-  bgm.src = "./Music/circle.mp3";
-  bgm.volume = 0.1;
 
   // Autoplay music on first click
   document.body.addEventListener(

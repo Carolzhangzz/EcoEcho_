@@ -1,7 +1,23 @@
 let isMusicPlaying = true;
 document.addEventListener("DOMContentLoaded", () => {
- 
   const musicToggleButton = document.getElementById("music-toggle");
+  const initialBgm = new Audio("./Music/Sad.mp3");
+  const secondBgm = new Audio("./Music/Sad.mp3");
+  const kaneVoice = new Audio("./Music/Kane.mp3");
+
+  // 设置初始背景音乐
+  initialBgm.volume = 0.2;
+  initialBgm.loop = true;
+
+  // 设置Kane的录音
+  kaneVoice.volume = 0.5;
+  kaneVoice.loop = false;
+  // 调整速度
+  kaneVoice.playbackRate = 0.9;
+
+  // 设置第二个背景音乐
+  secondBgm.volume = 0.2;
+  secondBgm.loop = true;
 
   musicToggleButton.addEventListener("click", () => {
     isMusicPlaying = !isMusicPlaying;
@@ -37,24 +53,6 @@ document.addEventListener("DOMContentLoaded", () => {
   backButton.addEventListener("click", () => {
     window.location.href = "../Emilia/Emilia.html";
   });
-
-  const initialBgm = new Audio("./Music/Sad.mp3");
-  const secondBgm = new Audio("./Music/Sad.mp3");
-  const kaneVoice = new Audio("./Music/Kane.mp3");
-
-  // 设置初始背景音乐
-  initialBgm.volume = 0.2;
-  initialBgm.loop = true;
-
-  // 设置Kane的录音
-  kaneVoice.volume = 0.5;
-  kaneVoice.loop = false;
-  // 调整速度
-  kaneVoice.playbackRate = 0.9;
-
-  // 设置第二个背景音乐
-  secondBgm.volume = 0.2;
-  secondBgm.loop = true;
 
   let currentLine = 0;
   const dialogues = [
@@ -161,7 +159,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function updateDialogue() {
     const backButton = document.getElementById("back-to-main");
-    //一旦对话开始，禁用返回按钮 
+    //一旦对话开始，禁用返回按钮
     backButton.disabled = true;
 
     if (currentLine < dialogues.length) {
