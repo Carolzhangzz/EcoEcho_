@@ -3,8 +3,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const nextSceneButton = document.getElementById("next-scene");
   const backButton = document.getElementById("back-to-main");
   const bgm = document.getElementById("bgm");
-
-
   // Set up background music
   bgm.src = "./Music/circle.mp3";
   bgm.volume = 0.1;
@@ -30,7 +28,6 @@ document.addEventListener("DOMContentLoaded", () => {
   ];
 
   function typeWriter(element, text, callback) {
-    bgm.play();
     let index = 0;
     const interval = setInterval(() => {
       if (index < text.length) {

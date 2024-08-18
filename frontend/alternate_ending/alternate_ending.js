@@ -1,7 +1,6 @@
 let isMusicPlaying = true;
 document.addEventListener("DOMContentLoaded", () => {
   const musicToggleButton = document.getElementById("music-toggle");
-
   const initialBgm = new Audio("./Music/Sad.mp3");
   const secondBgm = new Audio("./Music/Sad.mp3");
   const kaneVoice = new Audio("./Music/Kane.mp3");
@@ -15,12 +14,7 @@ document.addEventListener("DOMContentLoaded", () => {
         initialBgm
           .play()
           .catch((error) => console.log("Initial BGM playback failed:", error));
-      } else {
-        secondBgm
-          .play()
-          .catch((error) => console.log("Second BGM playback failed:", error));
-      }
-      if (currentLine >= 5) {
+      } else if (currentLine >= 5) {
         kaneVoice
           .play()
           .catch((error) =>
@@ -29,7 +23,6 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     } else {
       initialBgm.pause();
-      secondBgm.pause();
       kaneVoice.pause();
     }
   });
@@ -209,7 +202,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       );
     } else {
-      // 所有对话结束后，显示返回按钮 
+      // 所有对话结束后，显示返回按钮
       backButton.disabled = false;
       nextSceneButton.style.display = "block";
     }
