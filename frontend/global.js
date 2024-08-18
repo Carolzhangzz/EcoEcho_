@@ -685,6 +685,7 @@ const itemNpcMapping = {
   真相: ["Lisa"],
   truth: ["Lisa"],
   记者证: ["Guard"],
+  press_card: ["Guard"],
   Journalist_ID: ["Guard"],
   general_strike: ["Johnathan"],
   大罢工: ["Johnathan"],

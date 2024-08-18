@@ -109,7 +109,7 @@ function getScenes(lastSigner) {
               "However, you seem to have completely ignored these changes, immersed in your own joy, and walked out of the room quickly.",
             ],
             zh: [
-              "终于, 你成功了, 阻止了T的开采, 重新回到了“传统能源的世界。",
+              "终于, 你成功了, 阻止了T的开采, 重新回到了“传统能源”的世界。",
               "看向窗外，那里悄然建起了工厂，巨大的烟囱不停地排放着黑色的 <span class='high'>浓烟</span>。",
               "然而, 你似乎完全没有注意到这些变化, 沉浸在自己的喜悦中, 快步走出房间。",
             ],
