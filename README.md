@@ -1,6 +1,8 @@
 
+# EcoEcho 
 
-# AI Game Project
+# CHI Conference on Human Factors in Computing Systems 2025 
+Echoecho is a AI Powered game 
 
 ## Setup and Running
 
