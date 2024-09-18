@@ -30,3 +30,11 @@ To familiarize yourself with the game mechanics, check out the gameplay instruct
 You can start playing *EcoEcho* by following the link below:  
 [Open the Game](https://ecoecho.duckdns.org/)  
 
+
+## Related Papers
+
+"Can AI Prompt Humans? Multimodal Agents Prompt Players' Game Actions and Show Consequences to Raise Sustainability Awareness."
+arXiv preprint arXiv:2409.08486, 2024.
+[Read the paper](https://arxiv.org/abs/2409.08486)
+
+
