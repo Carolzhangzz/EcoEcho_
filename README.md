@@ -1,44 +1,32 @@
+# EcoEcho: A Multimodal AI-Based Interactive Decision-Making Game on Clean Energy Policy
 
-# EcoEcho 
+## Project Overview
 
-# CHI Conference on Human Factors in Computing Systems 2025 
-Echoecho is a AI Powered game 
+![hero image](Hero.png)
+EcoEcho is an innovative interactive game that leverages multimodal AI technology to explore the complexities of clean energy policies and their impact on society. Players interact with highly intelligent AI characters, traveling between the future and the past, balancing various interests, and making far-reaching policy decisions.
 
-## Setup and Running
+## Key Features
 
-1. Clone the repository:
+- **Intelligent AI Characters**: Utilizing multimodal AI technology to create NPCs capable of natural language dialogue, facial expression recognition and generation, providing a more authentic and enriching interactive experience.
 
-```sh
-git clone https://github.com/your-username/your-repo-name.git
-cd your-repo-name
-```
+- **Complex Decision Simulation**: Engage in deep dialogues with multimodal AI-driven stakeholders such as unions, government, and media. The AI adjusts reactions and positions in real-time based on player decisions.
 
-2. Install dependencies:
+- **Immersive Multi-Sensory Experience**: Combining AI-generated visual effects, sound, and dialogue to create an immersive game environment, enhancing player engagement.
 
-```sh
-cd AI Game
-```
 
-```sh
-npm install 
-```
+## Getting Started
 
-3. Create a `.env` file in the `backend` directory with the following content:
+# Game Overview
 
-AI_API_KEY=your_api_key_here
-PORT=3000
+![alt text](gamePipe.png)
 
-4. Start the application:
+## How to Play
 
-```sh
-cd backend
-```
+To familiarize yourself with the game mechanics, check out the gameplay instructions by reviewing the following document:  
+[Click here to view the document](https://docs.google.com/document/d/1UP96TnJas6-fypDGSYFERe8M11jlsLumWCQYKypPNSs/edit?usp=sharing).
 
-```sh
-Node server.js
-```
+## Running the Game
 
-5. Open your browser and visit 
-
-`http://localhost:3001`
+You can start playing *EcoEcho* by following the link below:  
+[Open the Game](https://ecoecho.duckdns.org/)  
 
