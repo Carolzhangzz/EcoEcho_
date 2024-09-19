@@ -30,10 +30,36 @@ You can start playing *EcoEcho* by following the link below:
 
 - **Immersive Multi-Sensory Experience**: Combining AI-generated visual effects, sound, and dialogue to create an immersive game environment, enhancing player engagement.
 
-# Related Papers
+# Papers
 
 "Can AI Prompt Humans? Multimodal Agents Prompt Players' Game Actions and Show Consequences to Raise Sustainability Awareness."
 arXiv preprint arXiv:2409.08486, 2024.
+
 [Read the paper](https://arxiv.org/abs/2409.08486)
 
+## Citation
 
+If you use this project in your research, please cite our paper:
+
+```
+@article{zhang2024can,
+  title={Can AI Prompt Humans? Multimodal Agents Prompt Players' Game Actions and Show Consequences to Raise Sustainability Awareness},
+  author={Zhang, Qinshi and Wen, Ruoyu and Ding, Zijian and Hendra, Latisha Besariani and LC, Ray},
+  journal={arXiv preprint arXiv:2409.08486},
+  year={2024}
+}
+```
+
+# Related Papers
+
+Eternagram: Probing Player Attitudes Towards Climate Change Using a ChatGPT-driven Text-based Adventure (CHI'24) [Read the paper](https://dl.acm.org/doi/pdf/10.1145/3613904.3642850)
+
+```
+@inproceedings{zhou2024eternagram,
+  title={Eternagram: Probing Player Attitudes Towards Climate Change Using a ChatGPT-driven Text-based Adventure},
+  author={Zhou, Suifang and Hendra, Latisha Besariani and Zhang, Qinshi and Holopainen, Jussi and LC, RAY},
+  booktitle={Proceedings of the CHI Conference on Human Factors in Computing Systems},
+  pages={1--23},
+  year={2024}
+}
+```
