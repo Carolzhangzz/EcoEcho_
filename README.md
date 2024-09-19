@@ -50,7 +50,7 @@ If you use this project in your research, please cite our paper:
 }
 ```
 
-# Related Papers
+## Related Papers
 
 Eternagram: Probing Player Attitudes Towards Climate Change Using a ChatGPT-driven Text-based Adventure (CHI'24) [Read the paper](https://dl.acm.org/doi/pdf/10.1145/3613904.3642850)
 
