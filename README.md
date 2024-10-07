@@ -24,7 +24,7 @@ You can start playing *EcoEcho* by following the link below:
 
 # Key Features
 
-- **Intelligent AI Characters**: Utilizing multimodal AI technology to create NPCs capable of natural language dialogue, facial expression recognition and generation, providing a more authentic and enriching interactive experience.
+- **Intelligent AI Characters**: Utilizing multimodal AI technology to create NPCs capable of natural language dialogue, providing a more authentic and enriching interactive experience.
 
 - **Complex Decision Simulation**: Engage in deep dialogues with multimodal AI-driven stakeholders such as unions, government, and media. The AI adjusts reactions and positions in real-time based on player decisions.
 
